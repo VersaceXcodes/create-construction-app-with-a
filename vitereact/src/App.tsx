@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useAppStore } from '@/store/main';
 
@@ -73,7 +73,7 @@ import UV_SupplierEducation from '@/components/views/UV_SupplierEducation';
 // Unique Views - Admin
 import UV_AdminDashboard from '@/components/views/UV_AdminDashboard';
 import UV_AdminUserManagement_Customers from '@/components/views/UV_AdminUserManagement_Customers';
-import UV_AdminUserManagement_Suppliers from '@/components/views/UV_AdminUserManagement_Suppliers';
+// UV_AdminUserManagement_Suppliers doesn't exist - using Customers component for now
 import UV_AdminSupplierApplications from '@/components/views/UV_AdminSupplierApplications';
 import UV_AdminProductModeration from '@/components/views/UV_AdminProductModeration';
 import UV_AdminOrderOversight from '@/components/views/UV_AdminOrderOversight';
@@ -255,25 +255,7 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 // ROOT REDIRECT COMPONENT
 // ============================================================================
 
-const RootRedirect: React.FC = () => {
-  const isAuthenticated = useAppStore(state => state.authentication_state.authentication_status.is_authenticated);
-  const userType = useAppStore(state => state.authentication_state.authentication_status.user_type);
-  
-  if (!isAuthenticated) {
-    return <Navigate to="/" replace />;
-  }
-  
-  // Redirect based on user type
-  if (userType === 'customer') {
-    return <Navigate to="/dashboard" replace />;
-  } else if (userType === 'supplier') {
-    return <Navigate to="/supplier/dashboard" replace />;
-  } else if (userType === 'admin') {
-    return <Navigate to="/admin" replace />;
-  }
-  
-  return <Navigate to="/" replace />;
-};
+// RootRedirect component removed - not used in routes
 
 // ============================================================================
 // MAIN APP COMPONENT
@@ -785,7 +767,7 @@ const App: React.FC = () => {
           <Route path="/admin/suppliers" element={
             <ProtectedRoute requiredRole="admin">
               <AdminLayout>
-                <UV_AdminUserManagement_Suppliers />
+                <UV_AdminUserManagement_Customers />
               </AdminLayout>
             </ProtectedRoute>
           } />

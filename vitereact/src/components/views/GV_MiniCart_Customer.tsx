@@ -78,7 +78,6 @@ const GV_MiniCart_Customer: React.FC = () => {
   const authToken = useAppStore(state => state.authentication_state.auth_token);
   const isAuthenticated = useAppStore(state => state.authentication_state.authentication_status.is_authenticated);
   const userType = useAppStore(state => state.authentication_state.authentication_status.user_type);
-  const cartStateGlobal = useAppStore(state => state.cart_state);
   const fetchCartGlobal = useAppStore(state => state.fetch_cart);
   
   // ============================================================================
@@ -103,7 +102,7 @@ const GV_MiniCart_Customer: React.FC = () => {
   // FETCH CART DATA (React Query)
   // ============================================================================
   
-  const { data: cartData, isLoading: isLoadingCart, error: cartError, refetch: refetchCart } = useQuery<CartData>({
+  const { data: cartData, isLoading: isLoadingCart } = useQuery<CartData>({
     queryKey: ['cart'],
     queryFn: async () => {
       if (!authToken) throw new Error('Not authenticated');
@@ -200,7 +199,7 @@ const GV_MiniCart_Customer: React.FC = () => {
       );
       return response.data;
     },
-    onMutate: async ({ cart_item_id, quantity }) => {
+    onMutate: async ({ cart_item_id }) => {
       setUpdatingItemId(cart_item_id);
       setErrorMessage(null);
     },

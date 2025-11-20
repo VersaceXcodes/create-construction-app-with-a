@@ -5,8 +5,6 @@ import axios from 'axios';
 import { useAppStore } from '@/store/main';
 import { 
   User, 
-  Mail, 
-  Phone, 
   MapPin, 
   CreditCard, 
   Shield, 
@@ -185,7 +183,6 @@ const UV_AccountSettings: React.FC = () => {
   const [editingProfile, setEditingProfile] = useState(false);
   const [addressFormOpen, setAddressFormOpen] = useState(false);
   const [editingAddressId, setEditingAddressId] = useState<string | null>(null);
-  const [paymentFormOpen, setPaymentFormOpen] = useState(false);
   const [editingPaymentId, setEditingPaymentId] = useState<string | null>(null);
   const [passwordFormOpen, setPasswordFormOpen] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
@@ -290,7 +287,7 @@ const UV_AccountSettings: React.FC = () => {
     }
   });
 
-  const updateCustomerMutation = useMutation({
+  useMutation({
     mutationFn: (data: Partial<CustomerProfile>) => updateCustomerProfile(authToken, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['customerProfile'] });
@@ -577,7 +574,6 @@ const UV_AccountSettings: React.FC = () => {
 
   const handlePaymentCancel = () => {
     setEditingPaymentId(null);
-    setPaymentFormOpen(false);
     setValidationErrors({});
   };
 

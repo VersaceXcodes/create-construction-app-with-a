@@ -5,12 +5,10 @@ import { useAppStore } from '@/store/main';
 import axios from 'axios';
 import { 
   Bell, 
-  Send, 
   Users, 
   Mail, 
   MessageSquare, 
   AlertTriangle, 
-  Calendar,
   BarChart3,
   Edit,
   Trash2,
@@ -21,7 +19,6 @@ import {
   Target,
   FileText,
   Filter,
-  Search,
   Plus,
   X
 } from 'lucide-react';

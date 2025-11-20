@@ -63,7 +63,6 @@ const GV_ChatWidget: React.FC = () => {
   const authToken = useAppStore(state => state.authentication_state.auth_token);
   const isAuthenticated = useAppStore(state => state.authentication_state.authentication_status.is_authenticated);
   const websocketConnection = useAppStore(state => state.websocket_connection);
-  const globalChatState = useAppStore(state => state.chat_state);
   
   const queryClient = useQueryClient();
   
@@ -81,7 +80,7 @@ const GV_ChatWidget: React.FC = () => {
   const [other_user_typing, setOtherUserTyping] = useState<{ user_id: string; user_name: string } | null>(null);
   const [connection_status, setConnectionStatus] = useState<'connected' | 'connecting' | 'disconnected'>('disconnected');
   const [unread_count, setUnreadCount] = useState(0);
-  const [agent_info, setAgentInfo] = useState<AgentInfo | null>(null);
+  const [agent_info] = useState<AgentInfo | null>(null);
   const [show_conversation_selector, setShowConversationSelector] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
   
@@ -313,7 +312,7 @@ const GV_ChatWidget: React.FC = () => {
       // Restore input
       setCurrentMessageInput(variables.message_text);
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       setLocalError(null);
       queryClient.invalidateQueries({ queryKey: ['chat-messages', conversation_id] });
     }
@@ -697,7 +696,7 @@ const GV_ChatWidget: React.FC = () => {
                     </div>
                   ) : (
                     <>
-                      {messages.map((message, index) => {
+                      {messages.map((message) => {
                         const isOwnMessage = message.sender_id === currentUser?.user_id;
                         const showAvatar = !isOwnMessage;
                         

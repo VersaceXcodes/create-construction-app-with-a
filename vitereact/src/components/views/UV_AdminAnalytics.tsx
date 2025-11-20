@@ -4,10 +4,6 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useAppStore } from '@/store/main';
 import {
-  LineChart,
-  Line,
-  BarChart,
-  Bar,
   PieChart,
   Pie,
   AreaChart,
@@ -30,12 +26,11 @@ import {
   Activity,
   Download,
   Calendar,
-  Filter,
   RefreshCw,
   FileText,
   AlertCircle
 } from 'lucide-react';
-import { format, subDays, startOfDay, endOfDay } from 'date-fns';
+import { format, subDays } from 'date-fns';
 
 // ============================================================================
 // TYPE DEFINITIONS
@@ -234,7 +229,6 @@ const UV_AdminAnalytics: React.FC = () => {
   // ============================================================================
   
   const authToken = useAppStore(state => state.authentication_state.auth_token);
-  const currentUser = useAppStore(state => state.authentication_state.current_user);
   
   // ============================================================================
   // URL PARAMETERS & LOCAL STATE
@@ -780,7 +774,7 @@ const UV_AdminAnalytics: React.FC = () => {
                               outerRadius={80}
                               label={(entry) => `${entry.type}: ${entry.count}`}
                             >
-                              {userAnalyticsData.user_demographics.by_type.map((entry, index) => (
+                              {userAnalyticsData.user_demographics.by_type.map((_entry, index) => (
                                 <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
                               ))}
                             </Pie>

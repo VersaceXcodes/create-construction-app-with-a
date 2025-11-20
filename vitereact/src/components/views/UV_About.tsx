@@ -158,8 +158,8 @@ const UV_About: React.FC = () => {
 
   // Local state
   const [active_section, setActiveSection] = useState<string>(sectionParam);
-  const [loading_state, setLoadingState] = useState<boolean>(false);
-  const [error_message, setErrorMessage] = useState<string | null>(null);
+  const [loading_state] = useState<boolean>(false);
+  const [error_message] = useState<string | null>(null);
   const [page_content] = useState<PageContent>(COMPANY_CONTENT);
   const [team_members] = useState<TeamMember[]>(TEAM_MEMBERS);
   const [company_stats] = useState<CompanyStats>(COMPANY_STATS);

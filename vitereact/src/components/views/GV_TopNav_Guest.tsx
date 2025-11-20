@@ -18,14 +18,6 @@ interface Category {
   parent_category_id: string | null;
 }
 
-interface Product {
-  product_id: string;
-  product_name: string;
-  price_per_unit: number;
-  primary_image_url: string | null;
-  supplier_id: string;
-}
-
 interface SearchSuggestion {
   products: Array<{
     product_id: string;
@@ -91,7 +83,6 @@ const GV_TopNav_Guest: React.FC = () => {
   const location = useLocation();
   
   // CRITICAL: Individual selectors to avoid infinite loops
-  const isAuthenticated = useAppStore(state => state.authentication_state.authentication_status.is_authenticated);
   
   // Local State
   const [search_query, setSearchQuery] = useState('');
