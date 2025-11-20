@@ -12,17 +12,14 @@ import {
   DollarSign, 
   BarChart3, 
   Settings, 
-  Search,
   Bell,
   Menu,
   X,
   ChevronDown,
   Shield,
-  Activity,
   LogOut,
   UserCog,
-  Database,
-  Server
+  Database
 } from 'lucide-react';
 
 // ============================================================================
@@ -39,14 +36,6 @@ interface SystemHealth {
   status: 'operational' | 'degraded' | 'down';
   uptime_percentage: number;
   api_response_time: number;
-}
-
-interface SearchResult {
-  entity_type: 'user' | 'order' | 'product' | 'supplier';
-  entity_id: string;
-  display_name: string;
-  secondary_info: string;
-  url: string;
 }
 
 // ============================================================================
@@ -67,9 +56,6 @@ const GV_TopNav_Admin: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [accountDropdownOpen, setAccountDropdownOpen] = useState(false);
   const [usersDropdownOpen, setUsersDropdownOpen] = useState(false);
-  const [contentDropdownOpen, setContentDropdownOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchDropdownOpen, setSearchDropdownOpen] = useState(false);
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
 
@@ -125,102 +111,7 @@ const GV_TopNav_Admin: React.FC = () => {
     retry: 0
   });
 
-  // ============================================================================
-  // GLOBAL SEARCH
-  // ============================================================================
 
-  const { data: searchResults, isLoading: searchIsLoading } = useQuery<SearchResult[]>({
-    queryKey: ['admin-search', searchQuery],
-    queryFn: async () => {
-      if (!searchQuery || searchQuery.length < 2) return [];
-
-      const headers = authToken ? { Authorization: `Bearer ${authToken}` } : {};
-
-      try {
-        // Search across multiple entity types
-        const [usersRes, ordersRes, productsRes, suppliersRes] = await Promise.all([
-          axios.get(`${API_BASE_URL}/admin/users?query=${encodeURIComponent(searchQuery)}&limit=5`, { headers }),
-          axios.get(`${API_BASE_URL}/admin/orders?limit=5`, { headers }).catch(() => ({ data: { orders: [] } })),
-          axios.get(`${API_BASE_URL}/products?search_query=${encodeURIComponent(searchQuery)}&limit=5`, { headers }).catch(() => ({ data: { products: [] } })),
-          axios.get(`${API_BASE_URL}/suppliers?query=${encodeURIComponent(searchQuery)}&limit=5`, { headers }).catch(() => ({ data: { suppliers: [] } }))
-        ]);
-
-        const results: SearchResult[] = [];
-
-        // Users
-        if (usersRes.data.users) {
-          usersRes.data.users.forEach((user: any) => {
-            results.push({
-              entity_type: 'user',
-              entity_id: user.user_id,
-              display_name: `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.email,
-              secondary_info: `${user.user_type} - ${user.email}`,
-              url: `/admin/${user.user_type === 'customer' ? 'customers' : 'suppliers'}`
-            });
-          });
-        }
-
-        // Orders
-        if (ordersRes.data.orders) {
-          ordersRes.data.orders.slice(0, 3).forEach((order: any) => {
-            results.push({
-              entity_type: 'order',
-              entity_id: order.order_id,
-              display_name: order.order_number,
-              secondary_info: `$${Number(order.total_amount).toFixed(2)} - ${order.status}`,
-              url: `/admin/orders`
-            });
-          });
-        }
-
-        // Products
-        if (productsRes.data.products) {
-          productsRes.data.products.slice(0, 3).forEach((product: any) => {
-            results.push({
-              entity_type: 'product',
-              entity_id: product.product_id,
-              display_name: product.product_name,
-              secondary_info: `${product.business_name || 'Unknown Supplier'}`,
-              url: `/admin/products`
-            });
-          });
-        }
-
-        // Suppliers
-        if (suppliersRes.data.suppliers) {
-          suppliersRes.data.suppliers.slice(0, 3).forEach((supplier: any) => {
-            results.push({
-              entity_type: 'supplier',
-              entity_id: supplier.supplier_id,
-              display_name: supplier.business_name,
-              secondary_info: `Rating: ${Number(supplier.rating_average).toFixed(1)}`,
-              url: `/admin/suppliers`
-            });
-          });
-        }
-
-        return results;
-      } catch (error) {
-        console.error('Search error:', error);
-        return [];
-      }
-    },
-    enabled: !!authToken && searchQuery.length >= 2,
-    staleTime: 30000,
-    retry: 1
-  });
-
-  // ============================================================================
-  // DEBOUNCED SEARCH
-  // ============================================================================
-
-  useEffect(() => {
-    if (searchQuery.length >= 2) {
-      setSearchDropdownOpen(true);
-    } else {
-      setSearchDropdownOpen(false);
-    }
-  }, [searchQuery, searchResults]);
 
   // ============================================================================
   // HANDLERS
@@ -235,20 +126,6 @@ const GV_TopNav_Admin: React.FC = () => {
     }
   };
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.length >= 2) {
-      navigate(`/admin/search?q=${encodeURIComponent(searchQuery)}`);
-      setSearchDropdownOpen(false);
-    }
-  };
-
-  const handleSearchResultClick = (url: string) => {
-    navigate(url);
-    setSearchDropdownOpen(false);
-    setSearchQuery('');
-  };
-
   // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -258,12 +135,6 @@ const GV_TopNav_Admin: React.FC = () => {
       }
       if (!target.closest('.users-dropdown')) {
         setUsersDropdownOpen(false);
-      }
-      if (!target.closest('.content-dropdown')) {
-        setContentDropdownOpen(false);
-      }
-      if (!target.closest('.search-container')) {
-        setSearchDropdownOpen(false);
       }
     };
 
@@ -341,8 +212,269 @@ const GV_TopNav_Admin: React.FC = () => {
                     <Users className="w-4 h-4" />
                     <span>Users</span>
                     <ChevronDown className="w-3 h-3" />
+                  </button>
+                  {(alertCounts?.supplier_applications || 0) > 0 && (
+                    <span className="absolute -top-1 -right-1 px-1.5 py-0.5 bg-red-500 text-white text-[10px] font-bold rounded-full">
+                      {alertCounts?.supplier_applications}
+                    </span>
+                  )}
+
+                  {/* Dropdown Menu */}
+                  {usersDropdownOpen && (
+                    <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-200 py-2">
+                      <Link
+                        to="/admin/customers"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => setUsersDropdownOpen(false)}
+                      >
+                        Customers
+                      </Link>
+                      <Link
+                        to="/admin/suppliers"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => setUsersDropdownOpen(false)}
+                      >
+                        Suppliers
+                      </Link>
+                      <Link
+                        to="/admin/supplier-applications"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => setUsersDropdownOpen(false)}
+                      >
+                        Supplier Applications
+                        {(alertCounts?.supplier_applications || 0) > 0 && (
+                          <span className="ml-2 px-2 py-0.5 bg-red-500 text-white text-xs rounded-full">
+                            {alertCounts?.supplier_applications}
+                          </span>
+                        )}
+                      </Link>
+                    </div>
+                  )}
+                </div>
+
+                {/* Orders */}
+                <Link
+                  to="/admin/orders"
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center space-x-2 ${
+                    isActiveRoute('/admin/orders') 
+                      ? 'bg-blue-600 text-white' 
+                      : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                  }`}
+                >
+                  <ShoppingCart className="w-4 h-4" />
+                  <span>Orders</span>
+                </Link>
+
+                {/* Disputes */}
+                <Link
+                  to="/admin/disputes"
+                  className={`relative px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center space-x-2 ${
+                    isActiveRoute('/admin/disputes') 
+                      ? 'bg-blue-600 text-white' 
+                      : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                  }`}
+                >
+                  <AlertTriangle className="w-4 h-4" />
+                  <span>Disputes</span>
+                  {(alertCounts?.disputes || 0) > 0 && (
+                    <span className="absolute -top-1 -right-1 px-1.5 py-0.5 bg-red-500 text-white text-[10px] font-bold rounded-full">
+                      {alertCounts?.disputes}
+                    </span>
+                  )}
+                </Link>
+
+                {/* Products */}
+                <Link
+                  to="/admin/products"
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center space-x-2 ${
+                    isActiveRoute('/admin/products') 
+                      ? 'bg-blue-600 text-white' 
+                      : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                  }`}
+                >
+                  <Database className="w-4 h-4" />
+                  <span>Products</span>
+                </Link>
+
+                {/* Reviews */}
+                <Link
+                  to="/admin/reviews"
+                  className={`relative px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center space-x-2 ${
+                    isActiveRoute('/admin/reviews') 
+                      ? 'bg-blue-600 text-white' 
+                      : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                  }`}
+                >
+                  <FileText className="w-4 h-4" />
+                  <span>Reviews</span>
+                  {(alertCounts?.flagged_content || 0) > 0 && (
+                    <span className="absolute -top-1 -right-1 px-1.5 py-0.5 bg-red-500 text-white text-[10px] font-bold rounded-full">
+                      {alertCounts?.flagged_content}
+                    </span>
+                  )}
+                </Link>
+
+                {/* Financials */}
+                <Link
+                  to="/admin/financials"
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center space-x-2 ${
+                    isActiveRoute('/admin/financials') 
+                      ? 'bg-blue-600 text-white' 
+                      : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                  }`}
+                >
+                  <DollarSign className="w-4 h-4" />
+                  <span>Financials</span>
+                </Link>
+
+                {/* Analytics */}
+                <Link
+                  to="/admin/analytics"
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center space-x-2 ${
+                    isActiveRoute('/admin/analytics') 
+                      ? 'bg-blue-600 text-white' 
+                      : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                  }`}
+                >
+                  <BarChart3 className="w-4 h-4" />
+                  <span>Analytics</span>
+                </Link>
+
+                {/* Settings */}
+                <Link
+                  to="/admin/settings"
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center space-x-2 ${
+                    isActiveRoute('/admin/settings') 
+                      ? 'bg-blue-600 text-white' 
+                      : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                  }`}
+                >
+                  <Settings className="w-4 h-4" />
+                  <span>Settings</span>
+                </Link>
+              </div>
+            </div>
+
+            {/* Right section: Search, Notifications, System Health, Account */}
+            <div className="flex items-center space-x-4">
+              {/* System Health Indicator */}
+              <div className="hidden lg:flex items-center space-x-2 px-3 py-1.5 bg-gray-800 rounded-lg">
+                <div className={`w-2 h-2 rounded-full ${systemHealthColor} animate-pulse`}></div>
+                <span className="text-xs text-gray-300 font-medium">
+                  {systemHealth?.status === 'operational' ? 'Operational' : 
+                   systemHealth?.status === 'degraded' ? 'Degraded' : 'Down'}
+                </span>
+              </div>
+
+              {/* Notifications */}
+              <button className="relative p-2 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition-all">
+                <Bell className="w-5 h-5" />
+                {totalAlerts > 0 && (
+                  <span className="absolute -top-1 -right-1 px-2 py-0.5 bg-red-500 text-white text-xs font-bold rounded-full">
+                    {totalAlerts}
+                  </span>
+                )}
+              </button>
+
+              {/* Account Dropdown */}
+              <div className="relative account-dropdown">
+                <button
+                  onClick={() => setAccountDropdownOpen(!accountDropdownOpen)}
+                  className="flex items-center space-x-2 px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition-all"
+                >
+                  <UserCog className="w-5 h-5" />
+                  <span className="hidden lg:block text-sm font-medium">
+                    {currentUser?.email || 'Admin'}
+                  </span>
+                  <ChevronDown className="w-4 h-4" />
+                </button>
+
+                {accountDropdownOpen && (
+                  <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 py-2">
+                    <div className="px-4 py-3 border-b border-gray-200">
+                      <p className="text-sm font-medium text-gray-900">
+                        {adminProfile?.role || 'Administrator'}
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {currentUser?.email}
+                      </p>
+                    </div>
+                    <Link
+                      to="/admin/profile"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => setAccountDropdownOpen(false)}
+                    >
+                      Profile Settings
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Mobile Menu Toggle */}
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="lg:hidden p-2 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition-all"
+              >
+                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="lg:hidden bg-gray-800 border-t border-gray-700">
+            <div className="px-4 py-3 space-y-2">
+              <Link
+                to="/admin"
+                className="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <div className="flex items-center space-x-3">
+                  <LayoutDashboard className="w-5 h-5" />
+                  <span className="text-sm font-medium">Dashboard</span>
+                </div>
+              </Link>
+
+              <Link
+                to="/admin/customers"
+                className="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <div className="flex items-center space-x-3">
+                  <Users className="w-5 h-5" />
+                  <span className="text-sm font-medium">Customers</span>
+                </div>
+              </Link>
+
+              <Link
+                to="/admin/suppliers"
+                className="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <div className="flex items-center space-x-3">
+                  <Users className="w-5 h-5" />
+                  <span className="text-sm font-medium">Suppliers</span>
+                </div>
+              </Link>
+
+              <Link
+                to="/admin/supplier-applications"
+                className="flex items-center justify-between px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <div className="flex items-center space-x-3">
+                  <Users className="w-5 h-5" />
+                  <span className="text-sm font-medium">Supplier Applications</span>
+                </div>
                 {(alertCounts?.supplier_applications || 0) > 0 && (
-                  <span className="absolute -top-1 -right-1 px-1.5 py-0.5 bg-red-500 text-white text-[10px] font-bold rounded-full">
+                  <span className="px-2 py-0.5 bg-red-500 text-white text-xs font-bold rounded-full">
                     {alertCounts?.supplier_applications}
                   </span>
                 )}
@@ -350,11 +482,13 @@ const GV_TopNav_Admin: React.FC = () => {
 
               <Link
                 to="/admin/orders"
-                className="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                className="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                <ShoppingCart className="w-5 h-5" />
-                <span className="text-sm font-medium">Orders</span>
+                <div className="flex items-center space-x-3">
+                  <ShoppingCart className="w-5 h-5" />
+                  <span className="text-sm font-medium">Orders</span>
+                </div>
               </Link>
 
               <Link
@@ -367,7 +501,7 @@ const GV_TopNav_Admin: React.FC = () => {
                   <span className="text-sm font-medium">Disputes</span>
                 </div>
                 {(alertCounts?.disputes || 0) > 0 && (
-                  <span className="absolute -top-1 -right-1 px-1.5 py-0.5 bg-red-500 text-white text-[10px] font-bold rounded-full">
+                  <span className="px-2 py-0.5 bg-red-500 text-white text-xs font-bold rounded-full">
                     {alertCounts?.disputes}
                   </span>
                 )}
@@ -375,11 +509,13 @@ const GV_TopNav_Admin: React.FC = () => {
 
               <Link
                 to="/admin/products"
-                className="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                className="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                <Database className="w-5 h-5" />
-                <span className="text-sm font-medium">Products</span>
+                <div className="flex items-center space-x-3">
+                  <Database className="w-5 h-5" />
+                  <span className="text-sm font-medium">Products</span>
+                </div>
               </Link>
 
               <Link
@@ -392,7 +528,7 @@ const GV_TopNav_Admin: React.FC = () => {
                   <span className="text-sm font-medium">Reviews</span>
                 </div>
                 {(alertCounts?.flagged_content || 0) > 0 && (
-                  <span className="absolute -top-1 -right-1 px-1.5 py-0.5 bg-red-500 text-white text-[10px] font-bold rounded-full">
+                  <span className="px-2 py-0.5 bg-red-500 text-white text-xs font-bold rounded-full">
                     {alertCounts?.flagged_content}
                   </span>
                 )}
@@ -400,29 +536,35 @@ const GV_TopNav_Admin: React.FC = () => {
 
               <Link
                 to="/admin/financials"
-                className="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                className="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                <DollarSign className="w-5 h-5" />
-                <span className="text-sm font-medium">Financials</span>
+                <div className="flex items-center space-x-3">
+                  <DollarSign className="w-5 h-5" />
+                  <span className="text-sm font-medium">Financials</span>
+                </div>
               </Link>
 
               <Link
                 to="/admin/analytics"
-                className="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                className="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                <BarChart3 className="w-5 h-5" />
-                <span className="text-sm font-medium">Analytics</span>
+                <div className="flex items-center space-x-3">
+                  <BarChart3 className="w-5 h-5" />
+                  <span className="text-sm font-medium">Analytics</span>
+                </div>
               </Link>
 
               <Link
                 to="/admin/settings"
-                className="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                className="block px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                <Settings className="w-5 h-5" />
-                <span className="text-sm font-medium">Settings</span>
+                <div className="flex items-center space-x-3">
+                  <Settings className="w-5 h-5" />
+                  <span className="text-sm font-medium">Settings</span>
+                </div>
               </Link>
 
               {/* Mobile System Health */}
