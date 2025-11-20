@@ -774,7 +774,11 @@ app.delete('/api/payment-methods/:payment_method_id', authenticateToken, async (
 
 app.get('/api/products', async (req, res) => {
   try {
-    const { search_query, category, supplier_id, brand, status, is_featured, price_min, price_max, in_stock_only, supplier_rating_min, brands, delivery_speed, supplier_distance_max, deals_only, tags, customer_type_availability, limit = 50, offset = 0, sort_by = 'created_at', sort_order = 'desc' } = req.query;
+    const { search_query, category, supplier_id, brand, status, is_featured, price_min, price_max, in_stock_only, supplier_rating_min, brands, delivery_speed, supplier_distance_max, deals_only, tags, customer_type_availability, sort_by = 'created_at', sort_order = 'desc' } = req.query;
+    
+    // Coerce query params to prevent 400 errors
+    const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
+    const offset = parseInt(req.query.offset as string) || 0;
 
     let query = `
       SELECT 
@@ -1053,7 +1057,10 @@ app.get('/api/categories/:category_id', async (req, res) => {
 
 app.get('/api/categories/:category_id/products', async (req, res) => {
   try {
-    const { limit = 50, offset = 0 } = req.query;
+    // Coerce query params
+    const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
+    const offset = parseInt(req.query.offset as string) || 0;
+    
     const result = await pool.query(
       `SELECT p.*, s.business_name, s.rating_average
        FROM products p
@@ -1061,7 +1068,7 @@ app.get('/api/categories/:category_id/products', async (req, res) => {
        WHERE p.category_id = $1 AND p.status = 'active' AND p.searchable = true
        ORDER BY p.creation_date DESC
        LIMIT $2 OFFSET $3`,
-      [req.params.category_id, parseInt(limit), parseInt(offset)]
+      [req.params.category_id, limit, offset]
     );
 
     const countResult = await pool.query(
@@ -1080,7 +1087,11 @@ app.get('/api/categories/:category_id/products', async (req, res) => {
 
 app.get('/api/suppliers', async (req, res) => {
   try {
-    const { query, business_type, verification_status, status, subscription_plan, min_rating, service_area, limit = 50, offset = 0, sort_by = 'rating_average', sort_order = 'desc' } = req.query;
+    const { query, business_type, verification_status, status, subscription_plan, min_rating, service_area, sort_by = 'rating_average', sort_order = 'desc' } = req.query;
+    
+    // Coerce query params
+    const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
+    const offset = parseInt(req.query.offset as string) || 0;
 
     let sqlQuery = 'SELECT * FROM suppliers WHERE 1=1';
     const params = [];
@@ -1821,7 +1832,11 @@ app.post('/api/projects/:project_id/load-to-cart', authenticateToken, requireCus
 
 app.get('/api/orders', authenticateToken, requireCustomer, async (req, res) => {
   try {
-    const { status_filter, date_range, supplier_id, sort_by = 'order_date', sort_order = 'desc', limit = 50, offset = 0 } = req.query;
+    const { status_filter, date_range, supplier_id, sort_by = 'order_date', sort_order = 'desc' } = req.query;
+    
+    // Coerce query params
+    const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
+    const offset = parseInt(req.query.offset as string) || 0;
 
     let query = 'SELECT * FROM orders WHERE customer_id = $1';
     const params = [req.user.customer_id];
@@ -2272,7 +2287,11 @@ app.post('/api/deliveries/:delivery_id/reschedule', authenticateToken, requireCu
 
 app.get('/api/reviews', async (req, res) => {
   try {
-    const { product_id, supplier_id, customer_id, min_rating, status = 'published', verified_purchase, limit = 50, offset = 0, sort_by = 'review_date', sort_order = 'desc' } = req.query;
+    const { product_id, supplier_id, customer_id, min_rating, status = 'published', verified_purchase, sort_by = 'review_date', sort_order = 'desc' } = req.query;
+    
+    // Coerce query params
+    const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
+    const offset = parseInt(req.query.offset as string) || 0;
 
     let query = 'SELECT * FROM reviews WHERE 1=1';
     const params = [];
@@ -2520,7 +2539,11 @@ app.post('/api/reviews/:review_id/response', authenticateToken, requireSupplier,
 
 app.get('/api/notifications', authenticateToken, async (req, res) => {
   try {
-    const { notification_type, is_read, limit = 50, offset = 0 } = req.query;
+    const { notification_type, is_read } = req.query;
+    
+    // Coerce query params
+    const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
+    const offset = parseInt(req.query.offset as string) || 0;
 
     let query = 'SELECT * FROM notifications WHERE user_id = $1';
     const params = [req.user.user_id];
@@ -2913,7 +2936,11 @@ app.post('/api/chat/conversations/:conversation_id/messages', authenticateToken,
 
 app.get('/api/surplus', async (req, res) => {
   try {
-    const { query, category_id, condition, price_min, price_max, shipping_available, status = 'active', limit = 50, offset = 0, sort_by = 'created_date', sort_order = 'desc' } = req.query;
+    const { query, category_id, condition, price_min, price_max, shipping_available, status = 'active', sort_by = 'created_date', sort_order = 'desc' } = req.query;
+    
+    // Coerce query params
+    const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
+    const offset = parseInt(req.query.offset as string) || 0;
 
     let sqlQuery = 'SELECT * FROM surplus_listings WHERE 1=1';
     const params = [];

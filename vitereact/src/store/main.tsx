@@ -7,7 +7,6 @@ import { io, Socket } from 'socket.io-client';
 // TYPE DEFINITIONS
 // ============================================================================
 
-// User Types from backend schemas
 interface User {
   user_id: string;
   email: string;
@@ -61,7 +60,6 @@ interface Admin {
   permissions: Record<string, any>;
 }
 
-// Cart Types
 interface CartItem {
   cart_item_id: string;
   cart_id: string;
@@ -73,9 +71,10 @@ interface CartItem {
   product_name?: string;
   primary_image_url?: string;
   supplier_name?: string;
+  stock_quantity?: number;
+  product_status?: string;
 }
 
-// Notification Types
 interface Notification {
   notification_id: string;
   user_id: string;
@@ -90,7 +89,6 @@ interface Notification {
   read_at: string | null;
 }
 
-// State Interfaces
 interface AuthenticationState {
   current_user: User | null;
   auth_token: string | null;
@@ -140,12 +138,7 @@ interface UIState {
   loading_states: Record<string, boolean>;
 }
 
-// ============================================================================
-// STORE INTERFACE
-// ============================================================================
-
 interface AppStore {
-  // State
   authentication_state: AuthenticationState;
   cart_state: CartState;
   notification_state: NotificationState;
@@ -154,7 +147,6 @@ interface AppStore {
   ui_state: UIState;
   websocket_connection: Socket | null;
 
-  // Authentication Actions
   login_user: (email: string, password: string) => Promise<void>;
   logout_user: () => Promise<void>;
   register_customer: (data: any) => Promise<void>;
@@ -162,55 +154,716 @@ interface AppStore {
   initialize_auth: () => Promise<void>;
   clear_auth_error: () => void;
 
-  // Cart Actions
   fetch_cart: () => Promise<void>;
   add_to_cart: (product_id: string, quantity: number) => Promise<void>;
   update_cart_item: (cart_item_id: string, quantity: number) => Promise<void>;
   remove_from_cart: (cart_item_id: string) => Promise<void>;
   clear_cart: () => Promise<void>;
 
-  // Notification Actions
   fetch_notifications: () => Promise<void>;
   mark_notification_read: (notification_id: string) => Promise<void>;
   mark_all_notifications_read: () => Promise<void>;
 
-  // Search Actions
   set_search_query: (query: string) => void;
   add_to_recent_searches: (query: string) => void;
   add_to_comparison: (product_id: string) => void;
   remove_from_comparison: (product_id: string) => void;
   clear_comparison: () => void;
 
-  // UI Actions
   toggle_sidebar: () => void;
   open_modal: (modal_name: string) => void;
   close_modal: () => void;
   set_loading_state: (key: string, value: boolean) => void;
 
-  // WebSocket Actions
   connect_websocket: () => void;
   disconnect_websocket: () => void;
-  subscribe_to_channel: (channel: string, handler: (data: any) => void) => void;
-  unsubscribe_from_channel: (channel: string) => void;
 }
 
 // ============================================================================
-// IMPLEMENTATION
+// API BASE URL
 // ============================================================================
 
-The store implementation will:
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 
-1. **Use Zustand's create() with persist middleware** for auth and cart state
-2. **Initialize WebSocket connection** when user authenticates
-3. **Handle JWT token in axios headers** for authenticated requests
-4. **Subscribe to real-time events** based on user type and active sessions
-5. **Provide clean state getters/setters** for all global variables
-6. **Persist critical data** (auth, cart, searches) to localStorage
-7. **Auto-reconnect WebSocket** on connection loss
-8. **Match exact backend field names** using snake_case throughout
+// ============================================================================
+// AXIOS SETUP
+// ============================================================================
 
-The store will NOT:
-- Make view-specific API calls (those are handled by components)
-- Include business logic beyond state management
-- Persist temporary UI states like loading indicators
-- Include hard-coded API URLs (will use VITE_API_BASE_URL env variable)
+axios.defaults.baseURL = API_BASE_URL;
+
+// ============================================================================
+// STORE IMPLEMENTATION
+// ============================================================================
+
+export const useAppStore = create<AppStore>()(
+  persist(
+    (set, get) => ({
+      // ============================================================================
+      // INITIAL STATE
+      // ============================================================================
+
+      authentication_state: {
+        current_user: null,
+        auth_token: null,
+        authentication_status: {
+          is_authenticated: false,
+          is_loading: false,
+          user_type: null,
+        },
+        error_message: null,
+        customer_profile: null,
+        supplier_profile: null,
+        admin_profile: null,
+      },
+
+      cart_state: {
+        items: [],
+        total_items: 0,
+        subtotal: 0,
+        is_loading: false,
+        last_updated: null,
+      },
+
+      notification_state: {
+        unread_count: 0,
+        notifications: [],
+        is_loading: false,
+      },
+
+      search_state: {
+        current_query: null,
+        recent_searches: [],
+        active_filters: {},
+        comparison_products: [],
+        is_loading: false,
+      },
+
+      chat_state: {
+        active_session_id: null,
+        is_open: false,
+        unread_messages: 0,
+        is_connected: false,
+      },
+
+      ui_state: {
+        sidebar_collapsed: false,
+        active_modal: null,
+        loading_states: {},
+      },
+
+      websocket_connection: null,
+
+      // ============================================================================
+      // AUTHENTICATION ACTIONS
+      // ============================================================================
+
+      login_user: async (email: string, password: string) => {
+        set({
+          authentication_state: {
+            ...get().authentication_state,
+            authentication_status: {
+              ...get().authentication_state.authentication_status,
+              is_loading: true,
+            },
+            error_message: null,
+          },
+        });
+
+        try {
+          const response = await axios.post('/api/auth/login', { email, password });
+          const { token, user, customer, supplier, admin } = response.data;
+
+          // Set token in axios defaults
+          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+          set({
+            authentication_state: {
+              current_user: user,
+              auth_token: token,
+              authentication_status: {
+                is_authenticated: true,
+                is_loading: false,
+                user_type: user.user_type,
+              },
+              error_message: null,
+              customer_profile: customer || null,
+              supplier_profile: supplier || null,
+              admin_profile: admin || null,
+            },
+          });
+
+          // Initialize websocket and fetch data
+          get().connect_websocket();
+          if (user.user_type === 'customer') {
+            get().fetch_cart();
+          }
+          get().fetch_notifications();
+        } catch (error: any) {
+          set({
+            authentication_state: {
+              ...get().authentication_state,
+              authentication_status: {
+                is_authenticated: false,
+                is_loading: false,
+                user_type: null,
+              },
+              error_message: error.response?.data?.message || 'Login failed',
+            },
+          });
+          throw error;
+        }
+      },
+
+      logout_user: async () => {
+        const token = get().authentication_state.auth_token;
+        
+        try {
+          if (token) {
+            await axios.post('/api/auth/logout');
+          }
+        } catch (error) {
+          console.error('Logout error:', error);
+        } finally {
+          // Clear axios auth header
+          delete axios.defaults.headers.common['Authorization'];
+          
+          // Disconnect websocket
+          get().disconnect_websocket();
+
+          // Reset all state
+          set({
+            authentication_state: {
+              current_user: null,
+              auth_token: null,
+              authentication_status: {
+                is_authenticated: false,
+                is_loading: false,
+                user_type: null,
+              },
+              error_message: null,
+              customer_profile: null,
+              supplier_profile: null,
+              admin_profile: null,
+            },
+            cart_state: {
+              items: [],
+              total_items: 0,
+              subtotal: 0,
+              is_loading: false,
+              last_updated: null,
+            },
+            notification_state: {
+              unread_count: 0,
+              notifications: [],
+              is_loading: false,
+            },
+          });
+        }
+      },
+
+      register_customer: async (data: any) => {
+        set({
+          authentication_state: {
+            ...get().authentication_state,
+            authentication_status: {
+              ...get().authentication_state.authentication_status,
+              is_loading: true,
+            },
+            error_message: null,
+          },
+        });
+
+        try {
+          const response = await axios.post('/api/auth/register/customer', data);
+          const { token, user, customer } = response.data;
+
+          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+          set({
+            authentication_state: {
+              current_user: user,
+              auth_token: token,
+              authentication_status: {
+                is_authenticated: true,
+                is_loading: false,
+                user_type: 'customer',
+              },
+              error_message: null,
+              customer_profile: customer,
+              supplier_profile: null,
+              admin_profile: null,
+            },
+          });
+
+          get().connect_websocket();
+          get().fetch_cart();
+        } catch (error: any) {
+          set({
+            authentication_state: {
+              ...get().authentication_state,
+              authentication_status: {
+                is_authenticated: false,
+                is_loading: false,
+                user_type: null,
+              },
+              error_message: error.response?.data?.message || 'Registration failed',
+            },
+          });
+          throw error;
+        }
+      },
+
+      register_supplier: async (data: any) => {
+        set({
+          authentication_state: {
+            ...get().authentication_state,
+            authentication_status: {
+              ...get().authentication_state.authentication_status,
+              is_loading: true,
+            },
+            error_message: null,
+          },
+        });
+
+        try {
+          await axios.post('/api/auth/register/supplier', data);
+          
+          set({
+            authentication_state: {
+              ...get().authentication_state,
+              authentication_status: {
+                is_authenticated: false,
+                is_loading: false,
+                user_type: null,
+              },
+              error_message: null,
+            },
+          });
+        } catch (error: any) {
+          set({
+            authentication_state: {
+              ...get().authentication_state,
+              authentication_status: {
+                is_authenticated: false,
+                is_loading: false,
+                user_type: null,
+              },
+              error_message: error.response?.data?.message || 'Registration failed',
+            },
+          });
+          throw error;
+        }
+      },
+
+      initialize_auth: async () => {
+        const token = get().authentication_state.auth_token;
+        
+        if (!token) {
+          set({
+            authentication_state: {
+              ...get().authentication_state,
+              authentication_status: {
+                is_authenticated: false,
+                is_loading: false,
+                user_type: null,
+              },
+            },
+          });
+          return;
+        }
+
+        set({
+          authentication_state: {
+            ...get().authentication_state,
+            authentication_status: {
+              ...get().authentication_state.authentication_status,
+              is_loading: true,
+            },
+          },
+        });
+
+        try {
+          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+          const response = await axios.get('/api/users/me');
+          
+          set({
+            authentication_state: {
+              ...get().authentication_state,
+              current_user: response.data,
+              authentication_status: {
+                is_authenticated: true,
+                is_loading: false,
+                user_type: response.data.user_type,
+              },
+            },
+          });
+
+          get().connect_websocket();
+          if (response.data.user_type === 'customer') {
+            get().fetch_cart();
+          }
+          get().fetch_notifications();
+        } catch (error) {
+          delete axios.defaults.headers.common['Authorization'];
+          set({
+            authentication_state: {
+              current_user: null,
+              auth_token: null,
+              authentication_status: {
+                is_authenticated: false,
+                is_loading: false,
+                user_type: null,
+              },
+              error_message: null,
+              customer_profile: null,
+              supplier_profile: null,
+              admin_profile: null,
+            },
+          });
+        }
+      },
+
+      clear_auth_error: () => {
+        set({
+          authentication_state: {
+            ...get().authentication_state,
+            error_message: null,
+          },
+        });
+      },
+
+      // ============================================================================
+      // CART ACTIONS
+      // ============================================================================
+
+      fetch_cart: async () => {
+        const { is_authenticated, user_type } = get().authentication_state.authentication_status;
+        
+        if (!is_authenticated || user_type !== 'customer') {
+          return;
+        }
+
+        set({
+          cart_state: {
+            ...get().cart_state,
+            is_loading: true,
+          },
+        });
+
+        try {
+          const response = await axios.get('/api/cart');
+          const { items = [], subtotal = 0 } = response.data;
+
+          set({
+            cart_state: {
+              items,
+              total_items: items.reduce((sum: number, item: CartItem) => sum + item.quantity, 0),
+              subtotal,
+              is_loading: false,
+              last_updated: new Date().toISOString(),
+            },
+          });
+        } catch (error) {
+          console.error('Fetch cart error:', error);
+          set({
+            cart_state: {
+              ...get().cart_state,
+              is_loading: false,
+            },
+          });
+        }
+      },
+
+      add_to_cart: async (product_id: string, quantity: number) => {
+        try {
+          await axios.post('/api/cart/items', { product_id, quantity });
+          await get().fetch_cart();
+        } catch (error) {
+          console.error('Add to cart error:', error);
+          throw error;
+        }
+      },
+
+      update_cart_item: async (cart_item_id: string, quantity: number) => {
+        try {
+          await axios.patch(`/api/cart/items/${cart_item_id}`, { quantity });
+          await get().fetch_cart();
+        } catch (error) {
+          console.error('Update cart item error:', error);
+          throw error;
+        }
+      },
+
+      remove_from_cart: async (cart_item_id: string) => {
+        try {
+          await axios.delete(`/api/cart/items/${cart_item_id}`);
+          await get().fetch_cart();
+        } catch (error) {
+          console.error('Remove from cart error:', error);
+          throw error;
+        }
+      },
+
+      clear_cart: async () => {
+        try {
+          await axios.delete('/api/cart');
+          set({
+            cart_state: {
+              items: [],
+              total_items: 0,
+              subtotal: 0,
+              is_loading: false,
+              last_updated: new Date().toISOString(),
+            },
+          });
+        } catch (error) {
+          console.error('Clear cart error:', error);
+          throw error;
+        }
+      },
+
+      // ============================================================================
+      // NOTIFICATION ACTIONS
+      // ============================================================================
+
+      fetch_notifications: async () => {
+        const { is_authenticated } = get().authentication_state.authentication_status;
+        
+        if (!is_authenticated) {
+          return;
+        }
+
+        set({
+          notification_state: {
+            ...get().notification_state,
+            is_loading: true,
+          },
+        });
+
+        try {
+          const response = await axios.get('/api/notifications', {
+            params: { limit: 20, offset: 0 },
+          });
+          const { notifications = [], unread_count = 0 } = response.data;
+
+          set({
+            notification_state: {
+              notifications,
+              unread_count,
+              is_loading: false,
+            },
+          });
+        } catch (error) {
+          console.error('Fetch notifications error:', error);
+          set({
+            notification_state: {
+              ...get().notification_state,
+              is_loading: false,
+            },
+          });
+        }
+      },
+
+      mark_notification_read: async (notification_id: string) => {
+        try {
+          await axios.patch(`/api/notifications/${notification_id}/read`);
+          await get().fetch_notifications();
+        } catch (error) {
+          console.error('Mark notification read error:', error);
+        }
+      },
+
+      mark_all_notifications_read: async () => {
+        try {
+          await axios.post('/api/notifications/read-all');
+          await get().fetch_notifications();
+        } catch (error) {
+          console.error('Mark all notifications read error:', error);
+        }
+      },
+
+      // ============================================================================
+      // SEARCH ACTIONS
+      // ============================================================================
+
+      set_search_query: (query: string) => {
+        set({
+          search_state: {
+            ...get().search_state,
+            current_query: query,
+          },
+        });
+      },
+
+      add_to_recent_searches: (query: string) => {
+        const recent = get().search_state.recent_searches;
+        const updated = [query, ...recent.filter(q => q !== query)].slice(0, 10);
+        
+        set({
+          search_state: {
+            ...get().search_state,
+            recent_searches: updated,
+          },
+        });
+      },
+
+      add_to_comparison: (product_id: string) => {
+        const current = get().search_state.comparison_products;
+        if (current.length >= 5) return;
+        if (current.includes(product_id)) return;
+
+        set({
+          search_state: {
+            ...get().search_state,
+            comparison_products: [...current, product_id],
+          },
+        });
+      },
+
+      remove_from_comparison: (product_id: string) => {
+        set({
+          search_state: {
+            ...get().search_state,
+            comparison_products: get().search_state.comparison_products.filter(id => id !== product_id),
+          },
+        });
+      },
+
+      clear_comparison: () => {
+        set({
+          search_state: {
+            ...get().search_state,
+            comparison_products: [],
+          },
+        });
+      },
+
+      // ============================================================================
+      // UI ACTIONS
+      // ============================================================================
+
+      toggle_sidebar: () => {
+        set({
+          ui_state: {
+            ...get().ui_state,
+            sidebar_collapsed: !get().ui_state.sidebar_collapsed,
+          },
+        });
+      },
+
+      open_modal: (modal_name: string) => {
+        set({
+          ui_state: {
+            ...get().ui_state,
+            active_modal: modal_name,
+          },
+        });
+      },
+
+      close_modal: () => {
+        set({
+          ui_state: {
+            ...get().ui_state,
+            active_modal: null,
+          },
+        });
+      },
+
+      set_loading_state: (key: string, value: boolean) => {
+        set({
+          ui_state: {
+            ...get().ui_state,
+            loading_states: {
+              ...get().ui_state.loading_states,
+              [key]: value,
+            },
+          },
+        });
+      },
+
+      // ============================================================================
+      // WEBSOCKET ACTIONS
+      // ============================================================================
+
+      connect_websocket: () => {
+        const token = get().authentication_state.auth_token;
+        if (!token || get().websocket_connection) return;
+
+        const socket = io(API_BASE_URL, {
+          auth: { token },
+          transports: ['websocket', 'polling'],
+        });
+
+        socket.on('connect', () => {
+          set({
+            chat_state: {
+              ...get().chat_state,
+              is_connected: true,
+            },
+          });
+        });
+
+        socket.on('disconnect', () => {
+          set({
+            chat_state: {
+              ...get().chat_state,
+              is_connected: false,
+            },
+          });
+        });
+
+        // Listen for real-time events
+        socket.on('order_status_changed', () => {
+          // Trigger re-fetch in components
+        });
+
+        socket.on('inventory_update', () => {
+          // Trigger re-fetch in components
+        });
+
+        socket.on('chat_message_received', () => {
+          set({
+            chat_state: {
+              ...get().chat_state,
+              unread_messages: get().chat_state.unread_messages + 1,
+            },
+          });
+        });
+
+        set({ websocket_connection: socket });
+      },
+
+      disconnect_websocket: () => {
+        const socket = get().websocket_connection;
+        if (socket) {
+          socket.disconnect();
+          set({
+            websocket_connection: null,
+            chat_state: {
+              active_session_id: null,
+              is_open: false,
+              unread_messages: 0,
+              is_connected: false,
+            },
+          });
+        }
+      },
+    }),
+    {
+      name: 'app-storage',
+      partialize: (state) => ({
+        authentication_state: {
+          ...state.authentication_state,
+          authentication_status: {
+            ...state.authentication_state.authentication_status,
+            is_loading: false,
+          },
+        },
+        search_state: {
+          ...state.search_state,
+          is_loading: false,
+        },
+      }),
+    }
+  )
+);
