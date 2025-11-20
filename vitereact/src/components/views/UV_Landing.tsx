@@ -499,14 +499,14 @@ const UV_Landing: React.FC = () => {
                           <Star
                             key={i}
                             className={`w-4 h-4 ${
-                              i < Math.floor(Number(supplier.rating_average))
+                              i < Math.floor(Number(product.rating_average))
                                 ? 'text-yellow-400 fill-current'
                                 : 'text-gray-300'
                             }`}
                           />
                         ))}
                         <span className="ml-2 text-sm font-medium text-gray-700">
-                          {Number(supplier.rating_average).toFixed(1)}
+                          {Number(product.rating_average).toFixed(1)}
                         </span>
                       </div>
                       )}
