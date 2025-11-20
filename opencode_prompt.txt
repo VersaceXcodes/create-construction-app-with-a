@@ -1,19 +1,32 @@
-VALIDATION FAILURE - Frontend TypeScript Compilation (Attempt 19/100)
+VALIDATION FAILURE - Build Project (Attempt 1/100)
 
-The project validation failed at the "Frontend TypeScript Compilation" step. You need to analyze the error and fix it.
+The project validation failed at the "Build Project" step. You need to analyze the error and fix it.
 
 ## Error Details:
-bash: line 1: cd: /app/vitereact: No such file or directory
+You are using Node.js 18.20.8. Vite requires Node.js version 20.19+ or 22.12+. Please upgrade your Node.js version.
+✗ Build failed in 134ms
+error during build:
+[vite:asset] Could not load /vite.svg (imported by src/App.tsx): crypto.hash is not a function
+    at getHash (file:///app/vitereact/node_modules/vite/dist/node/chunks/config.js:2680:21)
+    at publicFileToBuiltUrl (file:///app/vitereact/node_modules/vite/dist/node/chunks/config.js:8982:17)
+    at fileToBuiltUrl (file:///app/vitereact/node_modules/vite/dist/node/chunks/config.js:9006:15)
+    at fileToUrl$1 (file:///app/vitereact/node_modules/vite/dist/node/chunks/config.js:8953:14)
+    at Object.handler (file:///app/vitereact/node_modules/vite/dist/node/chunks/config.js:8906:23)
+    at Object.handler (file:///app/vitereact/node_modules/vite/dist/node/chunks/config.js:34366:13)
+    at file:///app/vitereact/node_modules/rollup/dist/es/shared/node-entry.js:22451:40
+    at async PluginDriver.hookFirstAndGetPlugin (file:///app/vitereact/node_modules/rollup/dist/es/shared/node-entry.js:22333:28)
+    at async file:///app/vitereact/node_modules/rollup/dist/es/shared/node-entry.js:21333:33
+    at async Queue.work (file:///app/vitereact/node_modules/rollup/dist/es/shared/node-entry.js:22561:32)
 
 
 ## Validation Context:
-- Step: Frontend TypeScript Compilation
+- Step: Build Project
 - Working Directory: /app/vitereact
-- Attempt: 19/100
-- Previous failures for this step: 2
+- Attempt: 1/100
+- Previous failures for this step: 1
 
 ## Project Memory Summary:
-- Total validation attempts: 20
+- Total validation attempts: 16
 - Common issues encountered: None
 - Known dependencies: @hookform/resolvers, @radix-ui/react-accordion, @radix-ui/react-alert-dialog, @radix-ui/react-aspect-ratio, @radix-ui/react-avatar, @radix-ui/react-checkbox, @radix-ui/react-collapsible, @radix-ui/react-context-menu, @radix-ui/react-dialog, @radix-ui/react-dropdown-menu
 - Missing dependencies: None
@@ -58,12 +71,11 @@ PROTECTED DIRECTORIES (DO NOT MODIFY):
 
 
 
-## Previous Validation Failures for Frontend TypeScript Compilation:
-- 8:29:13 PM: 
-- 8:34:00 PM: 
+## Previous Validation Failures for Build Project:
+- 8:37:06 PM: 
 
 ## Your Task:
-1. **Analyze the Error**: Understand what specifically went wrong in the Frontend TypeScript Compilation step
+1. **Analyze the Error**: Understand what specifically went wrong in the Build Project step
 2. **Check Previous Attempts**: Consider if this is a recurring issue based on validation history
 3. **Locate the Problem**: Identify which files need to be modified
 4. **Apply Fixes**: Use the available tools to fix the specific issues
