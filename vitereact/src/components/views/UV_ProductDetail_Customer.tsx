@@ -300,7 +300,7 @@ const UV_ProductDetail_Customer: React.FC = () => {
   });
 
   // Submit review mutation
-  // const submitReviewMutation = useMutation({
+  const submitReviewMutation = useMutation({
     mutationFn: async (reviewData: any) => {
       const response = await axios.post(
         `${API_BASE_URL}/reviews`,

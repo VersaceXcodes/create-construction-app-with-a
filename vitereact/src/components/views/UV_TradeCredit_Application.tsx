@@ -99,7 +99,7 @@ const uploadDocument = async (
   };
 };
 
-  // const validateApplication = async (
+const validateApplication = async (
   applicationData: ApplicationFormData,
   authToken: string
 ): Promise<{ is_valid: boolean; errors: Record<string, string>; estimated_timeline: string }> => {
