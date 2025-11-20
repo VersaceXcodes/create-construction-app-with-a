@@ -930,8 +930,8 @@ app.get('/api/products', async (req, res) => {
     query += ` ORDER BY ${orderBy} ${sort_order === 'asc' ? 'ASC' : 'DESC'}`;
 
     query += ` LIMIT $${paramCount} OFFSET $${paramCount + 1}`;
-    params.push(parseInt(limit));
-    params.push(parseInt(offset));
+    params.push(limit);
+    params.push(offset);
 
     const result = await pool.query(query, params);
 
@@ -941,8 +941,8 @@ app.get('/api/products', async (req, res) => {
     res.json({
       products: result.rows,
       total: parseInt(countResult.rows[0].total),
-      limit: parseInt(limit),
-      offset: parseInt(offset)
+      limit: asNumber(limit, 50),
+      offset: asNumber(offset, 0)
     });
   } catch (error) {
     res.status(500).json({ error: 'InternalServerError', message: error.message });
@@ -1032,7 +1032,7 @@ app.patch('/api/products/:product_id', authenticateToken, requireSupplier, async
   }
 });
 
-app.post('/api/products/:product_id/view', async (req, res) => {
+app.post('/api/products/:product_id/view', async (req: AuthRequest, res: Response) => {
   try {
     const view_id = uuidv4();
     const now = new Date().toISOString();
@@ -1214,8 +1214,8 @@ app.get('/api/suppliers', async (req, res) => {
     const orderBy = orderByMap[sort_by] || 'rating_average';
     sqlQuery += ` ORDER BY ${orderBy} ${sort_order === 'asc' ? 'ASC' : 'DESC'}`;
     sqlQuery += ` LIMIT $${paramCount} OFFSET $${paramCount + 1}`;
-    params.push(parseInt(limit));
-    params.push(parseInt(offset));
+    params.push(limit);
+    params.push(offset);
 
     const result = await pool.query(sqlQuery, params);
 
@@ -1299,19 +1299,19 @@ app.get('/api/suppliers/:supplier_id/products', async (req, res) => {
 
     if (status) {
       query += ` AND status = $${paramCount}`;
-      params.push(status);
+      params.push(asString(status));
       paramCount++;
     }
 
     if (category) {
       query += ` AND category_id = $${paramCount}`;
-      params.push(category);
+      params.push(asString(category));
       paramCount++;
     }
 
     query += ` ORDER BY creation_date DESC LIMIT $${paramCount} OFFSET $${paramCount + 1}`;
-    params.push(parseInt(limit));
-    params.push(parseInt(offset));
+    params.push(limit);
+    params.push(offset);
 
     const result = await pool.query(query, params);
 
@@ -1336,13 +1336,13 @@ app.get('/api/suppliers/me/products', authenticateToken, requireSupplier, async 
 
     if (status_filter) {
       query += ` AND status = $${paramCount}`;
-      params.push(status_filter);
+      params.push(asString(status_filter));
       paramCount++;
     }
 
     if (category_filter) {
       query += ` AND category_id = $${paramCount}`;
-      params.push(category_filter);
+      params.push(asString(category_filter));
       paramCount++;
     }
 
@@ -1352,16 +1352,17 @@ app.get('/api/suppliers/me/products', authenticateToken, requireSupplier, async 
       paramCount++;
     }
 
-    const orderByMap = {
+    const orderByMap: Record<string, string> = {
       date_added: 'creation_date',
       sales: 'sales_count',
       views: 'views_count',
       name: 'product_name'
     };
-
-    query += ` ORDER BY ${orderByMap[sort_by] || 'creation_date'} DESC LIMIT $${paramCount} OFFSET $${paramCount + 1}`;
-    params.push(parseInt(limit));
-    params.push(parseInt(offset));
+    
+    const sortByStr = asString(sort_by) || 'date_added';
+    query += ` ORDER BY ${orderByMap[sortByStr] || 'creation_date'} DESC LIMIT $${paramCount} OFFSET $${paramCount + 1}`;
+    params.push(limit);
+    params.push(offset);
 
     const result = await pool.query(query, params);
 
@@ -1921,8 +1922,8 @@ app.get('/api/orders', authenticateToken, requireCustomer, async (req: AuthReque
 
     query += ` ORDER BY ${sort_by === 'total_amount' ? 'total_amount' : 'order_date'} ${sort_order === 'asc' ? 'ASC' : 'DESC'}`;
     query += ` LIMIT $${paramCount} OFFSET $${paramCount + 1}`;
-    params.push(parseInt(limit));
-    params.push(parseInt(offset));
+    params.push(limit);
+    params.push(offset);
 
     const result = await pool.query(query, params);
 
@@ -2388,7 +2389,7 @@ app.get('/api/reviews', async (req, res) => {
 
     if (min_rating) {
       query += ` AND rating_overall >= $${paramCount}`;
-      params.push(parseInt(min_rating));
+      params.push(asNumber(min_rating));
       paramCount++;
     }
 
@@ -2404,16 +2405,17 @@ app.get('/api/reviews', async (req, res) => {
       paramCount++;
     }
 
-    const orderByMap = {
+    const orderByMap: Record<string, string> = {
       review_date: 'review_date',
       rating_overall: 'rating_overall',
       helpful_votes: 'helpful_votes'
     };
-
-    query += ` ORDER BY ${orderByMap[sort_by] || 'review_date'} ${sort_order === 'asc' ? 'ASC' : 'DESC'}`;
+    
+    const sortByStr = asString(sort_by) || 'review_date';
+    query += ` ORDER BY ${orderByMap[sortByStr] || 'review_date'} ${sort_order === 'asc' ? 'ASC' : 'DESC'}`;
     query += ` LIMIT $${paramCount} OFFSET $${paramCount + 1}`;
-    params.push(parseInt(limit));
-    params.push(parseInt(offset));
+    params.push(limit);
+    params.push(offset);
 
     const result = await pool.query(query, params);
 
@@ -2622,19 +2624,20 @@ app.get('/api/notifications', authenticateToken, async (req: AuthRequest, res: R
 
     if (notification_type) {
       query += ` AND notification_type = $${paramCount}`;
-      params.push(notification_type);
+      params.push(asString(notification_type));
       paramCount++;
     }
 
     if (is_read !== undefined) {
       query += ` AND is_read = $${paramCount}`;
-      params.push(is_read === 'true');
+      const isReadStr = asString(is_read);
+      params.push(isReadStr === 'true');
       paramCount++;
     }
 
     query += ` ORDER BY created_date DESC LIMIT $${paramCount} OFFSET $${paramCount + 1}`;
-    params.push(parseInt(limit));
-    params.push(parseInt(offset));
+    params.push(limit);
+    params.push(offset);
 
     const result = await pool.query(query, params);
 
@@ -2699,7 +2702,7 @@ app.get('/api/issues', authenticateToken, requireCustomer, async (req: AuthReque
 
     if (status) {
       query += ' AND status = $2';
-      params.push(status);
+      params.push(asString(status));
     }
 
     query += ' ORDER BY opened_date DESC';
@@ -2939,7 +2942,7 @@ app.get('/api/chat/conversations/:conversation_id/messages', authenticateToken, 
 
     const result = await pool.query(
       'SELECT * FROM chat_messages WHERE conversation_id = $1 ORDER BY timestamp DESC LIMIT $2 OFFSET $3',
-      [req.params.conversation_id, parseInt(limit), parseInt(offset)]
+      [req.params.conversation_id, limit, offset]
     );
 
     res.json(result.rows.reverse());
@@ -3037,13 +3040,15 @@ app.get('/api/surplus', async (req, res) => {
 
     if (price_min) {
       sqlQuery += ` AND asking_price >= $${paramCount}`;
-      params.push(parseFloat(price_min));
+      const priceMinStr = asString(price_min);
+      params.push(priceMinStr ? parseFloat(priceMinStr) : 0);
       paramCount++;
     }
 
     if (price_max) {
       sqlQuery += ` AND asking_price <= $${paramCount}`;
-      params.push(parseFloat(price_max));
+      const priceMaxStr = asString(price_max);
+      params.push(priceMaxStr ? parseFloat(priceMaxStr) : 0);
       paramCount++;
     }
 
@@ -3059,16 +3064,17 @@ app.get('/api/surplus', async (req, res) => {
       paramCount++;
     }
 
-    const orderByMap = {
+    const orderByMap: Record<string, string> = {
       created_date: 'created_date',
       asking_price: 'asking_price',
       views_count: 'views_count'
     };
-
-    sqlQuery += ` ORDER BY ${orderByMap[sort_by] || 'created_date'} ${sort_order === 'asc' ? 'ASC' : 'DESC'}`;
+    
+    const sortByStr = asString(sort_by) || 'created_date';
+    sqlQuery += ` ORDER BY ${orderByMap[sortByStr] || 'created_date'} ${sort_order === 'asc' ? 'ASC' : 'DESC'}`;
     sqlQuery += ` LIMIT $${paramCount} OFFSET $${paramCount + 1}`;
-    params.push(parseInt(limit));
-    params.push(parseInt(offset));
+    params.push(limit);
+    params.push(offset);
 
     const result = await pool.query(sqlQuery, params);
 
@@ -3173,7 +3179,7 @@ app.get('/api/surplus/my-listings', authenticateToken, requireCustomer, async (r
 
     if (status) {
       query += ' AND status = $2';
-      params.push(status);
+      params.push(asString(status));
     }
 
     query += ' ORDER BY created_date DESC';
@@ -3218,13 +3224,13 @@ app.get('/api/promotions', async (req, res) => {
 
     if (supplier_id) {
       query += ` AND supplier_id = $${paramCount}`;
-      params.push(supplier_id);
+      params.push(asString(supplier_id));
       paramCount++;
     }
 
     if (promotion_type) {
       query += ` AND promotion_type = $${paramCount}`;
-      params.push(promotion_type);
+      params.push(asString(promotion_type));
       paramCount++;
     }
 
@@ -3290,7 +3296,7 @@ app.get('/api/support/tickets', authenticateToken, async (req: AuthRequest, res:
 
     if (status) {
       query += ' AND status = $2';
-      params.push(status);
+      params.push(asString(status));
     }
 
     query += ' ORDER BY created_date DESC';
@@ -3373,38 +3379,42 @@ app.post('/api/support/tickets/:ticket_id/responses', authenticateToken, async (
 app.get('/api/admin/users', authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
   try {
     const { query, user_type, status, email_verified, limit = 50, offset = 0 } = req.query;
+    
+    const limitNum = asNumber(limit, 50);
+    const offsetNum = asNumber(offset, 0);
 
     let sqlQuery = 'SELECT user_id, email, user_type, first_name, last_name, phone_number, registration_date, last_login_date, status, email_verified, created_at FROM users WHERE 1=1';
-    const params = [];
+    const params: any[] = [];
     let paramCount = 1;
 
     if (query) {
       sqlQuery += ` AND (email ILIKE $${paramCount} OR first_name ILIKE $${paramCount} OR last_name ILIKE $${paramCount})`;
-      params.push(`%${query}%`);
+      params.push(`%${asString(query)}%`);
       paramCount++;
     }
 
     if (user_type) {
       sqlQuery += ` AND user_type = $${paramCount}`;
-      params.push(user_type);
+      params.push(asString(user_type));
       paramCount++;
     }
 
     if (status) {
       sqlQuery += ` AND status = $${paramCount}`;
-      params.push(status);
+      params.push(asString(status));
       paramCount++;
     }
 
     if (email_verified !== undefined) {
       sqlQuery += ` AND email_verified = $${paramCount}`;
-      params.push(email_verified === 'true');
+      const emailVerifiedStr = asString(email_verified);
+      params.push(emailVerifiedStr === 'true');
       paramCount++;
     }
 
     sqlQuery += ` ORDER BY created_at DESC LIMIT $${paramCount} OFFSET $${paramCount + 1}`;
-    params.push(parseInt(limit));
-    params.push(parseInt(offset));
+    params.push(limitNum);
+    params.push(offsetNum);
 
     const result = await pool.query(sqlQuery, params);
 
@@ -3615,20 +3625,23 @@ app.post('/api/admin/supplier-applications/:application_id/reject', authenticate
 app.get('/api/admin/orders', authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
   try {
     const { status_filter, value_range, issue_flag, limit = 50, offset = 0 } = req.query;
+    
+    const limitNum = asNumber(limit, 50);
+    const offsetNum = asNumber(offset, 0);
 
     let query = 'SELECT * FROM orders WHERE 1=1';
-    const params = [];
+    const params: any[] = [];
     let paramCount = 1;
 
     if (status_filter) {
       query += ` AND status = $${paramCount}`;
-      params.push(status_filter);
+      params.push(asString(status_filter));
       paramCount++;
     }
 
     query += ` ORDER BY order_date DESC LIMIT $${paramCount} OFFSET $${paramCount + 1}`;
-    params.push(parseInt(limit));
-    params.push(parseInt(offset));
+    params.push(limitNum);
+    params.push(offsetNum);
 
     const result = await pool.query(query, params);
 
@@ -3894,14 +3907,14 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-io.use((socket, next) => {
+io.use((socket: AuthSocket, next) => {
   const token = socket.handshake.auth.token;
   if (!token) {
     return next(new Error('Authentication required'));
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET) as UserData;
     socket.user = decoded;
     next();
   } catch (err) {
@@ -3909,10 +3922,10 @@ io.use((socket, next) => {
   }
 });
 
-io.on('connection', (socket) => {
-  console.log(`User connected: ${socket.user.user_id}`);
+io.on('connection', (socket: AuthSocket) => {
+  console.log(`User connected: ${socket.user?.user_id}`);
 
-  socket.join(`user:${socket.user.user_id}`);
+  socket.join(`user:${socket.user?.user_id}`);
 
   socket.on('subscribe_product', ({ product_id }) => {
     socket.join(`product:${product_id}`);
@@ -3942,11 +3955,11 @@ io.on('connection', (socket) => {
     try {
       const message_id = uuidv4();
       const now = new Date().toISOString();
-      const sender_type = socket.user.user_type;
+      const sender_type = socket.user?.user_type;
 
       await pool.query(
         'INSERT INTO chat_messages (message_id, conversation_id, sender_id, sender_type, message_text, attachments, is_read, timestamp, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
-        [message_id, conversation_id, socket.user.user_id, sender_type, message_text, JSON.stringify(attachments || []), false, now, now]
+        [message_id, conversation_id, socket.user?.user_id, sender_type, message_text, JSON.stringify(attachments || []), false, now, now]
       );
 
       await pool.query(
@@ -3972,7 +3985,7 @@ io.on('connection', (socket) => {
   socket.on('user_typing', ({ conversation_id }) => {
     socket.to(`conversation:${conversation_id}`).emit('user_typing', {
       conversation_id,
-      user_id: socket.user.user_id,
+      user_id: socket.user?.user_id,
       is_typing: true
     });
   });
@@ -3980,7 +3993,7 @@ io.on('connection', (socket) => {
   socket.on('user_stopped_typing', ({ conversation_id }) => {
     socket.to(`conversation:${conversation_id}`).emit('user_typing', {
       conversation_id,
-      user_id: socket.user.user_id,
+      user_id: socket.user?.user_id,
       is_typing: false
     });
   });
@@ -4010,7 +4023,7 @@ io.on('connection', (socket) => {
       const now = new Date().toISOString();
       await pool.query(
         'UPDATE notifications SET is_read = true, read_at = $1, updated_at = $2 WHERE notification_id = $3 AND user_id = $4',
-        [now, now, notification_id, socket.user.user_id]
+        [now, now, notification_id, socket.user?.user_id]
       );
     } catch (error) {
       console.error('Error marking notification as read:', error);
