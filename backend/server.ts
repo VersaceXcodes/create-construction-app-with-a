@@ -1310,8 +1310,8 @@ app.get('/api/suppliers/:supplier_id/products', async (req, res) => {
     }
 
     query += ` ORDER BY creation_date DESC LIMIT $${paramCount} OFFSET $${paramCount + 1}`;
-    params.push(limit);
-    params.push(offset);
+    params.push(String(limit));
+    params.push(String(offset));
 
     const result = await pool.query(query, params);
 
@@ -1361,8 +1361,8 @@ app.get('/api/suppliers/me/products', authenticateToken, requireSupplier, async 
     
     const sortByStr = asString(sort_by) || 'date_added';
     query += ` ORDER BY ${orderByMap[sortByStr] || 'creation_date'} DESC LIMIT $${paramCount} OFFSET $${paramCount + 1}`;
-    params.push(limit);
-    params.push(offset);
+    params.push(String(limit));
+    params.push(String(offset));
 
     const result = await pool.query(query, params);
 
@@ -1916,14 +1916,14 @@ app.get('/api/orders', authenticateToken, requireCustomer, async (req: AuthReque
 
     if (status_filter) {
       query += ` AND status = $${paramCount}`;
-      params.push(status_filter);
+      params.push(asString(status_filter));
       paramCount++;
     }
 
     query += ` ORDER BY ${sort_by === 'total_amount' ? 'total_amount' : 'order_date'} ${sort_order === 'asc' ? 'ASC' : 'DESC'}`;
     query += ` LIMIT $${paramCount} OFFSET $${paramCount + 1}`;
-    params.push(limit);
-    params.push(offset);
+    params.push(String(limit));
+    params.push(String(offset));
 
     const result = await pool.query(query, params);
 
@@ -2631,13 +2631,13 @@ app.get('/api/notifications', authenticateToken, async (req: AuthRequest, res: R
     if (is_read !== undefined) {
       query += ` AND is_read = $${paramCount}`;
       const isReadStr = asString(is_read);
-      params.push(isReadStr === 'true');
+      params.push(String(isReadStr === 'true'));
       paramCount++;
     }
 
     query += ` ORDER BY created_date DESC LIMIT $${paramCount} OFFSET $${paramCount + 1}`;
-    params.push(limit);
-    params.push(offset);
+    params.push(String(limit));
+    params.push(String(offset));
 
     const result = await pool.query(query, params);
 
@@ -4041,6 +4041,6 @@ app.get(/^(?!\/api).*/, (req, res) => {
 
 export { app, pool };
 
-httpServer.listen(PORT, '0.0.0.0', () => {
+httpServer.listen(Number(PORT), '0.0.0.0', () => {
   console.log(`Server running on port ${PORT} and listening on 0.0.0.0`);
 });
