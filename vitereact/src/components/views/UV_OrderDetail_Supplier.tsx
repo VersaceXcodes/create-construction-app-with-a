@@ -7,7 +7,7 @@ import {
   User, 
   Phone, 
   Mail, 
-  MapPin, 
+  
   Truck, 
   CheckCircle, 
   XCircle, 
@@ -298,7 +298,7 @@ const UV_OrderDetail_Supplier: React.FC = () => {
     updateStatusMutation.mutate('shipped');
   };
 
-  const handleUpdateTracking = () => {
+  // const handleUpdateTracking = () => {
     if (!trackingNumber) {
       alert('Please enter a tracking number');
       return;

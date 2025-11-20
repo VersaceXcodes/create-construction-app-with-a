@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
@@ -9,7 +9,7 @@ import {
   CheckCircle, 
   XCircle, 
   Flag, 
-  Search, 
+  
   Filter,
   ChevronLeft,
   ChevronRight,
@@ -160,7 +160,7 @@ const UV_AdminReviewModeration: React.FC = () => {
   
   // CRITICAL: Individual selectors from Zustand store
   const authToken = useAppStore(state => state.authentication_state.auth_token);
-  const currentUser = useAppStore(state => state.authentication_state.current_user);
+  // const currentUser = useAppStore(state => state.authentication_state.current_user);
   
   // ============================================================================
   // LOCAL STATE

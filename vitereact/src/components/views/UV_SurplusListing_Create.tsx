@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import axios from 'axios';
@@ -89,7 +89,7 @@ const UV_SurplusListing_Create: React.FC = () => {
   const navigate = useNavigate();
   
   // CRITICAL: Individual selectors
-  const customerId = useAppStore(state => state.authentication_state.current_user?.customer_id);
+  const customerId = useAppStore(state => state.authentication_state.customer_profile?.customer_id);
   const authToken = useAppStore(state => state.authentication_state.auth_token);
   
   // Local state

@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useAppStore } from '@/store/main';
-import { Heart, ShoppingCart, Share2, Star, ChevronLeft, ChevronRight, X, ZoomIn, MapPin, Clock, Award, ShieldCheck, MessageCircle, Package, Truck, AlertCircle, CheckCircle } from 'lucide-react';
+import { Heart, ShoppingCart, Star, ChevronLeft, ChevronRight, X, ZoomIn, Clock, ShieldCheck, Truck, AlertCircle, CheckCircle } from 'lucide-react';
 import { io, Socket } from 'socket.io-client';
 
 // ============================================================================
@@ -184,7 +184,7 @@ const UV_ProductDetail_Customer: React.FC = () => {
   
   // CRITICAL: Individual selectors to avoid infinite loops
   const authToken = useAppStore(state => state.authentication_state.auth_token);
-  const currentUser = useAppStore(state => state.authentication_state.current_user);
+  // const currentUser = useAppStore(state => state.authentication_state.current_user);
   const customerId = useAppStore(state => state.authentication_state.customer_profile?.customer_id);
   const fetchCart = useAppStore(state => state.fetch_cart);
   const cartItems = useAppStore(state => state.cart_state.items);
@@ -200,7 +200,7 @@ const UV_ProductDetail_Customer: React.FC = () => {
     verified_only: false,
   });
   const [reviewSortBy, setReviewSortBy] = useState('review_date');
-  const [showReviewForm, setShowReviewForm] = useState(false);
+  // const [showReviewForm, setShowReviewForm] = useState(false);
   const [reviewFormData, setReviewFormData] = useState({
     rating_overall: 0,
     rating_product: 0,
@@ -219,7 +219,7 @@ const UV_ProductDetail_Customer: React.FC = () => {
     last_updated: null,
     websocket_connected: false,
   });
-  const [wsSocket, setWsSocket] = useState<Socket | null>(null);
+  // const [wsSocket, setWsSocket] = useState<Socket | null>(null);
 
   // Fetch product data
   const { data: product, isLoading: productLoading, error: productError } = useQuery({
@@ -300,7 +300,7 @@ const UV_ProductDetail_Customer: React.FC = () => {
   });
 
   // Submit review mutation
-  const submitReviewMutation = useMutation({
+  // const submitReviewMutation = useMutation({
     mutationFn: async (reviewData: any) => {
       const response = await axios.post(
         `${API_BASE_URL}/reviews`,

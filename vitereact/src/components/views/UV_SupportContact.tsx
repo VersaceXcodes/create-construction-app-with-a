@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
@@ -93,7 +93,7 @@ const submitSupportTicket = async (
 // ============================================================================
 
 const UV_SupportContact: React.FC = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   
   // CRITICAL: Individual selectors to avoid infinite loops
   const currentUser = useAppStore(state => state.authentication_state.current_user);

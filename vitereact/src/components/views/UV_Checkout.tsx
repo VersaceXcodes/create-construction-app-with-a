@@ -435,7 +435,7 @@ const UV_Checkout: React.FC = () => {
       }
 
       // Build delivery windows array
-      const deliveryWindows = Object.entries(deliveryWindowsBySupplier).map(([supplier_id, window_id]) => {
+      const deliveryWindows = Object.entries(deliveryWindowsBySupplier).map(([supplier_id]) => {
         // Mock delivery window data (in real app, would come from API)
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
@@ -525,7 +525,7 @@ const UV_Checkout: React.FC = () => {
   }
 
   const selectedAddress = addresses.find((a: Address) => a.address_id === selectedAddressId);
-  const selectedPaymentMethod = paymentMethods.find((pm: PaymentMethod) => pm.payment_method_id === selectedPaymentMethodId);
+  // const selectedPaymentMethod = paymentMethods.find((pm: PaymentMethod) => pm.payment_method_id === selectedPaymentMethodId);
   const tradeCreditAvailable = customerProfile?.trade_credit_balance || 0;
 
   // ============================================================================
@@ -801,7 +801,7 @@ const UV_Checkout: React.FC = () => {
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
                         {/* Mock delivery windows */}
-                        {['morning', 'afternoon'].map((period, idx) => {
+                        {['morning', 'afternoon'].map((period) => {
                           const windowId = `${group.supplier_id}_${period}`;
                           const tomorrow = new Date();
                           tomorrow.setDate(tomorrow.getDate() + 1);

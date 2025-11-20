@@ -228,11 +228,11 @@ const UV_AdminFinancials: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const periodParam = searchParams.get('period') || 'current_month';
   const reportTypeParam = searchParams.get('report_type') || 'revenue_overview';
-  const supplierIdParam = searchParams.get('supplier_id') || null;
+  // const supplierIdParam = searchParams.get('supplier_id') || null;
 
   // Global state - CRITICAL: Individual selectors
   const authToken = useAppStore(state => state.authentication_state.auth_token);
-  const currentUser = useAppStore(state => state.authentication_state.current_user);
+  // const currentUser = useAppStore(state => state.authentication_state.current_user);
 
   // Local state
   const [activeTab, setActiveTab] = useState<'revenue' | 'commission' | 'payouts' | 'transactions' | 'reports'>(
@@ -418,7 +418,7 @@ const UV_AdminFinancials: React.FC = () => {
     });
   };
 
-  const formatDateTime = (dateString: string) => {
+  // const formatDateTime = (dateString: string) => {
     return new Date(dateString).toLocaleString('en-US', {
       month: 'short',
       day: 'numeric',

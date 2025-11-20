@@ -1,9 +1,9 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useAppStore } from '@/store/main';
-import { Package, TrendingUp, TrendingDown, AlertTriangle, ShoppingCart, Edit2, X, Save, Trash2, Plus, Scale } from 'lucide-react';
+import { Package, TrendingUp, TrendingDown, AlertTriangle, ShoppingCart, Edit2, X, Save, Plus, Scale } from 'lucide-react';
 
 // ============================================================================
 // TYPE DEFINITIONS
@@ -113,7 +113,6 @@ const UV_ProjectDetail: React.FC = () => {
   
   // CRITICAL: Individual selectors to avoid infinite loops
   const authToken = useAppStore(state => state.authentication_state.auth_token);
-  const currentUser = useAppStore(state => state.authentication_state.current_user);
   const fetchCart = useAppStore(state => state.fetch_cart);
   
   // Local UI State
@@ -281,7 +280,7 @@ const UV_ProjectDetail: React.FC = () => {
     
     updateProjectMutation.mutate({
       project_name: projectName,
-      description: projectDescription || null
+      description: projectDescription || undefined
     });
   };
   

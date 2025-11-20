@@ -102,7 +102,7 @@ const UV_ProductComparison: React.FC = () => {
   
   // Local state
   const [showDifferencesOnly, setShowDifferencesOnly] = useState(false);
-  const [viewMode, setViewMode] = useState<'table' | 'cards'>('table');
+  // const [viewMode, setViewMode] = useState<'table' | 'cards'>('table');
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [shareSuccess, setShareSuccess] = useState(false);
   

@@ -6,7 +6,7 @@ import { useAppStore } from '@/store/main';
 import { 
   AlertCircle, 
   CheckCircle, 
-  Clock, 
+  
   Package, 
   MessageCircle, 
   ArrowLeft, 
@@ -219,12 +219,12 @@ const formatRelativeTime = (dateString: string): string => {
 
 const UV_IssueDetail: React.FC = () => {
   const { issue_id } = useParams<{ issue_id: string }>();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const queryClient = useQueryClient();
   
   // CRITICAL: Individual Zustand selectors
   const authToken = useAppStore(state => state.authentication_state.auth_token);
-  const currentUser = useAppStore(state => state.authentication_state.current_user);
+  // const currentUser = useAppStore(state => state.authentication_state.current_user);
   
   // Local state for reply form
   const [message_text, setMessageText] = useState('');

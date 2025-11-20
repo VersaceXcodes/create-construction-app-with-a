@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useAppStore } from '@/store/main';
@@ -210,8 +210,8 @@ const UV_NotificationCenter: React.FC = () => {
 
   // CRITICAL: Individual selectors to prevent infinite loops
   const authToken = useAppStore(state => state.authentication_state.auth_token);
-  const currentUser = useAppStore(state => state.authentication_state.current_user);
-  const globalNotificationState = useAppStore(state => state.notification_state);
+  // const currentUser = useAppStore(state => state.authentication_state.current_user);
+  // const globalNotificationState = useAppStore(state => state.notification_state);
 
   // Local state
   const [selectedNotificationIds, setSelectedNotificationIds] = useState<string[]>([]);

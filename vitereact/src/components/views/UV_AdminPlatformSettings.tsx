@@ -157,7 +157,7 @@ const UV_AdminPlatformSettings: React.FC = () => {
   // HOOKS - ZUSTAND STATE (CRITICAL: Individual selectors)
   // ============================================================================
   const authToken = useAppStore(state => state.authentication_state.auth_token);
-  const currentUser = useAppStore(state => state.authentication_state.current_user);
+  // const currentUser = useAppStore(state => state.authentication_state.current_user);
   
   // ============================================================================
   // LOCAL STATE

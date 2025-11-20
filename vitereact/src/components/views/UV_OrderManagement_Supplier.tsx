@@ -205,15 +205,15 @@ const UV_OrderManagement_Supplier: React.FC = () => {
   // ============================================================================
   
   const authToken = useAppStore(state => state.authentication_state.auth_token);
-  const currentUser = useAppStore(state => state.authentication_state.current_user);
-  const supplierProfile = useAppStore(state => state.authentication_state.supplier_profile);
+  // const currentUser = useAppStore(state => state.authentication_state.current_user);
+  // const supplierProfile = useAppStore(state => state.authentication_state.supplier_profile);
 
   // ============================================================================
   // URL PARAMS & NAVIGATION
   // ============================================================================
   
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   // ============================================================================
   // LOCAL STATE

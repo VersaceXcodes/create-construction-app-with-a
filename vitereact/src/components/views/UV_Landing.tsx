@@ -6,7 +6,7 @@ import { useAppStore } from '@/store/main';
 import { 
   Search, 
   ShoppingCart, 
-  TrendingUp, 
+  
   Clock, 
   Shield, 
   CheckCircle,

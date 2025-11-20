@@ -115,7 +115,7 @@ const UV_OrderDashboard: React.FC = () => {
   // ============================================================================
   
   const authToken = useAppStore(state => state.authentication_state.auth_token);
-  const currentUser = useAppStore(state => state.authentication_state.current_user);
+  // const currentUser = useAppStore(state => state.authentication_state.current_user);
   const customerId = useAppStore(state => state.authentication_state.customer_profile?.customer_id);
 
   // ============================================================================
@@ -123,7 +123,7 @@ const UV_OrderDashboard: React.FC = () => {
   // ============================================================================
   
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   // Parse URL parameters
   const urlStatusFilter = searchParams.get('status_filter');

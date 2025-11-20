@@ -3,7 +3,7 @@ import { useSearchParams, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAppStore } from '@/store/main';
 import axios from 'axios';
-import { Search, Filter, Eye, CheckCircle, XCircle, Flag, Edit, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, Eye, CheckCircle, XCircle, Flag, ChevronLeft, ChevronRight } from 'lucide-react';
 
 // ============================================================================
 // TYPE DEFINITIONS (from Zod schemas)
@@ -74,7 +74,7 @@ interface PaginationState {
 const UV_AdminProductModeration: React.FC = () => {
   // Global state access (individual selectors)
   const authToken = useAppStore(state => state.authentication_state.auth_token);
-  const currentUser = useAppStore(state => state.authentication_state.current_user);
+  // const currentUser = useAppStore(state => state.authentication_state.current_user);
   
   // URL params
   const [searchParams, setSearchParams] = useSearchParams();

@@ -196,7 +196,7 @@ const submitContactForm = async (formData: ContactFormData, authToken?: string |
   return response.data;
 };
 
-const uploadAttachment = async (file: File, authToken?: string | null): Promise<{ attachment_url: string; file_name: string; file_size: number }> => {
+const uploadAttachment = async (file: File?: string | null): Promise<{ attachment_url: string; file_name: string; file_size: number }> => {
   // Mock implementation since endpoint doesn't exist
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -241,7 +241,7 @@ const UV_Contact: React.FC = () => {
   const currentUser = useAppStore(state => state.authentication_state.current_user);
   const authToken = useAppStore(state => state.authentication_state.auth_token);
   const isAuthenticated = useAppStore(state => state.authentication_state.authentication_status.is_authenticated);
-  const openChat = useAppStore(state => state.ui_state.active_modal);
+  // const openChat = useAppStore(state => state.ui_state.active_modal);
   const setActiveModal = useAppStore(state => state.open_modal);
   
   // State Variables

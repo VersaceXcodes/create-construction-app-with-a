@@ -208,7 +208,7 @@ const UV_MySurplusListings: React.FC = () => {
   
   // CRITICAL: Individual Zustand selectors
   const authToken = useAppStore(state => state.authentication_state.auth_token);
-  const currentUser = useAppStore(state => state.authentication_state.current_user);
+  // const currentUser = useAppStore(state => state.authentication_state.current_user);
   
   // Local state
   const [activeTab, setActiveTab] = useState<'listings' | 'offers' | 'sales'>('listings');
@@ -224,7 +224,7 @@ const UV_MySurplusListings: React.FC = () => {
     limit: 20
   });
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedListingIds, setSelectedListingIds] = useState<string[]>([]);
+  // const [selectedListingIds, setSelectedListingIds] = useState<string[]>([]);
   
   // Modal states
   const [deleteConfirmModal, setDeleteConfirmModal] = useState<{ open: boolean; listingId: string | null }>({

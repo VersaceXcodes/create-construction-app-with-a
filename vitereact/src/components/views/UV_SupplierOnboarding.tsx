@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useAppStore } from '@/store/main';
-import { Package, Building2, FileText, CreditCard, ShoppingCart, CheckCircle, Upload, X, Eye, EyeOff, ChevronRight, ChevronLeft } from 'lucide-react';
+import { Package, Building2, FileText, CreditCard, CheckCircle, Upload, X, Eye, EyeOff, ChevronRight, ChevronLeft } from 'lucide-react';
 
 // ============================================================================
 // TYPE DEFINITIONS
@@ -96,7 +96,7 @@ const UV_SupplierOnboarding: React.FC = () => {
   
   // CRITICAL: Individual Zustand selectors to avoid infinite loops
   const authToken = useAppStore(state => state.authentication_state.auth_token);
-  const currentUser = useAppStore(state => state.authentication_state.current_user);
+  // const currentUser = useAppStore(state => state.authentication_state.current_user);
   const isAuthenticated = useAppStore(state => state.authentication_state.authentication_status.is_authenticated);
   const userType = useAppStore(state => state.authentication_state.authentication_status.user_type);
   

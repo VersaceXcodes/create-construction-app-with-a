@@ -690,7 +690,7 @@ const UV_TermsOfService: React.FC = () => {
                 <h2 className="text-lg font-bold text-gray-900 mb-4">Table of Contents</h2>
                 
                 <nav className="space-y-1">
-                  {table_of_contents.map((item, index) => (
+                  {table_of_contents.map((item) => (
                     <div key={item.section_id}>
                       <button
                         onClick={() => navigateToSection(item.section_id)}
@@ -771,7 +771,7 @@ const UV_TermsOfService: React.FC = () => {
               {!loading_state && !error_message && (
                 <div className="prose prose-lg prose-blue max-w-none">
                   {/* Sections */}
-                  {terms_content.sections.map((section, index) => (
+                  {terms_content.sections.map((section) => (
                     <section
                       key={section.id}
                       id={section.id}

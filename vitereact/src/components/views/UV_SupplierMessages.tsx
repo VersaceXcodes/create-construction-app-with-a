@@ -146,7 +146,7 @@ const UV_SupplierMessages: React.FC = () => {
   // ============================================================================
   
   const authToken = useAppStore(state => state.authentication_state.auth_token);
-  const currentUser = useAppStore(state => state.authentication_state.current_user);
+  // const currentUser = useAppStore(state => state.authentication_state.current_user);
   const supplierProfile = useAppStore(state => state.authentication_state.supplier_profile);
   const websocketConnection = useAppStore(state => state.websocket_connection);
   
@@ -435,7 +435,7 @@ const UV_SupplierMessages: React.FC = () => {
                   {supplierProfile?.response_time_average && (
                     <div className="text-center">
                       <div className="text-2xl font-bold text-green-600">
-                        {supplierProfile.response_time_average.toFixed(1)}h
+                        {supplierProfile?.response_time_average.toFixed(1)}h
                       </div>
                       <div className="text-xs text-gray-600">Avg Response Time</div>
                     </div>
@@ -836,7 +836,7 @@ const UV_SupplierMessages: React.FC = () => {
                 <p className="text-sm text-blue-700">
                   Quick responses improve customer satisfaction. Aim to reply within 2 hours during business hours.
                   {supplierProfile?.response_time_average && (
-                    <> Your current average response time is <strong>{supplierProfile.response_time_average.toFixed(1)} hours</strong>.</>
+                    <> Your current average response time is <strong>{supplierProfile?.response_time_average.toFixed(1)} hours</strong>.</>
                   )}
                 </p>
               </div>

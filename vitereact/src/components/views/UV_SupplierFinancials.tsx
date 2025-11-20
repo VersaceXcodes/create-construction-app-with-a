@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useAppStore } from '@/store/main';
@@ -177,9 +177,9 @@ const UV_SupplierFinancials: React.FC = () => {
   const queryClient = useQueryClient();
 
   // Global state access - CRITICAL: Individual selectors
-  const currentUser = useAppStore(state => state.authentication_state.current_user);
+  // const currentUser = useAppStore(state => state.authentication_state.current_user);
   const supplierProfile = useAppStore(state => state.authentication_state.supplier_profile);
-  const authToken = useAppStore(state => state.authentication_state.auth_token);
+  // const authToken = useAppStore(state => state.authentication_state.auth_token);
 
   // Local state
   const [financial_filters, setFinancialFilters] = useState<FinancialFilters>({
@@ -192,7 +192,7 @@ const UV_SupplierFinancials: React.FC = () => {
     searchParams.get('section') || 'overview'
   );
 
-  const [modal_open, setModalOpen] = useState(false);
+  // const [modal_open, setModalOpen] = useState(false);
   const [editing_bank_account, setEditingBankAccount] = useState(false);
 
   const [bank_form, setBankForm] = useState({

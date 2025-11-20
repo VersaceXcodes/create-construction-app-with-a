@@ -174,15 +174,15 @@ const UV_AdminDashboard: React.FC = () => {
   
   // Get date_range from URL or default to 'last_30_days'
   const selectedDateRange = searchParams.get('date_range') || 'last_30_days';
-  const metricView = searchParams.get('metric_view');
+  // const metricView = searchParams.get('metric_view');
   
-  const [localLoadingStates, setLocalLoadingStates] = useState({
-    metrics: false,
-    health: false,
-    activity: false,
-    alerts: false,
-    growth: false
-  });
+  // const [localLoadingStates, setLocalLoadingStates] = useState({
+  //   metrics: false,
+  //   health: false,
+  //   activity: false,
+  //   alerts: false,
+  //   growth: false
+  // });
 
   // ============================================================================
   // QUERIES
@@ -321,7 +321,7 @@ const UV_AdminDashboard: React.FC = () => {
     return new Intl.NumberFormat('en-US').format(num);
   };
 
-  const getStatusColor = (status: string): string => {
+  // const getStatusColor = (status: string): string => {
     switch (status) {
       case 'operational':
       case 'healthy':

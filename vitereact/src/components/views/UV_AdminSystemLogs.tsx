@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { useAppStore } from '@/store/main';
@@ -10,7 +10,7 @@ import {
   Clock, 
   Database, 
   Download, 
-  Filter, 
+  
   RefreshCw, 
   Search, 
   Server, 
@@ -286,7 +286,7 @@ const exportLogs = async (
 const UV_AdminSystemLogs: React.FC = () => {
   // Global state - CRITICAL: Individual selectors
   const authToken = useAppStore(state => state.authentication_state.auth_token);
-  const currentUser = useAppStore(state => state.authentication_state.current_user);
+  // const currentUser = useAppStore(state => state.authentication_state.current_user);
   
   // URL parameters
   const [searchParams, setSearchParams] = useSearchParams();

@@ -7,7 +7,7 @@ import {
   CreditCard, 
   TrendingUp, 
   DollarSign, 
-  Calendar, 
+  
   Download,
   AlertCircle,
   CheckCircle,
@@ -68,7 +68,7 @@ interface CreditIncreaseRequest {
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
 
-const fetchCreditAccountSummary = async (token: string, customer_id: string): Promise<CreditAccountSummary> => {
+const fetchCreditAccountSummary = async (token: string: string): Promise<CreditAccountSummary> => {
   const response = await axios.get(`${API_BASE_URL}/customers/me`, {
     headers: { Authorization: `Bearer ${token}` }
   });
@@ -167,7 +167,7 @@ const submitCreditIncreaseRequest = async (
 
 const UV_TradeCredit_Dashboard: React.FC = () => {
   // Global state access - CRITICAL: Individual selectors
-  const currentUser = useAppStore(state => state.authentication_state.current_user);
+  // const currentUser = useAppStore(state => state.authentication_state.current_user);
   const authToken = useAppStore(state => state.authentication_state.auth_token);
   const customerProfile = useAppStore(state => state.authentication_state.customer_profile);
 
@@ -175,8 +175,8 @@ const UV_TradeCredit_Dashboard: React.FC = () => {
 
   // Local state
   const [activeTab, setActiveTab] = useState<'overview' | 'transactions' | 'payment' | 'increase'>('overview');
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [showIncreaseModal, setShowIncreaseModal] = useState(false);
+  // const [showPaymentModal, setShowPaymentModal] = useState(false);
+  // const [showIncreaseModal, setShowIncreaseModal] = useState(false);
   const [dateRangeFilter, setDateRangeFilter] = useState({
     start_date: '',
     end_date: '',

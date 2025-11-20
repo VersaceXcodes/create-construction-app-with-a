@@ -131,7 +131,7 @@ const validatePhoneNumber = (phone: string): boolean => {
 const UV_Registration_Customer: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const return_url = searchParams.get('return_url');
+  // const return_url = searchParams.get('return_url');
   
   // CRITICAL: Individual Zustand selectors
   const isAuthenticated = useAppStore(state => state.authentication_state.authentication_status.is_authenticated);
@@ -356,7 +356,7 @@ const UV_Registration_Customer: React.FC = () => {
   // ============================================================================
   
   const passwordStrengthInfo = getPasswordStrengthLabel(passwordStrength);
-  const isFormValid = 
+  // const isFormValid = 
     formData.email &&
     formData.password &&
     formData.confirm_password &&

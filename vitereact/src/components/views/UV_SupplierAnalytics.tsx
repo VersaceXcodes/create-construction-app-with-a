@@ -199,7 +199,7 @@ const UV_SupplierAnalytics: React.FC = () => {
   
   // Global state - CRITICAL: Individual selectors
   const supplierProfile = useAppStore(state => state.authentication_state.supplier_profile);
-  const currentUser = useAppStore(state => state.authentication_state.current_user);
+  // const currentUser = useAppStore(state => state.authentication_state.current_user);
   
   // Local state
   const [activeTab, setActiveTab] = useState<string>(
@@ -213,12 +213,12 @@ const UV_SupplierAnalytics: React.FC = () => {
     comparison_period: null
   });
   
-  const [comparisonEnabled, setComparisonEnabled] = useState<boolean>(
+  const [comparisonEnabled] = useState<boolean>(
     searchParams.get('comparison_enabled') === 'true'
   );
   
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [exportFormat, setExportFormat] = useState<'pdf' | 'csv'>('pdf');
+  const [exportFormat] = useState<'pdf' | 'csv'>('pdf');
   const [isExporting, setIsExporting] = useState(false);
   
   // React Query - Dashboard Metrics
@@ -814,7 +814,7 @@ const UV_SupplierAnalytics: React.FC = () => {
                             </tr>
                           </thead>
                           <tbody className="bg-white divide-y divide-gray-200">
-                            {productInsights.top_performers.slice(0, 10).map((product, idx) => (
+                            {productInsights.top_performers.slice(0, 10).map((product) => (
                               <tr key={product.product_id} className="hover:bg-gray-50">
                                 <td className="px-4 py-3 text-sm text-gray-900">
                                   <Link 
@@ -868,7 +868,7 @@ const UV_SupplierAnalytics: React.FC = () => {
                             </tr>
                           </thead>
                           <tbody className="bg-white divide-y divide-gray-200">
-                            {productInsights.underperformers.slice(0, 5).map((product, idx) => (
+                            {productInsights.underperformers.slice(0, 5).map((product) => (
                               <tr key={product.product_id} className="hover:bg-gray-50">
                                 <td className="px-4 py-3 text-sm text-gray-900">
                                   <Link 

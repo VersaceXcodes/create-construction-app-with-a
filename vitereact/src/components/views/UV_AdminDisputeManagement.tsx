@@ -167,13 +167,13 @@ const addDisputeMessage = async (
 // ============================================================================
 
 const UV_AdminDisputeManagement: React.FC = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const queryClient = useQueryClient();
 
   // CRITICAL: Individual selectors to avoid infinite loops
   const authToken = useAppStore(state => state.authentication_state.auth_token);
-  const currentUser = useAppStore(state => state.authentication_state.current_user);
+  // const currentUser = useAppStore(state => state.authentication_state.current_user);
 
   // ============================================================================
   // LOCAL STATE

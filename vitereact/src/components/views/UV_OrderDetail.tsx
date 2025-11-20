@@ -192,8 +192,8 @@ const UV_OrderDetail: React.FC = () => {
   
   // CRITICAL: Individual selectors to avoid infinite loops
   const authToken = useAppStore(state => state.authentication_state.auth_token);
-  const currentUser = useAppStore(state => state.authentication_state.current_user);
-  const customerId = useAppStore(state => state.authentication_state.customer_profile?.customer_id);
+  // const currentUser = useAppStore(state => state.authentication_state.current_user);
+  // const customerId = useAppStore(state => state.authentication_state.customer_profile?.customer_id);
   const fetchCart = useAppStore(state => state.fetch_cart);
   const websocketConnection = useAppStore(state => state.websocket_connection);
   

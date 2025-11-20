@@ -167,7 +167,7 @@ const UV_InventoryManagement_Supplier: React.FC = () => {
   // ============================================================================
   
   const authToken = useAppStore(state => state.authentication_state.auth_token);
-  const currentUser = useAppStore(state => state.authentication_state.current_user);
+  // const currentUser = useAppStore(state => state.authentication_state.current_user);
   const supplierProfile = useAppStore(state => state.authentication_state.supplier_profile);
   
   // ============================================================================
@@ -185,7 +185,7 @@ const UV_InventoryManagement_Supplier: React.FC = () => {
     category_filter: searchParams.get('category_filter') || null,
   });
   
-  const [syncStatus, setSyncStatus] = useState<SyncStatus>({
+  // const [syncStatus, setSyncStatus] = useState<SyncStatus>({
     enabled: false,
     last_sync_timestamp: null,
     sync_in_progress: false,
@@ -201,7 +201,7 @@ const UV_InventoryManagement_Supplier: React.FC = () => {
   
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
   const [editStockValue, setEditStockValue] = useState<number>(0);
-  const [showMovementLog, setShowMovementLog] = useState(false);
+  // const [showMovementLog, setShowMovementLog] = useState(false);
   
   // ============================================================================
   // SYNC URL WITH FILTER STATE

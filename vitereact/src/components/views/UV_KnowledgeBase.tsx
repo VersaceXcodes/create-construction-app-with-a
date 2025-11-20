@@ -299,7 +299,7 @@ const UV_KnowledgeBase: React.FC = () => {
   // URL PARAMETERS
   // ============================================================================
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   // ============================================================================
   // LOCAL STATE
@@ -307,7 +307,7 @@ const UV_KnowledgeBase: React.FC = () => {
   const [searchInput, setSearchInput] = useState('');
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [selectedArticleId, setSelectedArticleId] = useState<string | null>(null);
-  const [sidebarExpanded, setSidebarExpanded] = useState(true);
+  // const [sidebarExpanded, setSidebarExpanded] = useState(true);
   const [searchFocused, setSearchFocused] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -486,7 +486,7 @@ const UV_KnowledgeBase: React.FC = () => {
     handleArticleClick(articleId);
   };
 
-  const handleBackToSearch = () => {
+  // const handleBackToSearch = () => {
     setSelectedArticleId(null);
     setSearchParams({});
   };

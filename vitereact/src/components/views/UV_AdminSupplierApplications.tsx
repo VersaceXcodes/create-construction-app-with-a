@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
@@ -10,8 +10,8 @@ import {
   FileText, 
   Building2, 
   User, 
-  Mail, 
-  Phone, 
+  
+  
   MapPin,
   AlertCircle,
   Search,
@@ -146,13 +146,13 @@ const updateVerificationChecklist = async (
 // ============================================================================
 
 const UV_AdminSupplierApplications: React.FC = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [searchParams, setSearchParams] = useSearchParams();
   
   // CRITICAL: Individual selectors to avoid infinite loops
   const authToken = useAppStore(state => state.authentication_state.auth_token);
-  const currentUser = useAppStore(state => state.authentication_state.current_user);
+  // const currentUser = useAppStore(state => state.authentication_state.current_user);
   
   // Local state
   const [selected_application_id, setSelectedApplicationId] = useState<string | null>(null);

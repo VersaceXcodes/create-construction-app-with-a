@@ -148,7 +148,7 @@ const UV_IssueSubmit: React.FC = () => {
   
   // CRITICAL: Individual selectors to avoid infinite loops
   const authToken = useAppStore(state => state.authentication_state.auth_token);
-  const customerId = useAppStore(state => state.authentication_state.customer_profile?.customer_id);
+  // const customerId = useAppStore(state => state.authentication_state.customer_profile?.customer_id);
   
   // Get order_id from URL params
   const orderIdFromUrl = searchParams.get('order_id');

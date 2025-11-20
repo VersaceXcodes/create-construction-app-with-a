@@ -1,11 +1,8 @@
-VALIDATION FAILURE - Frontend TypeScript Compilation (Attempt 5/100)
+VALIDATION FAILURE - Frontend TypeScript Compilation (Attempt 6/100)
 
 The project validation failed at the "Frontend TypeScript Compilation" step. You need to analyze the error and fix it.
 
 ## Error Details:
-src/components/views/GV_TopNav_Guest.tsx(5,1): error TS6133: 'useAppStore' is declared but its value is never read.
-src/components/views/UV_AccountSettings.tsx(17,3): error TS6133: 'X' is declared but its value is never read.
-src/components/views/UV_AccountSettings.tsx(179,9): error TS6133: 'currentUser' is declared but its value is never read.
 src/components/views/UV_AdminAnalytics.tsx(2,27): error TS6133: 'Link' is declared but its value is never read.
 src/components/views/UV_AdminAnalytics.tsx(67,11): error TS6196: 'TransactionAnalytics' is declared but never used.
 src/components/views/UV_AdminAnalytics.tsx(77,11): error TS6196: 'SupplierAnalytics' is declared but never used.
@@ -66,46 +63,10 @@ src/components/views/UV_AdminTeamManagement.tsx(153,3): error TS6133: 'filters' 
 src/components/views/UV_AdminTeamManagement.tsx(259,14): error TS6133: 'refetchUsers' is declared but its value is never read.
 src/components/views/UV_AdminUserManagement_Customers.tsx(1,38): error TS6133: 'useMemo' is declared but its value is never read.
 src/components/views/UV_AdminUserManagement_Customers.tsx(192,9): error TS6133: 'navigate' is declared but its value is never read.
-src/components/views/UV_AdminUserManagement_Customers.tsx(275,5): error TS2769: No overload matches this call.
-  Overload 1 of 3, '(options: DefinedInitialDataOptions<unknown, Error, unknown, (string | number | SearchFilters)[]>, queryClient?: QueryClient | undefined): DefinedUseQueryResult<...>', gave the following error.
-    Object literal may only specify known properties, and 'onSuccess' does not exist in type 'DefinedInitialDataOptions<unknown, Error, unknown, (string | number | SearchFilters)[]>'.
-  Overload 2 of 3, '(options: UndefinedInitialDataOptions<{ customers_list: CustomerListItem[]; pagination: PaginationState; }, Error, { customers_list: CustomerListItem[]; pagination: PaginationState; }, (string | ... 1 more ... | SearchFilters)[]>, queryClient?: QueryClient | undefined): UseQueryResult<...>', gave the following error.
-    Object literal may only specify known properties, and 'onSuccess' does not exist in type 'UndefinedInitialDataOptions<{ customers_list: CustomerListItem[]; pagination: PaginationState; }, Error, { customers_list: CustomerListItem[]; pagination: PaginationState; }, (string | ... 1 more ... | SearchFilters)[]>'.
-  Overload 3 of 3, '(options: UseQueryOptions<{ customers_list: CustomerListItem[]; pagination: PaginationState; }, Error, { customers_list: CustomerListItem[]; pagination: PaginationState; }, (string | ... 1 more ... | SearchFilters)[]>, queryClient?: QueryClient | undefined): UseQueryResult<...>', gave the following error.
-    Object literal may only specify known properties, and 'onSuccess' does not exist in type 'UseQueryOptions<{ customers_list: CustomerListItem[]; pagination: PaginationState; }, Error, { customers_list: CustomerListItem[]; pagination: PaginationState; }, (string | ... 1 more ... | SearchFilters)[]>'.
-src/components/views/UV_AdminUserManagement_Customers.tsx(280,36): error TS2339: Property 'customers_list' does not exist on type '{}'.
-src/components/views/UV_AdminUserManagement_Customers.tsx(305,37): error TS2559: Type 'string[]' has no properties in common with type 'InvalidateQueryFilters<readonly unknown[]>'.
-src/components/views/UV_AdminUserManagement_Customers.tsx(306,37): error TS2559: Type '(string | null)[]' has no properties in common with type 'InvalidateQueryFilters<readonly unknown[]>'.
-src/components/views/UV_AdminUserManagement_Customers.tsx(453,54): error TS2339: Property 'isLoading' does not exist on type 'UseMutationResult<void, Error, { userId: string; newStatus: string; }, unknown>'.
-  Property 'isLoading' does not exist on type 'Override<MutationObserverIdleResult<void, Error, { userId: string; newStatus: string; }, unknown>, { mutate: UseMutateFunction<void, Error, { userId: string; newStatus: string; }, unknown>; }> & { ...; }'.
-src/components/views/UV_AdminUserManagement_Customers.tsx(461,54): error TS2339: Property 'isLoading' does not exist on type 'UseMutationResult<void, Error, { userId: string; newStatus: string; }, unknown>'.
-  Property 'isLoading' does not exist on type 'Override<MutationObserverIdleResult<void, Error, { userId: string; newStatus: string; }, unknown>, { mutate: UseMutateFunction<void, Error, { userId: string; newStatus: string; }, unknown>; }> & { ...; }'.
-src/components/views/UV_AdminUserManagement_Customers.tsx(815,84): error TS2322: Type '{ className: string; title: string; }' is not assignable to type 'IntrinsicAttributes & Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>'.
-  Property 'title' does not exist on type 'IntrinsicAttributes & Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>'.
-src/components/views/UV_AdminUserManagement_Customers.tsx(968,58): error TS2339: Property 'isLoading' does not exist on type 'UseMutationResult<void, Error, { userId: string; newStatus: string; }, unknown>'.
-  Property 'isLoading' does not exist on type 'Override<MutationObserverIdleResult<void, Error, { userId: string; newStatus: string; }, unknown>, { mutate: UseMutateFunction<void, Error, { userId: string; newStatus: string; }, unknown>; }> & { ...; }'.
 src/components/views/UV_CartPage.tsx(1,27): error TS6133: 'useEffect' is declared but its value is never read.
 src/components/views/UV_CartPage.tsx(28,11): error TS6196: 'Cart' is declared but never used.
 src/components/views/UV_CartPage.tsx(70,11): error TS6196: 'Product' is declared but never used.
 src/components/views/UV_Catalog.tsx(1,27): error TS6133: 'useEffect' is declared but its value is never read.
-src/components/views/UV_Catalog.tsx(143,5): error TS2769: No overload matches this call.
-  Overload 1 of 3, '(options: DefinedInitialDataOptions<unknown, Error, unknown, (string | number | { search_query: string | null; category: string | null; price_min: number | null; price_max: number | null; in_stock_only: boolean | null; supplier_rating_min: number | null; brands: string[] | null; deals_only: boolean | null; } | { ...; })[]>, queryClient?: QueryClient | undefined): DefinedUseQueryResult<...>', gave the following error.
-    Object literal may only specify known properties, and 'keepPreviousData' does not exist in type 'DefinedInitialDataOptions<unknown, Error, unknown, (string | number | { search_query: string | null; category: string | null; price_min: number | null; price_max: number | null; in_stock_only: boolean | null; supplier_rating_min: number | null; brands: string[] | null; deals_only: boolean | null; } | { ...; })[]>'.
-  Overload 2 of 3, '(options: UndefinedInitialDataOptions<ProductsResponse, Error, ProductsResponse, (string | number | { search_query: string | null; category: string | null; price_min: number | null; ... 4 more ...; deals_only: boolean | null; } | { ...; })[]>, queryClient?: QueryClient | undefined): UseQueryResult<...>', gave the following error.
-    Object literal may only specify known properties, and 'keepPreviousData' does not exist in type 'UndefinedInitialDataOptions<ProductsResponse, Error, ProductsResponse, (string | number | { search_query: string | null; category: string | null; price_min: number | null; ... 4 more ...; deals_only: boolean | null; } | { ...; })[]>'.
-  Overload 3 of 3, '(options: UseQueryOptions<ProductsResponse, Error, ProductsResponse, (string | number | { search_query: string | null; category: string | null; price_min: number | null; ... 4 more ...; deals_only: boolean | null; } | { ...; })[]>, queryClient?: QueryClient | undefined): UseQueryResult<...>', gave the following error.
-    Object literal may only specify known properties, and 'keepPreviousData' does not exist in type 'UseQueryOptions<ProductsResponse, Error, ProductsResponse, (string | number | { search_query: string | null; category: string | null; price_min: number | null; ... 4 more ...; deals_only: boolean | null; } | { ...; })[]>'.
-src/components/views/UV_Catalog.tsx(155,24): error TS2339: Property 'products' does not exist on type '{}'.
-src/components/views/UV_Catalog.tsx(157,18): error TS2339: Property 'products' does not exist on type '{}'.
-src/components/views/UV_Catalog.tsx(166,35): error TS2339: Property 'total' does not exist on type '{}'.
-src/components/views/UV_Catalog.tsx(642,45): error TS2339: Property 'total' does not exist on type '{}'.
-src/components/views/UV_Catalog.tsx(665,53): error TS2339: Property 'total' does not exist on type '{}'.
-src/components/views/UV_Catalog.tsx(683,15): error TS2322: Type 'unknown' is not assignable to type 'ReactNode'.
-src/components/views/UV_Catalog.tsx(684,15): error TS2322: Type 'unknown' is not assignable to type 'ReactNode'.
-src/components/views/UV_Catalog.tsx(703,15): error TS2322: Type 'unknown' is not assignable to type 'ReactNode'.
-src/components/views/UV_Catalog.tsx(703,67): error TS2339: Property 'products' does not exist on type '{}'.
-src/components/views/UV_Catalog.tsx(708,33): error TS2339: Property 'products' does not exist on type '{}'.
-src/components/views/UV_Catalog.tsx(817,67): error TS2339: Property 'products' does not exist on type '{}'.
 src/components/views/UV_Checkout.tsx(74,11): error TS6196: 'DeliveryWindow' is declared but never used.
 src/components/views/UV_Checkout.tsx(419,11): error TS6133: 'finalPaymentMethodId' is declared but its value is never read.
 src/components/views/UV_Checkout.tsx(438,92): error TS6133: 'window_id' is declared but its value is never read.
@@ -119,8 +80,6 @@ src/components/views/UV_CustomerDashboard.tsx(59,11): error TS6196: 'WishlistIte
 src/components/views/UV_CustomerDashboard.tsx(64,11): error TS6196: 'Project' is declared but never used.
 src/components/views/UV_CustomerDashboard.tsx(256,16): error TS6133: 'wishlistLoading' is declared but its value is never read.
 src/components/views/UV_CustomerDashboard.tsx(268,16): error TS6133: 'projectsLoading' is declared but its value is never read.
-src/components/views/UV_Dashboard.tsx(50,47): error TS2339: Property 'name' does not exist on type 'User'.
-src/components/views/UV_Dashboard.tsx(60,61): error TS2339: Property 'id' does not exist on type 'User'.
 src/components/views/UV_DeliveryManagement_Supplier.tsx(75,11): error TS6196: 'DeliveryPerformance' is declared but never used.
 src/components/views/UV_HowItWorks.tsx(1,27): error TS6133: 'useEffect' is declared but its value is never read.
 src/components/views/UV_HowItWorks.tsx(28,11): error TS6196: 'ProcessStep' is declared but never used.
@@ -151,7 +110,6 @@ src/components/views/UV_Landing.tsx(162,12): error TS6133: 'suppliersError' is d
 src/components/views/UV_MyProjects.tsx(175,23): error TS6133: 'project_id' is declared but its value is never read.
 src/components/views/UV_MyReviews.tsx(6,40): error TS6133: 'ImageIcon' is declared but its value is never read.
 src/components/views/UV_MyReviews.tsx(36,11): error TS6196: 'ReviewsListState' is declared but never used.
-src/components/views/UV_MyReviews.tsx(100,84): error TS2339: Property 'customer_id' does not exist on type 'User'.
 src/components/views/UV_MySurplusListings.tsx(50,11): error TS6196: 'SaleHistory' is declared but never used.
 src/components/views/UV_MySurplusListings.tsx(211,9): error TS6133: 'currentUser' is declared but its value is never read.
 src/components/views/UV_MySurplusListings.tsx(227,10): error TS6133: 'selectedListingIds' is declared but its value is never read.
@@ -202,7 +160,6 @@ src/components/views/UV_ProductDetail_Customer.tsx(203,10): error TS6133: 'showR
 src/components/views/UV_ProductDetail_Customer.tsx(222,10): error TS6133: 'wsSocket' is declared but its value is never read.
 src/components/views/UV_ProductDetail_Customer.tsx(233,38): error TS6133: 'supplierLoading' is declared but its value is never read.
 src/components/views/UV_ProductDetail_Customer.tsx(303,9): error TS6133: 'submitReviewMutation' is declared but its value is never read.
-src/components/views/UV_ProductDetail_Customer.tsx(396,58): error TS5076: '??' and '||' operations cannot be mixed without parentheses.
 src/components/views/UV_ProductDetail_Guest.tsx(5,16): error TS6133: 'Heart' is declared but its value is never read.
 src/components/views/UV_ProductDetail_Guest.tsx(5,23): error TS6133: 'Share2' is declared but its value is never read.
 src/components/views/UV_ProductDetail_Guest.tsx(5,68): error TS6133: 'MapPin' is declared but its value is never read.
@@ -216,34 +173,10 @@ src/components/views/UV_ProductManagement_Supplier.tsx(162,9): error TS6133: 'cu
 src/components/views/UV_ProductManagement_Supplier.tsx(361,9): error TS6133: 'formatDate' is declared but its value is never read.
 src/components/views/UV_ProjectDetail.tsx(6,90): error TS6133: 'Trash2' is declared but its value is never read.
 src/components/views/UV_ProjectDetail.tsx(116,9): error TS6133: 'currentUser' is declared but its value is never read.
-src/components/views/UV_ProjectDetail.tsx(169,5): error TS2769: No overload matches this call.
-  Overload 1 of 3, '(options: DefinedInitialDataOptions<ProjectDetailResponse, Error, { project: Project; items: ProjectItem[]; }, (string | undefined)[]>, queryClient?: QueryClient | undefined): DefinedUseQueryResult<...>', gave the following error.
-    Object literal may only specify known properties, and 'onSuccess' does not exist in type 'DefinedInitialDataOptions<ProjectDetailResponse, Error, { project: Project; items: ProjectItem[]; }, (string | undefined)[]>'.
-  Overload 2 of 3, '(options: UndefinedInitialDataOptions<ProjectDetailResponse, Error, { project: Project; items: ProjectItem[]; }, (string | undefined)[]>, queryClient?: QueryClient | undefined): UseQueryResult<...>', gave the following error.
-    Object literal may only specify known properties, and 'onSuccess' does not exist in type 'UndefinedInitialDataOptions<ProjectDetailResponse, Error, { project: Project; items: ProjectItem[]; }, (string | undefined)[]>'.
-  Overload 3 of 3, '(options: UseQueryOptions<ProjectDetailResponse, Error, { project: Project; items: ProjectItem[]; }, (string | undefined)[]>, queryClient?: QueryClient | undefined): UseQueryResult<...>', gave the following error.
-    Object literal may only specify known properties, and 'onSuccess' does not exist in type 'UseQueryOptions<ProjectDetailResponse, Error, { project: Project; items: ProjectItem[]; }, (string | undefined)[]>'.
-src/components/views/UV_ProjectDetail.tsx(225,16): error TS2339: Property 'items' does not exist on type '{}'.
-src/components/views/UV_ProjectDetail.tsx(234,30): error TS2339: Property 'items' does not exist on type '{}'.
-src/components/views/UV_ProjectDetail.tsx(235,32): error TS2339: Property 'items' does not exist on type '{}'.
-src/components/views/UV_ProjectDetail.tsx(247,13): error TS2339: Property 'items' does not exist on type '{}'.
-src/components/views/UV_ProjectDetail.tsx(250,16): error TS2339: Property 'items' does not exist on type '{}'.
-src/components/views/UV_ProjectDetail.tsx(252,17): error TS2339: Property 'items' does not exist on type '{}'.
-src/components/views/UV_ProjectDetail.tsx(256,13): error TS2339: Property 'items' does not exist on type '{}'.
-src/components/views/UV_ProjectDetail.tsx(259,16): error TS2339: Property 'items' does not exist on type '{}'.
-src/components/views/UV_ProjectDetail.tsx(260,17): error TS2339: Property 'items' does not exist on type '{}'.
-src/components/views/UV_ProjectDetail.tsx(261,13): error TS2339: Property 'items' does not exist on type '{}'.
-src/components/views/UV_ProjectDetail.tsx(275,7): error TS2322: Type 'string | null' is not assignable to type 'string | undefined'.
+src/components/views/UV_ProjectDetail.tsx(172,3): error TS2304: Cannot find name 'useEffect'.
+src/components/views/UV_ProjectDetail.tsx(180,3): error TS2304: Cannot find name 'useEffect'.
+src/components/views/UV_ProjectDetail.tsx(284,7): error TS2322: Type 'string | null' is not assignable to type 'string | undefined'.
   Type 'null' is not assignable to type 'string | undefined'.
-src/components/views/UV_ProjectDetail.tsx(280,26): error TS2339: Property 'project' does not exist on type '{}'.
-src/components/views/UV_ProjectDetail.tsx(281,33): error TS2339: Property 'project' does not exist on type '{}'.
-src/components/views/UV_ProjectDetail.tsx(405,22): error TS2339: Property 'items' does not exist on type '{}'.
-src/components/views/UV_ProjectDetail.tsx(405,36): error TS2339: Property 'items' does not exist on type '{}'.
-src/components/views/UV_ProjectDetail.tsx(420,24): error TS2339: Property 'project' does not exist on type '{}'.
-src/components/views/UV_ProjectDetail.tsx(423,22): error TS2339: Property 'project' does not exist on type '{}'.
-src/components/views/UV_ProjectDetail.tsx(425,25): error TS2339: Property 'project' does not exist on type '{}'.
-src/components/views/UV_ProjectDetail.tsx(462,24): error TS2339: Property 'project' does not exist on type '{}'.
-src/components/views/UV_ProjectDetail.tsx(463,22): error TS2339: Property 'items' does not exist on type '{}'.
 src/components/views/UV_Registration_Customer.tsx(134,9): error TS6133: 'return_url' is declared but its value is never read.
 src/components/views/UV_Registration_Customer.tsx(181,23): error TS6133: 'data' is declared but its value is never read.
 src/components/views/UV_Registration_Customer.tsx(359,9): error TS6133: 'isFormValid' is declared but its value is never read.
@@ -363,11 +296,11 @@ src/components/views/UV_Wishlist.tsx(12,11): error TS6196: 'WishlistItem' is dec
 ## Validation Context:
 - Step: Frontend TypeScript Compilation
 - Working Directory: /app/vitereact
-- Attempt: 5/100
+- Attempt: 6/100
 - Previous failures for this step: 2
 
 ## Project Memory Summary:
-- Total validation attempts: 12
+- Total validation attempts: 13
 - Common issues encountered: None
 - Known dependencies: @hookform/resolvers, @radix-ui/react-accordion, @radix-ui/react-alert-dialog, @radix-ui/react-aspect-ratio, @radix-ui/react-avatar, @radix-ui/react-checkbox, @radix-ui/react-collapsible, @radix-ui/react-context-menu, @radix-ui/react-dialog, @radix-ui/react-dropdown-menu
 - Missing dependencies: None
@@ -486,8 +419,8 @@ PROTECTED DIRECTORIES (DO NOT MODIFY):
 
 
 ## Previous Validation Failures for Frontend TypeScript Compilation:
-- 7:09:08 PM: 
 - 7:15:13 PM: 
+- 7:21:26 PM: 
 
 ## Your Task:
 1. **Analyze the Error**: Understand what specifically went wrong in the Frontend TypeScript Compilation step

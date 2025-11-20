@@ -10,7 +10,7 @@ import {
   Code, 
   CreditCard, 
   Save, 
-  Upload, 
+  
   Plus, 
   Trash2, 
   Edit2,
@@ -109,7 +109,7 @@ const fetchSupplierProfile = async (authToken: string): Promise<SupplierProfile>
   return response.data;
 };
 
-const updateSupplierProfile = async (data: Partial<SupplierProfile>, authToken: string) => {
+const updateSupplierProfile = async (data: Partial<SupplierProfile>: string) => {
   const response = await axios.patch(
     `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api/suppliers/me`,
     data,
@@ -126,17 +126,17 @@ const fetchTeamMembers = async (authToken: string): Promise<TeamMember[]> => {
   return [];
 };
 
-const addTeamMember = async (data: { email: string; role: string; permissions: Record<string, boolean> }, authToken: string) => {
+const addTeamMember = async (data: { email: string; role: string; permissions: Record<string, boolean> }: string) => {
   // Mock for MVP
   return { success: true, member_id: `member_${Date.now()}` };
 };
 
-const updateTeamMember = async (memberId: string, data: { role: string; permissions: Record<string, boolean> }, authToken: string) => {
+// const updateTeamMember = async (memberId: string, data: { role: string; permissions: Record<string, boolean> }: string) => {
   // Mock for MVP
   return { success: true };
 };
 
-const removeTeamMember = async (memberId: string, authToken: string) => {
+const removeTeamMember = async (memberId: string: string) => {
   // Mock for MVP
   return { success: true };
 };
@@ -151,8 +151,8 @@ const UV_SupplierSettings: React.FC = () => {
   // ============================================================================
   
   const authToken = useAppStore(state => state.authentication_state.auth_token);
-  const currentUser = useAppStore(state => state.authentication_state.current_user);
-  const supplierProfileGlobal = useAppStore(state => state.authentication_state.supplier_profile);
+  // const currentUser = useAppStore(state => state.authentication_state.current_user);
+  // const supplierProfileGlobal = useAppStore(state => state.authentication_state.supplier_profile);
   
   // ============================================================================
   // URL PARAMS & NAVIGATION
@@ -174,7 +174,7 @@ const UV_SupplierSettings: React.FC = () => {
   
   // Team form state
   const [showAddTeamModal, setShowAddTeamModal] = useState(false);
-  const [newTeamMember, setNewTeamMember] = useState({ email: '', role: 'staff' as const });
+  const [newTeamMember, setNewTeamMember] = useState<{ email: string; role: 'admin' | 'manager' | 'staff' }>({ email: '', role: 'staff' });
   
   // Notification form state
   const [notificationPrefs, setNotificationPrefs] = useState<NotificationPreferences>({
@@ -228,7 +228,7 @@ const UV_SupplierSettings: React.FC = () => {
   // ============================================================================
   
   const updateProfileMutation = useMutation({
-    mutationFn: (data: Partial<SupplierProfile>) => updateSupplierProfile(data, authToken!),
+    mutationFn: (data: Partial<SupplierProfile>) => updateSupplierProfile(data!),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['supplier-profile'] });
       setSuccessMessage('Profile updated successfully!');
@@ -242,7 +242,7 @@ const UV_SupplierSettings: React.FC = () => {
   
   const addTeamMemberMutation = useMutation({
     mutationFn: (data: { email: string; role: string; permissions: Record<string, boolean> }) => 
-      addTeamMember(data, authToken!),
+      addTeamMember(data!),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['team-members'] });
       setShowAddTeamModal(false);
@@ -257,7 +257,7 @@ const UV_SupplierSettings: React.FC = () => {
   });
   
   const removeTeamMemberMutation = useMutation({
-    mutationFn: (memberId: string) => removeTeamMember(memberId, authToken!),
+    mutationFn: (memberId: string) => removeTeamMember(memberId!),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['team-members'] });
       setSuccessMessage('Team member removed successfully!');
@@ -315,7 +315,7 @@ const UV_SupplierSettings: React.FC = () => {
         manage_orders: true,
         manage_inventory: true,
         view_analytics: newTeamMember.role !== 'staff',
-        manage_team: newTeamMember.role === 'admin'
+        manage_team: false
       }
     });
   };
@@ -353,7 +353,7 @@ const UV_SupplierSettings: React.FC = () => {
     { id: 'billing', label: 'Billing & Payouts', icon: CreditCard }
   ];
   
-  const defaultPermissions = {
+  // const defaultPermissions = {
     manage_products: false,
     manage_orders: true,
     manage_inventory: true,

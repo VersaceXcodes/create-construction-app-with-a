@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { Star, Heart, Share2, ChevronLeft, ChevronRight, Check, X, MapPin, Clock, Shield, Package, Truck, ZoomIn } from 'lucide-react';
+import { Star, ChevronLeft, ChevronRight, Check, X, Shield, Package, Truck, ZoomIn } from 'lucide-react';
 
 // ============================================================================
 // TYPE DEFINITIONS (matching backend Zod schemas exactly)

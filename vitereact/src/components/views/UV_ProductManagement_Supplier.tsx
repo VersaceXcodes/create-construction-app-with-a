@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
@@ -7,8 +7,8 @@ import {
   Package, 
   Plus, 
   Search, 
-  Filter, 
-  ChevronDown, 
+  
+  
   Edit2, 
   Trash2, 
   Eye, 
@@ -159,7 +159,7 @@ const UV_ProductManagement_Supplier: React.FC = () => {
   // ============================================================================
   
   const authToken = useAppStore(state => state.authentication_state.auth_token);
-  const currentUser = useAppStore(state => state.authentication_state.current_user);
+  // const currentUser = useAppStore(state => state.authentication_state.current_user);
   
   // ============================================================================
   // URL PARAMS MANAGEMENT
@@ -358,7 +358,7 @@ const UV_ProductManagement_Supplier: React.FC = () => {
     }).format(amount);
   };
   
-  const formatDate = (dateString: string): string => {
+  // const formatDate = (dateString: string): string => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',

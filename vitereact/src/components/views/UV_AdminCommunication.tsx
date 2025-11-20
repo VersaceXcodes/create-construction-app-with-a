@@ -178,14 +178,14 @@ const UV_AdminCommunication: React.FC = () => {
   
   // CRITICAL: Individual selectors to avoid infinite loops
   const authToken = useAppStore(state => state.authentication_state.auth_token);
-  const currentUser = useAppStore(state => state.authentication_state.current_user);
+  // currentUser removed - unused
   
   // Local State
   const [activeTab, setActiveTab] = useState<string>(searchParams.get('communication_type') || 'announcements');
   const [showAnnouncementForm, setShowAnnouncementForm] = useState(false);
   const [showEmergencyConfirm, setShowEmergencyConfirm] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<NotificationTemplate | null>(null);
-  const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null);
+  const [selectedCampaign] = useState<Campaign | null>(null);
   
   // Announcement Form State
   const [announcementForm, setAnnouncementForm] = useState<AnnouncementFormData>({

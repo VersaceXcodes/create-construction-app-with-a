@@ -437,12 +437,12 @@ const UV_PrivacyPolicy: React.FC = () => {
   // URL params for section navigation
   const [searchParams, setSearchParams] = useSearchParams();
   const section = searchParams.get('section') || 'overview';
-  const version = searchParams.get('version') || 'current';
+  // const version = searchParams.get('version') || 'current';
 
   // Local state
   const [privacy_content] = useState<PrivacyContent>(PRIVACY_POLICY_CONTENT);
   const [active_section, setActiveSection] = useState<string>(section);
-  const [loading_state, setLoadingState] = useState<boolean>(false);
+  // const [loading_state, setLoadingState] = useState<boolean>(false);
   const [error_message, setErrorMessage] = useState<string | null>(null);
   const [show_back_to_top, setShowBackToTop] = useState<boolean>(false);
 
@@ -483,7 +483,7 @@ const UV_PrivacyPolicy: React.FC = () => {
 
   // Global state access - CRITICAL: Individual selectors
   const isAuthenticated = useAppStore(state => state.authentication_state.authentication_status.is_authenticated);
-  const currentUser = useAppStore(state => state.authentication_state.current_user);
+  // const currentUser = useAppStore(state => state.authentication_state.current_user);
 
   // Section refs for scrolling
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({});

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useAppStore } from '@/store/main';
-import { AlertTriangle, Power, Shield, Clock, GitBranch, Settings, Calendar, Zap } from 'lucide-react';
+import { AlertTriangle, Power, Shield, GitBranch, Settings, Calendar, Zap } from 'lucide-react';
 
 // ============================================================================
 // TYPE DEFINITIONS

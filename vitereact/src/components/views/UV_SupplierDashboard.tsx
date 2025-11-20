@@ -147,12 +147,12 @@ const UV_SupplierDashboard: React.FC = () => {
   const queryClient = useQueryClient();
   
   // CRITICAL: Individual selectors to avoid infinite loops
-  const currentUser = useAppStore(state => state.authentication_state.current_user);
+  // const currentUser = useAppStore(state => state.authentication_state.current_user);
   const supplierProfile = useAppStore(state => state.authentication_state.supplier_profile);
   const authToken = useAppStore(state => state.authentication_state.auth_token);
   
   const supplier_id = supplierProfile?.supplier_id || '';
-  const date_range = searchParams.get('date_range') || 'month';
+  // const date_range = searchParams.get('date_range') || 'month';
 
   // ============================================================================
   // DATA QUERIES
@@ -252,10 +252,10 @@ const UV_SupplierDashboard: React.FC = () => {
   // Calculate metrics from available data
   const dashboard_metrics: DashboardMetrics = useMemo(() => {
     const now = new Date();
-    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const weekStart = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-    const yearStart = new Date(now.getFullYear(), 0, 1);
+    // const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    // const weekStart = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    // const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    // const yearStart = new Date(now.getFullYear(), 0, 1);
 
     // Use profile data for aggregates
     const total_sales = profile?.total_sales || 0;

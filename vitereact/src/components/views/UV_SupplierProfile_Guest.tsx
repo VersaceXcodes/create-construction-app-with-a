@@ -3,11 +3,11 @@ import { useParams, useSearchParams, Link, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { 
-  MapPin, 
+  
   Star, 
   ShieldCheck, 
-  Phone, 
-  Mail, 
+  
+  
   Calendar,
   Package,
   TrendingUp,
@@ -233,7 +233,7 @@ const SignUpGateModal: React.FC<SignUpGateModalProps> = ({ isOpen, onClose, feat
 const UV_SupplierProfile_Guest: React.FC = () => {
   const { supplier_id } = useParams<{ supplier_id: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   // URL params
   const activeTabParam = searchParams.get('tab') || 'about';
@@ -243,8 +243,8 @@ const UV_SupplierProfile_Guest: React.FC = () => {
 
   // Local state
   const [activeTab, setActiveTab] = useState<string>(activeTabParam);
-  const [categoryFilter, setCategoryFilter] = useState<string>(productCategory);
-  const [searchFilter, setSearchFilter] = useState<string>(productSearch);
+  const [categorysetCategoryFilter] = useState<string>(productCategory);
+  const [searchsetSearchFilter] = useState<string>(productSearch);
   const [currentPage, setCurrentPage] = useState<number>(parseInt(productPageParam));
   const [contactGateOpen, setContactGateOpen] = useState(false);
   const [reviewsGateOpen, setReviewsGateOpen] = useState(false);
@@ -290,8 +290,8 @@ const UV_SupplierProfile_Guest: React.FC = () => {
     data: productsData,
     isLoading: isProductsLoading
   } = useQuery({
-    queryKey: ['supplier-products', supplier_id, categoryFilter, searchFilter, currentPage],
-    queryFn: () => fetchSupplierProducts(supplier_id!, categoryFilter, searchFilter, currentPage),
+    queryKey: ['supplier-products', supplier_id, categorysearchcurrentPage],
+    queryFn: () => fetchSupplierProducts(supplier_id!, categorysearchcurrentPage),
     enabled: !!supplier_id && activeTab === 'products',
     staleTime: 2 * 60 * 1000,
     retry: 1
