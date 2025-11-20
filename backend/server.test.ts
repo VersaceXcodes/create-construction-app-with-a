@@ -16,6 +16,17 @@ let testProductId: string;
 let testOrderId: string;
 let testCartId: string;
 
+// Order test variables (used across multiple test suites)
+let orderCustomerToken: string;
+let orderCustomerId: string;
+let orderAddressId: string;
+
+// Review test variables (used across multiple test suites)
+let reviewOrderId: string;
+let reviewSupplierId: string;
+let reviewProductId: string;
+let reviewCustomerToken: string;
+
 // WebSocket test utilities
 let ioServer: Server;
 let clientSocket: ClientSocket;
@@ -1576,11 +1587,6 @@ describe('Shopping Cart Endpoints', () => {
 // ============================================
 
 describe('Order Endpoints', () => {
-  
-  let orderCustomerToken: string;
-  let orderCustomerId: string;
-  let orderAddressId: string;
-  let testProductId: string;
 
   beforeAll(async () => {
     // Create customer with address
@@ -2226,11 +2232,6 @@ describe('Delivery & Tracking Endpoints', () => {
 // ============================================
 
 describe('Review Endpoints', () => {
-  
-  let reviewOrderId: string;
-  let reviewSupplierId: string;
-  let reviewProductId: string;
-  let reviewCustomerToken: string;
 
   beforeAll(async () => {
     // Create completed order for review

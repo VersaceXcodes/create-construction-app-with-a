@@ -130,21 +130,6 @@ const requireAdmin = (req: AuthRequest, res: Response, next: NextFunction) => {
   next();
 };
 
-// Helper to safely convert query params to string
-const asString = (value: any): string | undefined => {
-  if (typeof value === 'string') return value;
-  if (Array.isArray(value) && value.length > 0 && typeof value[0] === 'string') return value[0];
-  return undefined;
-};
-
-// Helper to safely convert query params to number
-const asNumber = (value: any, defaultValue: number = 0): number => {
-  const str = asString(value);
-  if (!str) return defaultValue;
-  const num = parseInt(str, 10);
-  return isNaN(num) ? defaultValue : num;
-};
-
 app.post('/api/auth/register/customer', async (req, res) => {
   const client = await pool.connect();
   try {
@@ -466,7 +451,7 @@ app.post('/api/auth/reset-password', async (req, res) => {
   }
 });
 
-app.get('/api/users/me', authenticateToken, async (req: AuthRequest, res: Response) => {
+app.get('/api/users/me', authenticateToken, async (req, res) => {
   try {
     const result = await pool.query('SELECT user_id, email, user_type, first_name, last_name, phone_number, profile_photo_url, registration_date, last_login_date, status, email_verified, created_at, updated_at FROM users WHERE user_id = $1', [req.user.user_id]);
     res.json(result.rows[0]);
@@ -475,7 +460,7 @@ app.get('/api/users/me', authenticateToken, async (req: AuthRequest, res: Respon
   }
 });
 
-app.patch('/api/users/me', authenticateToken, async (req: AuthRequest, res: Response) => {
+app.patch('/api/users/me', authenticateToken, async (req, res) => {
   try {
     const { first_name, last_name, phone_number, profile_photo_url } = req.body;
     const now = new Date().toISOString();
@@ -520,7 +505,7 @@ app.patch('/api/users/me', authenticateToken, async (req: AuthRequest, res: Resp
   }
 });
 
-app.post('/api/users/me/change-password', authenticateToken, async (req: AuthRequest, res: Response) => {
+app.post('/api/users/me/change-password', authenticateToken, async (req, res) => {
   try {
     const { current_password, new_password } = req.body;
 
@@ -560,7 +545,7 @@ app.get('/api/users/:user_id', async (req, res) => {
   }
 });
 
-app.get('/api/customers/me', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
+app.get('/api/customers/me', authenticateToken, requireCustomer, async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM customers WHERE user_id = $1', [req.user.user_id]);
     if (result.rows.length === 0) {
@@ -572,7 +557,7 @@ app.get('/api/customers/me', authenticateToken, requireCustomer, async (req: Aut
   }
 });
 
-app.patch('/api/customers/me', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
+app.patch('/api/customers/me', authenticateToken, requireCustomer, async (req, res) => {
   try {
     const { account_type, default_delivery_address_id, preferred_brands, preferred_suppliers, preferred_categories, notification_preferences, onboarding_completed } = req.body;
     const now = new Date().toISOString();
@@ -629,7 +614,7 @@ app.patch('/api/customers/me', authenticateToken, requireCustomer, async (req: A
   }
 });
 
-app.get('/api/addresses', authenticateToken, async (req: AuthRequest, res: Response) => {
+app.get('/api/addresses', authenticateToken, async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM addresses WHERE user_id = $1 ORDER BY is_default DESC, created_at DESC', [req.user.user_id]);
     res.json(result.rows);
@@ -638,7 +623,7 @@ app.get('/api/addresses', authenticateToken, async (req: AuthRequest, res: Respo
   }
 });
 
-app.post('/api/addresses', authenticateToken, async (req: AuthRequest, res: Response) => {
+app.post('/api/addresses', authenticateToken, async (req, res) => {
   try {
     const { label, full_name, phone_number, street_address, apt_suite, city, state, postal_code, country, address_type, delivery_instructions, is_default } = req.body;
 
@@ -664,7 +649,7 @@ app.post('/api/addresses', authenticateToken, async (req: AuthRequest, res: Resp
   }
 });
 
-app.get('/api/addresses/:address_id', authenticateToken, async (req: AuthRequest, res: Response) => {
+app.get('/api/addresses/:address_id', authenticateToken, async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM addresses WHERE address_id = $1 AND user_id = $2', [req.params.address_id, req.user.user_id]);
     if (result.rows.length === 0) {
@@ -676,7 +661,7 @@ app.get('/api/addresses/:address_id', authenticateToken, async (req: AuthRequest
   }
 });
 
-app.patch('/api/addresses/:address_id', authenticateToken, async (req: AuthRequest, res: Response) => {
+app.patch('/api/addresses/:address_id', authenticateToken, async (req, res) => {
   try {
     const { label, full_name, phone_number, street_address, apt_suite, city, state, postal_code, address_type, delivery_instructions, is_default } = req.body;
     const now = new Date().toISOString();
@@ -721,7 +706,7 @@ app.patch('/api/addresses/:address_id', authenticateToken, async (req: AuthReque
   }
 });
 
-app.delete('/api/addresses/:address_id', authenticateToken, async (req: AuthRequest, res: Response) => {
+app.delete('/api/addresses/:address_id', authenticateToken, async (req, res) => {
   try {
     const result = await pool.query('DELETE FROM addresses WHERE address_id = $1 AND user_id = $2 RETURNING address_id', [req.params.address_id, req.user.user_id]);
     if (result.rows.length === 0) {
@@ -733,7 +718,7 @@ app.delete('/api/addresses/:address_id', authenticateToken, async (req: AuthRequ
   }
 });
 
-app.get('/api/payment-methods', authenticateToken, async (req: AuthRequest, res: Response) => {
+app.get('/api/payment-methods', authenticateToken, async (req, res) => {
   try {
     const result = await pool.query('SELECT payment_method_id, user_id, payment_type, card_brand, card_last_four, card_expiry_month, card_expiry_year, cardholder_name, billing_address_id, is_default, created_at, updated_at FROM payment_methods WHERE user_id = $1 ORDER BY is_default DESC, created_at DESC', [req.user.user_id]);
     res.json(result.rows);
@@ -742,7 +727,7 @@ app.get('/api/payment-methods', authenticateToken, async (req: AuthRequest, res:
   }
 });
 
-app.post('/api/payment-methods', authenticateToken, async (req: AuthRequest, res: Response) => {
+app.post('/api/payment-methods', authenticateToken, async (req, res) => {
   try {
     const { payment_type, card_brand, card_last_four, card_expiry_month, card_expiry_year, cardholder_name, billing_address_id, payment_token, is_default } = req.body;
 
@@ -768,7 +753,7 @@ app.post('/api/payment-methods', authenticateToken, async (req: AuthRequest, res
   }
 });
 
-app.patch('/api/payment-methods/:payment_method_id', authenticateToken, async (req: AuthRequest, res: Response) => {
+app.patch('/api/payment-methods/:payment_method_id', authenticateToken, async (req, res) => {
   try {
     const { card_expiry_month, card_expiry_year, billing_address_id, is_default } = req.body;
     const now = new Date().toISOString();
@@ -806,7 +791,7 @@ app.patch('/api/payment-methods/:payment_method_id', authenticateToken, async (r
   }
 });
 
-app.delete('/api/payment-methods/:payment_method_id', authenticateToken, async (req: AuthRequest, res: Response) => {
+app.delete('/api/payment-methods/:payment_method_id', authenticateToken, async (req, res) => {
   try {
     const result = await pool.query('DELETE FROM payment_methods WHERE payment_method_id = $1 AND user_id = $2 RETURNING payment_method_id', [req.params.payment_method_id, req.user.user_id]);
     if (result.rows.length === 0) {
@@ -820,28 +805,11 @@ app.delete('/api/payment-methods/:payment_method_id', authenticateToken, async (
 
 app.get('/api/products', async (req, res) => {
   try {
-    const search_query = asString(req.query.search_query);
-    const category = asString(req.query.category);
-    const supplier_id = asString(req.query.supplier_id);
-    const brand = asString(req.query.brand);
-    const status = asString(req.query.status);
-    const is_featured = asString(req.query.is_featured);
-    const price_min = asString(req.query.price_min);
-    const price_max = asString(req.query.price_max);
-    const in_stock_only = asString(req.query.in_stock_only);
-    const supplier_rating_min = asString(req.query.supplier_rating_min);
-    const brands = asString(req.query.brands);
-    const delivery_speed = asString(req.query.delivery_speed);
-    const supplier_distance_max = asString(req.query.supplier_distance_max);
-    const deals_only = asString(req.query.deals_only);
-    const tags = asString(req.query.tags);
-    const customer_type_availability = asString(req.query.customer_type_availability);
-    const sort_by = asString(req.query.sort_by) || 'created_at';
-    const sort_order = asString(req.query.sort_order) || 'desc';
+    const { search_query, category, supplier_id, brand, status, is_featured, price_min, price_max, in_stock_only, supplier_rating_min, brands, delivery_speed, supplier_distance_max, deals_only, tags, customer_type_availability, sort_by = 'created_at', sort_order = 'desc' } = req.query;
     
     // Coerce query params to prevent 400 errors
-    const limit = Math.min(asNumber(req.query.limit, 50), 100);
-    const offset = asNumber(req.query.offset, 0);
+    const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
+    const offset = parseInt(req.query.offset as string) || 0;
 
     let query = `
       SELECT 
@@ -970,7 +938,7 @@ app.get('/api/products/:product_id', async (req, res) => {
   }
 });
 
-app.patch('/api/products/:product_id', authenticateToken, requireSupplier, async (req: AuthRequest, res: Response) => {
+app.patch('/api/products/:product_id', authenticateToken, requireSupplier, async (req, res) => {
   try {
     const { product_name, description, price_per_unit, stock_quantity, status, images, primary_image_url, is_featured, tags } = req.body;
     const now = new Date().toISOString();
@@ -1053,7 +1021,7 @@ app.post('/api/products/:product_id/view', async (req, res) => {
 
 app.get('/api/products/compare', async (req, res) => {
   try {
-    const product_ids = asString(req.query.product_ids);
+    const { product_ids } = req.query;
     if (!product_ids) {
       return res.status(400).json({ error: 'ValidationError', message: 'product_ids required' });
     }
@@ -1121,8 +1089,8 @@ app.get('/api/categories/:category_id', async (req, res) => {
 app.get('/api/categories/:category_id/products', async (req, res) => {
   try {
     // Coerce query params
-    const limit = Math.min(asNumber(req.query.limit, 50), 100);
-    const offset = asNumber(req.query.offset, 0);
+    const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
+    const offset = parseInt(req.query.offset as string) || 0;
     
     const result = await pool.query(
       `SELECT p.*, s.business_name, s.rating_average
@@ -1150,19 +1118,11 @@ app.get('/api/categories/:category_id/products', async (req, res) => {
 
 app.get('/api/suppliers', async (req, res) => {
   try {
-    const query = asString(req.query.query);
-    const business_type = asString(req.query.business_type);
-    const verification_status = asString(req.query.verification_status);
-    const status = asString(req.query.status);
-    const subscription_plan = asString(req.query.subscription_plan);
-    const min_rating = asString(req.query.min_rating);
-    const service_area = asString(req.query.service_area);
-    const sort_by = asString(req.query.sort_by) || 'rating_average';
-    const sort_order = asString(req.query.sort_order) || 'desc';
+    const { query, business_type, verification_status, status, subscription_plan, min_rating, service_area, sort_by = 'rating_average', sort_order = 'desc' } = req.query;
     
     // Coerce query params
-    const limit = Math.min(asNumber(req.query.limit, 50), 100);
-    const offset = asNumber(req.query.offset, 0);
+    const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
+    const offset = parseInt(req.query.offset as string) || 0;
 
     let sqlQuery = 'SELECT * FROM suppliers WHERE 1=1';
     const params = [];
@@ -1243,7 +1203,7 @@ app.get('/api/suppliers/:supplier_id', async (req, res) => {
   }
 });
 
-app.get('/api/suppliers/me', authenticateToken, requireSupplier, async (req: AuthRequest, res: Response) => {
+app.get('/api/suppliers/me', authenticateToken, requireSupplier, async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM suppliers WHERE user_id = $1', [req.user.user_id]);
     if (result.rows.length === 0) {
@@ -1255,7 +1215,7 @@ app.get('/api/suppliers/me', authenticateToken, requireSupplier, async (req: Aut
   }
 });
 
-app.patch('/api/suppliers/me', authenticateToken, requireSupplier, async (req: AuthRequest, res: Response) => {
+app.patch('/api/suppliers/me', authenticateToken, requireSupplier, async (req, res) => {
   try {
     const { business_name, business_description, logo_url, cover_photo_url, operating_hours, service_areas, return_policy, shipping_policy, minimum_order_value, onboarding_completed } = req.body;
     const now = new Date().toISOString();
@@ -1327,7 +1287,7 @@ app.get('/api/suppliers/:supplier_id/products', async (req, res) => {
   }
 });
 
-app.get('/api/suppliers/me/products', authenticateToken, requireSupplier, async (req: AuthRequest, res: Response) => {
+app.get('/api/suppliers/me/products', authenticateToken, requireSupplier, async (req, res) => {
   try {
     const { status_filter, category_filter, search_query, sort_by = 'date_added', limit = 50, offset = 0 } = req.query;
     let query = 'SELECT * FROM products WHERE supplier_id = $1';
@@ -1377,7 +1337,7 @@ app.get('/api/suppliers/me/products', authenticateToken, requireSupplier, async 
   }
 });
 
-app.post('/api/suppliers/me/products', authenticateToken, requireSupplier, async (req: AuthRequest, res: Response) => {
+app.post('/api/suppliers/me/products', authenticateToken, requireSupplier, async (req, res) => {
   try {
     const { category_id, sku, product_name, description, key_features, specifications, price_per_unit, unit_of_measure, bulk_pricing, stock_quantity, low_stock_threshold, images, primary_image_url, brand, minimum_order_quantity, handling_time_days } = req.body;
 
@@ -1412,7 +1372,7 @@ app.post('/api/suppliers/me/products', authenticateToken, requireSupplier, async
   }
 });
 
-app.get('/api/cart', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
+app.get('/api/cart', authenticateToken, requireCustomer, async (req, res) => {
   try {
     const cartResult = await pool.query(
       'SELECT * FROM carts WHERE customer_id = $1 AND status = \'active\' ORDER BY created_date DESC LIMIT 1',
@@ -1446,7 +1406,7 @@ app.get('/api/cart', authenticateToken, requireCustomer, async (req: AuthRequest
   }
 });
 
-app.delete('/api/cart', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
+app.delete('/api/cart', authenticateToken, requireCustomer, async (req, res) => {
   try {
     const cartResult = await pool.query('SELECT cart_id FROM carts WHERE customer_id = $1 AND status = \'active\'', [req.user.customer_id]);
     if (cartResult.rows.length > 0) {
@@ -1458,7 +1418,7 @@ app.delete('/api/cart', authenticateToken, requireCustomer, async (req: AuthRequ
   }
 });
 
-app.post('/api/cart/items', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
+app.post('/api/cart/items', authenticateToken, requireCustomer, async (req, res) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
@@ -1540,7 +1500,7 @@ app.post('/api/cart/items', authenticateToken, requireCustomer, async (req: Auth
   }
 });
 
-app.patch('/api/cart/items/:cart_item_id', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
+app.patch('/api/cart/items/:cart_item_id', authenticateToken, requireCustomer, async (req, res) => {
   try {
     const { quantity } = req.body;
 
@@ -1564,7 +1524,7 @@ app.patch('/api/cart/items/:cart_item_id', authenticateToken, requireCustomer, a
   }
 });
 
-app.delete('/api/cart/items/:cart_item_id', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
+app.delete('/api/cart/items/:cart_item_id', authenticateToken, requireCustomer, async (req, res) => {
   try {
     const result = await pool.query('DELETE FROM cart_items WHERE cart_item_id = $1 RETURNING cart_item_id', [req.params.cart_item_id]);
     if (result.rows.length === 0) {
@@ -1576,7 +1536,7 @@ app.delete('/api/cart/items/:cart_item_id', authenticateToken, requireCustomer, 
   }
 });
 
-app.post('/api/cart/save', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
+app.post('/api/cart/save', authenticateToken, requireCustomer, async (req, res) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
@@ -1630,7 +1590,7 @@ app.post('/api/cart/save', authenticateToken, requireCustomer, async (req: AuthR
   }
 });
 
-app.get('/api/wishlist', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
+app.get('/api/wishlist', authenticateToken, requireCustomer, async (req, res) => {
   try {
     const { sort_by = 'date_added', filter_by } = req.query;
     let query = `
@@ -1658,7 +1618,7 @@ app.get('/api/wishlist', authenticateToken, requireCustomer, async (req: AuthReq
   }
 });
 
-app.post('/api/wishlist', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
+app.post('/api/wishlist', authenticateToken, requireCustomer, async (req, res) => {
   try {
     const { product_id, price_drop_alert_enabled, back_in_stock_alert_enabled } = req.body;
 
@@ -1685,7 +1645,7 @@ app.post('/api/wishlist', authenticateToken, requireCustomer, async (req: AuthRe
   }
 });
 
-app.patch('/api/wishlist/:wishlist_item_id', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
+app.patch('/api/wishlist/:wishlist_item_id', authenticateToken, requireCustomer, async (req, res) => {
   try {
     const { price_drop_alert_enabled, back_in_stock_alert_enabled } = req.body;
     const now = new Date().toISOString();
@@ -1717,7 +1677,7 @@ app.patch('/api/wishlist/:wishlist_item_id', authenticateToken, requireCustomer,
   }
 });
 
-app.delete('/api/wishlist/:wishlist_item_id', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
+app.delete('/api/wishlist/:wishlist_item_id', authenticateToken, requireCustomer, async (req, res) => {
   try {
     const result = await pool.query('DELETE FROM wishlist_items WHERE wishlist_item_id = $1 AND customer_id = $2 RETURNING wishlist_item_id', [req.params.wishlist_item_id, req.user.customer_id]);
     if (result.rows.length === 0) {
@@ -1729,7 +1689,7 @@ app.delete('/api/wishlist/:wishlist_item_id', authenticateToken, requireCustomer
   }
 });
 
-app.get('/api/projects', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
+app.get('/api/projects', authenticateToken, requireCustomer, async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM projects WHERE customer_id = $1 ORDER BY last_updated_date DESC', [req.user.customer_id]);
     res.json(result.rows);
@@ -1738,7 +1698,7 @@ app.get('/api/projects', authenticateToken, requireCustomer, async (req: AuthReq
   }
 });
 
-app.post('/api/projects', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
+app.post('/api/projects', authenticateToken, requireCustomer, async (req, res) => {
   try {
     const { project_name, description } = req.body;
 
@@ -1760,7 +1720,7 @@ app.post('/api/projects', authenticateToken, requireCustomer, async (req: AuthRe
   }
 });
 
-app.get('/api/projects/:project_id', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
+app.get('/api/projects/:project_id', authenticateToken, requireCustomer, async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM projects WHERE project_id = $1 AND customer_id = $2', [req.params.project_id, req.user.customer_id]);
     if (result.rows.length === 0) {
@@ -1784,7 +1744,7 @@ app.get('/api/projects/:project_id', authenticateToken, requireCustomer, async (
   }
 });
 
-app.patch('/api/projects/:project_id', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
+app.patch('/api/projects/:project_id', authenticateToken, requireCustomer, async (req, res) => {
   try {
     const { project_name, description } = req.body;
     const now = new Date().toISOString();
@@ -1818,7 +1778,7 @@ app.patch('/api/projects/:project_id', authenticateToken, requireCustomer, async
   }
 });
 
-app.delete('/api/projects/:project_id', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
+app.delete('/api/projects/:project_id', authenticateToken, requireCustomer, async (req, res) => {
   try {
     const result = await pool.query('DELETE FROM projects WHERE project_id = $1 AND customer_id = $2 RETURNING project_id', [req.params.project_id, req.user.customer_id]);
     if (result.rows.length === 0) {
@@ -1830,7 +1790,7 @@ app.delete('/api/projects/:project_id', authenticateToken, requireCustomer, asyn
   }
 });
 
-app.post('/api/projects/:project_id/load-to-cart', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
+app.post('/api/projects/:project_id/load-to-cart', authenticateToken, requireCustomer, async (req, res) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
@@ -1901,13 +1861,13 @@ app.post('/api/projects/:project_id/load-to-cart', authenticateToken, requireCus
   }
 });
 
-app.get('/api/orders', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
+app.get('/api/orders', authenticateToken, requireCustomer, async (req, res) => {
   try {
     const { status_filter, date_range, supplier_id, sort_by = 'order_date', sort_order = 'desc' } = req.query;
     
     // Coerce query params
-    const limit = Math.min(asNumber(req.query.limit, 50) || 50, 100);
-    const offset = asNumber(req.query.offset, 0) || 0;
+    const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
+    const offset = parseInt(req.query.offset as string) || 0;
 
     let query = 'SELECT * FROM orders WHERE customer_id = $1';
     const params = [req.user.customer_id];
@@ -1938,7 +1898,7 @@ app.get('/api/orders', authenticateToken, requireCustomer, async (req: AuthReque
   }
 });
 
-app.post('/api/orders', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
+app.post('/api/orders', authenticateToken, requireCustomer, async (req, res) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
@@ -2054,7 +2014,7 @@ app.post('/api/orders', authenticateToken, requireCustomer, async (req: AuthRequ
   }
 });
 
-app.get('/api/orders/:order_id', authenticateToken, async (req: AuthRequest, res: Response) => {
+app.get('/api/orders/:order_id', authenticateToken, async (req, res) => {
   try {
     const orderResult = await pool.query('SELECT * FROM orders WHERE order_id = $1', [req.params.order_id]);
     if (orderResult.rows.length === 0) {
@@ -2082,7 +2042,7 @@ app.get('/api/orders/:order_id', authenticateToken, async (req: AuthRequest, res
   }
 });
 
-app.patch('/api/orders/:order_id', authenticateToken, async (req: AuthRequest, res: Response) => {
+app.patch('/api/orders/:order_id', authenticateToken, async (req, res) => {
   try {
     const { status, payment_status } = req.body;
     const now = new Date().toISOString();
@@ -2132,7 +2092,7 @@ app.patch('/api/orders/:order_id', authenticateToken, async (req: AuthRequest, r
   }
 });
 
-app.post('/api/orders/:order_id/cancel', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
+app.post('/api/orders/:order_id/cancel', authenticateToken, requireCustomer, async (req, res) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
@@ -2169,7 +2129,7 @@ app.post('/api/orders/:order_id/cancel', authenticateToken, requireCustomer, asy
   }
 });
 
-app.get('/api/orders/:order_id/timeline', authenticateToken, async (req: AuthRequest, res: Response) => {
+app.get('/api/orders/:order_id/timeline', authenticateToken, async (req, res) => {
   try {
     const result = await pool.query(
       'SELECT milestone, status, timestamp, description FROM order_timeline WHERE order_id = $1 ORDER BY timestamp ASC',
@@ -2181,7 +2141,7 @@ app.get('/api/orders/:order_id/timeline', authenticateToken, async (req: AuthReq
   }
 });
 
-app.post('/api/orders/:order_id/reorder', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
+app.post('/api/orders/:order_id/reorder', authenticateToken, requireCustomer, async (req, res) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
@@ -2252,7 +2212,7 @@ app.post('/api/orders/:order_id/reorder', authenticateToken, requireCustomer, as
   }
 });
 
-app.get('/api/deliveries/:delivery_id', authenticateToken, async (req: AuthRequest, res: Response) => {
+app.get('/api/deliveries/:delivery_id', authenticateToken, async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM deliveries WHERE delivery_id = $1', [req.params.delivery_id]);
     if (result.rows.length === 0) {
@@ -2264,7 +2224,7 @@ app.get('/api/deliveries/:delivery_id', authenticateToken, async (req: AuthReque
   }
 });
 
-app.patch('/api/deliveries/:delivery_id', authenticateToken, async (req: AuthRequest, res: Response) => {
+app.patch('/api/deliveries/:delivery_id', authenticateToken, async (req, res) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
@@ -2332,7 +2292,7 @@ app.patch('/api/deliveries/:delivery_id', authenticateToken, async (req: AuthReq
   }
 });
 
-app.post('/api/deliveries/:delivery_id/reschedule', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
+app.post('/api/deliveries/:delivery_id/reschedule', authenticateToken, requireCustomer, async (req, res) => {
   try {
     const { delivery_window_start, delivery_window_end } = req.body;
 
@@ -2361,8 +2321,8 @@ app.get('/api/reviews', async (req, res) => {
     const { product_id, supplier_id, customer_id, min_rating, status = 'published', verified_purchase, sort_by = 'review_date', sort_order = 'desc' } = req.query;
     
     // Coerce query params
-    const limit = Math.min(asNumber(req.query.limit, 50) || 50, 100);
-    const offset = asNumber(req.query.offset, 0) || 0;
+    const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
+    const offset = parseInt(req.query.offset as string) || 0;
 
     let query = 'SELECT * FROM reviews WHERE 1=1';
     const params = [];
@@ -2433,7 +2393,7 @@ app.get('/api/reviews', async (req, res) => {
   }
 });
 
-app.post('/api/reviews', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
+app.post('/api/reviews', authenticateToken, requireCustomer, async (req, res) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
@@ -2496,7 +2456,7 @@ app.get('/api/reviews/:review_id', async (req, res) => {
   }
 });
 
-app.patch('/api/reviews/:review_id', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
+app.patch('/api/reviews/:review_id', authenticateToken, requireCustomer, async (req, res) => {
   try {
     const { review_text, photos } = req.body;
     const now = new Date().toISOString();
@@ -2528,7 +2488,7 @@ app.patch('/api/reviews/:review_id', authenticateToken, requireCustomer, async (
   }
 });
 
-app.delete('/api/reviews/:review_id', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
+app.delete('/api/reviews/:review_id', authenticateToken, requireCustomer, async (req, res) => {
   try {
     const result = await pool.query('DELETE FROM reviews WHERE review_id = $1 AND customer_id = $2 RETURNING review_id', [req.params.review_id, req.user.customer_id]);
     if (result.rows.length === 0) {
@@ -2540,7 +2500,7 @@ app.delete('/api/reviews/:review_id', authenticateToken, requireCustomer, async 
   }
 });
 
-app.post('/api/reviews/:review_id/helpful', authenticateToken, async (req: AuthRequest, res: Response) => {
+app.post('/api/reviews/:review_id/helpful', authenticateToken, async (req, res) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
@@ -2584,7 +2544,7 @@ app.post('/api/reviews/:review_id/helpful', authenticateToken, async (req: AuthR
   }
 });
 
-app.post('/api/reviews/:review_id/response', authenticateToken, requireSupplier, async (req: AuthRequest, res: Response) => {
+app.post('/api/reviews/:review_id/response', authenticateToken, requireSupplier, async (req, res) => {
   try {
     const { supplier_response } = req.body;
 
@@ -2608,13 +2568,13 @@ app.post('/api/reviews/:review_id/response', authenticateToken, requireSupplier,
   }
 });
 
-app.get('/api/notifications', authenticateToken, async (req: AuthRequest, res: Response) => {
+app.get('/api/notifications', authenticateToken, async (req, res) => {
   try {
     const { notification_type, is_read } = req.query;
     
     // Coerce query params
-    const limit = Math.min(asNumber(req.query.limit, 50) || 50, 100);
-    const offset = asNumber(req.query.offset, 0) || 0;
+    const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
+    const offset = parseInt(req.query.offset as string) || 0;
 
     let query = 'SELECT * FROM notifications WHERE user_id = $1';
     const params = [req.user.user_id];
@@ -2656,7 +2616,7 @@ app.get('/api/notifications', authenticateToken, async (req: AuthRequest, res: R
   }
 });
 
-app.patch('/api/notifications/:notification_id/read', authenticateToken, async (req: AuthRequest, res: Response) => {
+app.patch('/api/notifications/:notification_id/read', authenticateToken, async (req, res) => {
   try {
     const now = new Date().toISOString();
     const result = await pool.query(
@@ -2674,7 +2634,7 @@ app.patch('/api/notifications/:notification_id/read', authenticateToken, async (
   }
 });
 
-app.post('/api/notifications/read-all', authenticateToken, async (req: AuthRequest, res: Response) => {
+app.post('/api/notifications/read-all', authenticateToken, async (req, res) => {
   try {
     const now = new Date().toISOString();
     const result = await pool.query(
@@ -2691,7 +2651,7 @@ app.post('/api/notifications/read-all', authenticateToken, async (req: AuthReque
   }
 });
 
-app.get('/api/issues', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
+app.get('/api/issues', authenticateToken, requireCustomer, async (req, res) => {
   try {
     const { status } = req.query;
     let query = 'SELECT * FROM issues WHERE customer_id = $1';
@@ -2711,7 +2671,7 @@ app.get('/api/issues', authenticateToken, requireCustomer, async (req: AuthReque
   }
 });
 
-app.post('/api/issues', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
+app.post('/api/issues', authenticateToken, requireCustomer, async (req, res) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
@@ -2759,7 +2719,7 @@ app.post('/api/issues', authenticateToken, requireCustomer, async (req: AuthRequ
   }
 });
 
-app.get('/api/issues/:issue_id', authenticateToken, async (req: AuthRequest, res: Response) => {
+app.get('/api/issues/:issue_id', authenticateToken, async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM issues WHERE issue_id = $1', [req.params.issue_id]);
     if (result.rows.length === 0) {
@@ -2786,7 +2746,7 @@ app.get('/api/issues/:issue_id', authenticateToken, async (req: AuthRequest, res
   }
 });
 
-app.post('/api/issues/:issue_id/messages', authenticateToken, async (req: AuthRequest, res: Response) => {
+app.post('/api/issues/:issue_id/messages', authenticateToken, async (req, res) => {
   try {
     const { message_text, attachments } = req.body;
 
@@ -2809,7 +2769,7 @@ app.post('/api/issues/:issue_id/messages', authenticateToken, async (req: AuthRe
   }
 });
 
-app.post('/api/issues/:issue_id/accept-resolution', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
+app.post('/api/issues/:issue_id/accept-resolution', authenticateToken, requireCustomer, async (req, res) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
@@ -2839,7 +2799,7 @@ app.post('/api/issues/:issue_id/accept-resolution', authenticateToken, requireCu
   }
 });
 
-app.post('/api/issues/:issue_id/escalate', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
+app.post('/api/issues/:issue_id/escalate', authenticateToken, requireCustomer, async (req, res) => {
   try {
     const now = new Date().toISOString();
     const result = await pool.query(
@@ -2857,7 +2817,7 @@ app.post('/api/issues/:issue_id/escalate', authenticateToken, requireCustomer, a
   }
 });
 
-app.get('/api/chat/conversations', authenticateToken, async (req: AuthRequest, res: Response) => {
+app.get('/api/chat/conversations', authenticateToken, async (req, res) => {
   try {
     const { conversation_type, status } = req.query;
     let query = 'SELECT * FROM chat_conversations WHERE ';
@@ -2899,7 +2859,7 @@ app.get('/api/chat/conversations', authenticateToken, async (req: AuthRequest, r
   }
 });
 
-app.post('/api/chat/conversations', authenticateToken, async (req: AuthRequest, res: Response) => {
+app.post('/api/chat/conversations', authenticateToken, async (req, res) => {
   try {
     const { conversation_type, supplier_id, related_entity_type, related_entity_id } = req.body;
 
@@ -2933,9 +2893,9 @@ app.post('/api/chat/conversations', authenticateToken, async (req: AuthRequest, 
   }
 });
 
-app.get('/api/chat/conversations/:conversation_id/messages', authenticateToken, async (req: AuthRequest, res: Response) => {
+app.get('/api/chat/conversations/:conversation_id/messages', authenticateToken, async (req, res) => {
   try {
-    const limit = asNumber(req.query.limit, 50); const offset = asNumber(req.query.offset, 0);
+    const { limit = 50, offset = 0 } = req.query;
 
     const result = await pool.query(
       'SELECT * FROM chat_messages WHERE conversation_id = $1 ORDER BY timestamp DESC LIMIT $2 OFFSET $3',
@@ -2948,7 +2908,7 @@ app.get('/api/chat/conversations/:conversation_id/messages', authenticateToken, 
   }
 });
 
-app.post('/api/chat/conversations/:conversation_id/messages', authenticateToken, async (req: AuthRequest, res: Response) => {
+app.post('/api/chat/conversations/:conversation_id/messages', authenticateToken, async (req, res) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
@@ -3010,8 +2970,8 @@ app.get('/api/surplus', async (req, res) => {
     const { query, category_id, condition, price_min, price_max, shipping_available, status = 'active', sort_by = 'created_date', sort_order = 'desc' } = req.query;
     
     // Coerce query params
-    const limit = Math.min(asNumber(req.query.limit, 50) || 50, 100);
-    const offset = asNumber(req.query.offset, 0) || 0;
+    const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
+    const offset = parseInt(req.query.offset as string) || 0;
 
     let sqlQuery = 'SELECT * FROM surplus_listings WHERE 1=1';
     const params = [];
@@ -3084,7 +3044,7 @@ app.get('/api/surplus', async (req, res) => {
   }
 });
 
-app.post('/api/surplus', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
+app.post('/api/surplus', authenticateToken, requireCustomer, async (req, res) => {
   try {
     const { product_name, category_id, description, condition, photos, asking_price, original_price, price_type, quantity, pickup_location, pickup_instructions, shipping_available, shipping_rate, reason_for_selling } = req.body;
 
@@ -3118,7 +3078,7 @@ app.get('/api/surplus/:listing_id', async (req, res) => {
   }
 });
 
-app.patch('/api/surplus/:listing_id', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
+app.patch('/api/surplus/:listing_id', authenticateToken, requireCustomer, async (req, res) => {
   try {
     const { description, photos, asking_price, quantity, status } = req.body;
     const now = new Date().toISOString();
@@ -3153,7 +3113,7 @@ app.patch('/api/surplus/:listing_id', authenticateToken, requireCustomer, async 
   }
 });
 
-app.delete('/api/surplus/:listing_id', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
+app.delete('/api/surplus/:listing_id', authenticateToken, requireCustomer, async (req, res) => {
   try {
     const result = await pool.query('DELETE FROM surplus_listings WHERE listing_id = $1 AND seller_id = $2 RETURNING listing_id', [req.params.listing_id, req.user.customer_id]);
     if (result.rows.length === 0) {
@@ -3165,7 +3125,7 @@ app.delete('/api/surplus/:listing_id', authenticateToken, requireCustomer, async
   }
 });
 
-app.get('/api/surplus/my-listings', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
+app.get('/api/surplus/my-listings', authenticateToken, requireCustomer, async (req, res) => {
   try {
     const { status } = req.query;
     let query = 'SELECT * FROM surplus_listings WHERE seller_id = $1';
@@ -3185,7 +3145,7 @@ app.get('/api/surplus/my-listings', authenticateToken, requireCustomer, async (r
   }
 });
 
-app.post('/api/surplus/:listing_id/offers', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
+app.post('/api/surplus/:listing_id/offers', authenticateToken, requireCustomer, async (req, res) => {
   try {
     const { offer_amount, message } = req.body;
 
@@ -3282,7 +3242,7 @@ app.post('/api/promotions/validate', async (req, res) => {
   }
 });
 
-app.get('/api/support/tickets', authenticateToken, async (req: AuthRequest, res: Response) => {
+app.get('/api/support/tickets', authenticateToken, async (req, res) => {
   try {
     const { status } = req.query;
     let query = 'SELECT * FROM support_tickets WHERE user_id = $1';
@@ -3302,7 +3262,7 @@ app.get('/api/support/tickets', authenticateToken, async (req: AuthRequest, res:
   }
 });
 
-app.post('/api/support/tickets', authenticateToken, async (req: AuthRequest, res: Response) => {
+app.post('/api/support/tickets', authenticateToken, async (req, res) => {
   try {
     const { order_id, issue_category, subject, message, attachments, priority } = req.body;
 
@@ -3324,7 +3284,7 @@ app.post('/api/support/tickets', authenticateToken, async (req: AuthRequest, res
   }
 });
 
-app.get('/api/support/tickets/:ticket_id', authenticateToken, async (req: AuthRequest, res: Response) => {
+app.get('/api/support/tickets/:ticket_id', authenticateToken, async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM support_tickets WHERE ticket_id = $1', [req.params.ticket_id]);
     if (result.rows.length === 0) {
@@ -3345,7 +3305,7 @@ app.get('/api/support/tickets/:ticket_id', authenticateToken, async (req: AuthRe
   }
 });
 
-app.post('/api/support/tickets/:ticket_id/responses', authenticateToken, async (req: AuthRequest, res: Response) => {
+app.post('/api/support/tickets/:ticket_id/responses', authenticateToken, async (req, res) => {
   try {
     const { message, attachments } = req.body;
 
@@ -3370,7 +3330,7 @@ app.post('/api/support/tickets/:ticket_id/responses', authenticateToken, async (
   }
 });
 
-app.get('/api/admin/users', authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+app.get('/api/admin/users', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { query, user_type, status, email_verified, limit = 50, offset = 0 } = req.query;
 
@@ -3420,7 +3380,7 @@ app.get('/api/admin/users', authenticateToken, requireAdmin, async (req: AuthReq
   }
 });
 
-app.patch('/api/admin/users/:user_id', authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+app.patch('/api/admin/users/:user_id', authenticateToken, requireAdmin, async (req, res) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
@@ -3466,7 +3426,7 @@ app.patch('/api/admin/users/:user_id', authenticateToken, requireAdmin, async (r
   }
 });
 
-app.get('/api/admin/supplier-applications', authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+app.get('/api/admin/supplier-applications', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { application_status, assigned_reviewer } = req.query;
 
@@ -3495,7 +3455,7 @@ app.get('/api/admin/supplier-applications', authenticateToken, requireAdmin, asy
   }
 });
 
-app.get('/api/admin/supplier-applications/:application_id', authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+app.get('/api/admin/supplier-applications/:application_id', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM supplier_applications WHERE application_id = $1', [req.params.application_id]);
     if (result.rows.length === 0) {
@@ -3507,7 +3467,7 @@ app.get('/api/admin/supplier-applications/:application_id', authenticateToken, r
   }
 });
 
-app.patch('/api/admin/supplier-applications/:application_id', authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+app.patch('/api/admin/supplier-applications/:application_id', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { application_status, assigned_reviewer_id, verification_checklist, rejection_reason } = req.body;
     const now = new Date().toISOString();
@@ -3545,7 +3505,7 @@ app.patch('/api/admin/supplier-applications/:application_id', authenticateToken,
   }
 });
 
-app.post('/api/admin/supplier-applications/:application_id/approve', authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+app.post('/api/admin/supplier-applications/:application_id/approve', authenticateToken, requireAdmin, async (req, res) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
@@ -3588,7 +3548,7 @@ app.post('/api/admin/supplier-applications/:application_id/approve', authenticat
   }
 });
 
-app.post('/api/admin/supplier-applications/:application_id/reject', authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+app.post('/api/admin/supplier-applications/:application_id/reject', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { rejection_reason } = req.body;
 
@@ -3612,7 +3572,7 @@ app.post('/api/admin/supplier-applications/:application_id/reject', authenticate
   }
 });
 
-app.get('/api/admin/orders', authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+app.get('/api/admin/orders', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { status_filter, value_range, issue_flag, limit = 50, offset = 0 } = req.query;
 
@@ -3644,7 +3604,7 @@ app.get('/api/admin/orders', authenticateToken, requireAdmin, async (req: AuthRe
   }
 });
 
-app.get('/api/admin/disputes', authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+app.get('/api/admin/disputes', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { status, issue_type, assigned_admin } = req.query;
 
@@ -3679,7 +3639,7 @@ app.get('/api/admin/disputes', authenticateToken, requireAdmin, async (req: Auth
   }
 });
 
-app.post('/api/admin/disputes/:issue_id/resolve', authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+app.post('/api/admin/disputes/:issue_id/resolve', authenticateToken, requireAdmin, async (req, res) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
@@ -3719,7 +3679,7 @@ app.post('/api/admin/disputes/:issue_id/resolve', authenticateToken, requireAdmi
   }
 });
 
-app.get('/api/admin/reviews/flagged', authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+app.get('/api/admin/reviews/flagged', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const result = await pool.query(
       `SELECT r.*, f.flag_reason, f.flagged_date
@@ -3734,7 +3694,7 @@ app.get('/api/admin/reviews/flagged', authenticateToken, requireAdmin, async (re
   }
 });
 
-app.post('/api/admin/reviews/:review_id/moderate', authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+app.post('/api/admin/reviews/:review_id/moderate', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { action, reason } = req.body;
 
@@ -3760,7 +3720,7 @@ app.post('/api/admin/reviews/:review_id/moderate', authenticateToken, requireAdm
   }
 });
 
-app.get('/api/admin/payouts', authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+app.get('/api/admin/payouts', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { supplier_id, status } = req.query;
 
@@ -3789,7 +3749,7 @@ app.get('/api/admin/payouts', authenticateToken, requireAdmin, async (req: AuthR
   }
 });
 
-app.post('/api/admin/payouts', authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+app.post('/api/admin/payouts', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { supplier_id, amount, scheduled_date, included_orders, platform_commission, net_amount } = req.body;
 
@@ -3811,7 +3771,7 @@ app.post('/api/admin/payouts', authenticateToken, requireAdmin, async (req: Auth
   }
 });
 
-app.get('/api/admin/analytics/dashboard', authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+app.get('/api/admin/analytics/dashboard', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { metric_type, date_range } = req.query;
 
@@ -3839,7 +3799,7 @@ app.get('/api/admin/analytics/dashboard', authenticateToken, requireAdmin, async
   }
 });
 
-app.get('/api/admin/settings', authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+app.get('/api/admin/settings', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { setting_category } = req.query;
 
@@ -3860,7 +3820,7 @@ app.get('/api/admin/settings', authenticateToken, requireAdmin, async (req: Auth
   }
 });
 
-app.put('/api/admin/settings', authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+app.put('/api/admin/settings', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { setting_key, setting_value, setting_category } = req.body;
 
