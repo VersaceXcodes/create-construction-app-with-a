@@ -97,8 +97,11 @@ const formatDate = (dateString: string): string => {
 
 const UV_MyReviews: React.FC = () => {
   // CRITICAL: Individual Zustand selectors (no object destructuring!)
-  const customerId = useAppStore(state => state.authentication_state.current_user?.customer_id);
+  const currentUser = useAppStore(state => state.authentication_state.current_user);
   const authToken = useAppStore(state => state.authentication_state.auth_token);
+  
+  // Extract customer_id from customer relationship
+  const customerId = currentUser?.user_type === 'customer' ? currentUser.user_id : null;
   
   // Query client for cache invalidation
   const queryClient = useQueryClient();
@@ -138,7 +141,7 @@ const UV_MyReviews: React.FC = () => {
       
       const response = await axios.get(`${API_BASE_URL}/reviews`, {
         params: {
-          customer_id: customerId,
+          user_id: customerId,
           limit: 50,
           offset: 0,
           sort_by: filterOptions.sort_by,

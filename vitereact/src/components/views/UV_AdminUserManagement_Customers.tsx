@@ -272,10 +272,14 @@ const UV_AdminUserManagement_Customers: React.FC = () => {
     queryFn: () => fetchCustomers(searchFilters, pagination, authToken),
     enabled: !!authToken && currentUser?.user_type === 'admin',
     staleTime: 60000, // 1 minute
-    onSuccess: (data) => {
-      setPagination(prev => ({ ...prev, ...data.pagination }));
-    }
   });
+  
+  // React Query v5: Replace onSuccess with useEffect
+  useEffect(() => {
+    if (customersData?.pagination) {
+      setPagination(prev => ({ ...prev, ...customersData.pagination }));
+    }
+  }, [customersData]);
 
   const customers = customersData?.customers_list || [];
 
@@ -302,8 +306,8 @@ const UV_AdminUserManagement_Customers: React.FC = () => {
     mutationFn: ({ userId, newStatus }: { userId: string; newStatus: string }) =>
       updateCustomerStatus(userId, newStatus, authToken),
     onSuccess: () => {
-      queryClient.invalidateQueries(['admin-customers']);
-      queryClient.invalidateQueries(['admin-customer-detail', selectedCustomerId]);
+      queryClient.invalidateQueries({ queryKey: ['admin-customers'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-customer-detail', selectedCustomerId] });
     }
   });
 
@@ -450,7 +454,7 @@ const UV_AdminUserManagement_Customers: React.FC = () => {
                     </span>
                     <button
                       onClick={() => handleBulkStatusUpdate('suspended')}
-                      disabled={updateStatusMutation.isLoading}
+                      disabled={updateStatusMutation.isPending}
                       className="inline-flex items-center px-3 py-2 border border-red-300 rounded-lg text-sm font-medium text-red-700 bg-red-50 hover:bg-red-100 transition-colors"
                     >
                       <Ban className="h-4 w-4 mr-1" />
@@ -458,7 +462,7 @@ const UV_AdminUserManagement_Customers: React.FC = () => {
                     </button>
                     <button
                       onClick={() => handleBulkStatusUpdate('active')}
-                      disabled={updateStatusMutation.isLoading}
+                      disabled={updateStatusMutation.isPending}
                       className="inline-flex items-center px-3 py-2 border border-green-300 rounded-lg text-sm font-medium text-green-700 bg-green-50 hover:bg-green-100 transition-colors"
                     >
                       <CheckCircle className="h-4 w-4 mr-1" />
@@ -811,9 +815,9 @@ const UV_AdminUserManagement_Customers: React.FC = () => {
                               </div>
                               <div className="text-sm text-gray-500 flex items-center">
                                 {customer.email}
-                                {!customer.email_verified && (
-                                  <XCircle className="h-3 w-3 text-amber-500 ml-1" title="Email not verified" />
-                                )}
+                               {!customer.email_verified && (
+                                 <XCircle className="h-3 w-3 text-amber-500 ml-1" aria-label="Email not verified" />
+                               )}
                               </div>
                             </div>
                           </div>
@@ -965,7 +969,7 @@ const UV_AdminUserManagement_Customers: React.FC = () => {
                         <select
                           value={selectedCustomer.status}
                           onChange={(e) => handleStatusUpdate(selectedCustomer.user_id, e.target.value)}
-                          disabled={updateStatusMutation.isLoading}
+                          disabled={updateStatusMutation.isPending}
                           className="px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50"
                         >
                           <option value="active">Active</option>

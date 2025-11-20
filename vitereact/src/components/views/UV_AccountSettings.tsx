@@ -13,8 +13,7 @@ import {
   Trash2, 
   Plus, 
   Edit2, 
-  Check, 
-  X,
+  Check,
   Home,
   Building2,
   Warehouse,
@@ -176,7 +175,6 @@ const UV_AccountSettings: React.FC = () => {
 
   // CRITICAL: Individual selectors to avoid infinite loops
   const authToken = useAppStore(state => state.authentication_state.auth_token);
-  const currentUser = useAppStore(state => state.authentication_state.current_user);
   
   // Local state
   const [activeSection, setActiveSection] = useState<string>(searchParams.get('section') || 'profile');

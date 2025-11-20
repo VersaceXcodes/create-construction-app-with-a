@@ -165,17 +165,26 @@ const UV_ProjectDetail: React.FC = () => {
         project: response.project,
         items: transformedItems
       };
-    },
-    onSuccess: (data) => {
+    }
+  });
+  
+  // React Query v5: Replace onSuccess with useEffect
+  useEffect(() => {
+    if (data?.project) {
       setProjectName(data.project.project_name || '');
       setProjectDescription(data.project.description || '');
-    },
-    onError: (err: any) => {
-      if (err.response?.status === 404 || err.response?.status === 403) {
+    }
+  }, [data]);
+  
+  // React Query v5: Replace onError with useEffect
+  useEffect(() => {
+    if (error) {
+      const axiosError = error as any;
+      if (axiosError.response?.status === 404 || axiosError.response?.status === 403) {
         setTimeout(() => navigate('/projects'), 3000);
       }
     }
-  });
+  }, [error, navigate]);
   
   // ============================================================================
   // MUTATIONS

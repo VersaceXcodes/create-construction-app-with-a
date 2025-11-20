@@ -140,7 +140,7 @@ const UV_Catalog: React.FC = () => {
       sort_order: sortConfig.sort_order,
     }),
     staleTime: 30000, // 30 seconds
-    keepPreviousData: true,
+    placeholderData: (previousData) => previousData,
   });
   
   // Fetch categories for filter sidebar
@@ -639,7 +639,7 @@ const UV_Catalog: React.FC = () => {
                         onClick={() => setShowFilterDrawer(false)}
                         className="w-full px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
                       >
-                        View {productsData?.total || 0} Results
+                        View {productsData?.total ?? 0} Results
                       </button>
                     </div>
                   </div>
@@ -661,9 +661,9 @@ const UV_Catalog: React.FC = () => {
                       <>All Products</>
                     )}
                   </h1>
-                  <p className="text-sm text-gray-600 mt-1">
-                    {productsData ? `${productsData.total} products found` : 'Loading...'}
-                  </p>
+                   <p className="text-sm text-gray-600 mt-1">
+                     {productsData ? `${productsData.total || 0} products found` : 'Loading...'}
+                   </p>
                 </div>
                 
                 {/* Mobile View/Sort Controls */}

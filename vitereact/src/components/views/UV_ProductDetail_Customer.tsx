@@ -393,7 +393,7 @@ const UV_ProductDetail_Customer: React.FC = () => {
   const handleQuantityChange = (delta: number) => {
     const newQty = selectedQuantity + delta;
     if (newQty >= 1) {
-      const maxQty = product?.maximum_order_quantity || (realTimeStock.stock_quantity ?? product?.stock_quantity || 999);
+      const maxQty = product?.maximum_order_quantity || (realTimeStock.stock_quantity ?? product?.stock_quantity) || 999;
       setSelectedQuantity(Math.min(newQty, maxQty));
     }
   };
