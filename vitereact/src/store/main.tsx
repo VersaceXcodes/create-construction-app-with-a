@@ -66,7 +66,7 @@ export const useAppStore = create<AppStore>((set) => ({
 
       const data = await response.json();
 
-      set((state) => ({
+      set({
         authentication_state: {
           auth_token: data.token,
           authentication_status: {
@@ -75,7 +75,8 @@ export const useAppStore = create<AppStore>((set) => ({
           },
           error_message: null,
         },
-      }));
+        current_workspace: null,
+      });
     } catch (error) {
       set((state) => ({
         authentication_state: {
@@ -119,7 +120,7 @@ export const useAppStore = create<AppStore>((set) => ({
 
       const data = await response.json();
 
-      set((state) => ({
+      set({
         authentication_state: {
           auth_token: data.token,
           authentication_status: {
@@ -128,7 +129,8 @@ export const useAppStore = create<AppStore>((set) => ({
           },
           error_message: null,
         },
-      }));
+        current_workspace: null,
+      });
     } catch (error) {
       set((state) => ({
         authentication_state: {

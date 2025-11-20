@@ -13,7 +13,7 @@ const Wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <BrowserRouter>{children}</BrowserRouter>
 );
 
-describe('Auth E2E Flow (Vitest, real API)', () => {
+describe('Auth E2E Flow (Vitest, mocked API)', () => {
   beforeEach(() => {
     localStorage.clear();
     // Reset store to initial unauthenticated state
