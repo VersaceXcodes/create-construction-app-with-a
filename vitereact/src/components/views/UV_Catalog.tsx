@@ -45,8 +45,6 @@ interface CategoriesResponse extends Array<Category> {}
 // ============================================================================
 
 const fetchProducts = async (params: Record<string, any>): Promise<ProductsResponse> => {
-  const apiUrl = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api`;
-  
   const queryParams = new URLSearchParams();
   Object.keys(params).forEach(key => {
     if (params[key] !== null && params[key] !== undefined && params[key] !== '') {
@@ -54,13 +52,14 @@ const fetchProducts = async (params: Record<string, any>): Promise<ProductsRespo
     }
   });
   
-  const response = await axios.get<ProductsResponse>(`${apiUrl}/products?${queryParams.toString()}`);
+  // Use relative URL - axios baseURL already includes /api
+  const response = await axios.get<ProductsResponse>(`/products?${queryParams.toString()}`);
   return response.data;
 };
 
 const fetchCategories = async (): Promise<CategoriesResponse> => {
-  const apiUrl = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api`;
-  const response = await axios.get<CategoriesResponse>(`${apiUrl}/categories?is_active=true&limit=100`);
+  // Use relative URL - axios baseURL already includes /api
+  const response = await axios.get<CategoriesResponse>(`/categories?is_active=true&limit=100`);
   return response.data;
 };
 

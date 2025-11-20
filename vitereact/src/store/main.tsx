@@ -191,7 +191,8 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000
 // AXIOS SETUP
 // ============================================================================
 
-axios.defaults.baseURL = API_BASE_URL;
+// Set axios baseURL to include /api suffix for all API requests
+axios.defaults.baseURL = `${API_BASE_URL}/api`;
 
 // ============================================================================
 // STORE IMPLEMENTATION
