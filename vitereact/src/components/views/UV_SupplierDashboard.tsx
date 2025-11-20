@@ -251,7 +251,7 @@ const UV_SupplierDashboard: React.FC = () => {
 
   // Calculate metrics from available data
   const dashboard_metrics: DashboardMetrics = useMemo(() => {
-    const now = new Date();
+  // const now = new Date();
     // const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     // const weekStart = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     // const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);

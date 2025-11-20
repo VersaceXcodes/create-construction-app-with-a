@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useAppStore } from '@/store/main';
 import { Heart, ShoppingCart, Star, ChevronLeft, ChevronRight, X, ZoomIn, Clock, ShieldCheck, Truck, AlertCircle, CheckCircle } from 'lucide-react';
-import { io, Socket } from 'socket.io-client';
+import { io} from 'socket.io-client';
 
 // ============================================================================
 // TYPE DEFINITIONS
@@ -300,7 +300,7 @@ const UV_ProductDetail_Customer: React.FC = () => {
   });
 
   // Submit review mutation
-  const submitReviewMutation = useMutation({
+  // const submitReviewMutation = useMutation({
     mutationFn: async (reviewData: any) => {
       const response = await axios.post(
         `${API_BASE_URL}/reviews`,

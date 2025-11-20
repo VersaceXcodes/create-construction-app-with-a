@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams} from 'react-router-dom';
 import { useAppStore } from '@/store/main';
 import axios from 'axios';
 import { 
@@ -486,7 +486,7 @@ export default function UV_KnowledgeBase() {
     handleArticleClick(articleId);
   };
 
-  const handleBackToSearch = () => {
+  // const handleBackToSearch = () => {
     setSelectedArticleId(null);
     setSearchParams({});
   };

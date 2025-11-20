@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link} from 'react-router-dom';
 import { useAppStore } from '@/store/main';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';

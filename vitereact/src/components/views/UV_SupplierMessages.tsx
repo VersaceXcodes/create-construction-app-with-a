@@ -432,10 +432,10 @@ const UV_SupplierMessages: React.FC = () => {
                     <div className="text-xs text-gray-600">Unread</div>
                   </div>
                   
-                  {supplierProfile?.response_time_average && (
+                  {(supplierProfile as any)?.response_time_average && (
                     <div className="text-center">
                       <div className="text-2xl font-bold text-green-600">
-                        {supplierProfile?.response_time_average.toFixed(1)}h
+                        {(supplierProfile as any)?.response_time_average.toFixed(1)}h
                       </div>
                       <div className="text-xs text-gray-600">Avg Response Time</div>
                     </div>
@@ -835,8 +835,8 @@ const UV_SupplierMessages: React.FC = () => {
                 </h4>
                 <p className="text-sm text-blue-700">
                   Quick responses improve customer satisfaction. Aim to reply within 2 hours during business hours.
-                  {supplierProfile?.response_time_average && (
-                    <> Your current average response time is <strong>{supplierProfile?.response_time_average.toFixed(1)} hours</strong>.</>
+                  {(supplierProfile as any)?.response_time_average && (
+                    <> Your current average response time is <strong>{(supplierProfile as any)?.response_time_average.toFixed(1)} hours</strong>.</>
                   )}
                 </p>
               </div>

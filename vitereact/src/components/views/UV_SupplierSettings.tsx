@@ -151,8 +151,8 @@ const UV_SupplierSettings: React.FC = () => {
   // ============================================================================
   
   const authToken = useAppStore(state => state.authentication_state.auth_token);
-  // const currentUser = useAppStore(state => state.authentication_state.current_user);
-  // const supplierProfileGlobal = useAppStore(state => state.authentication_state.supplier_profile);
+  const currentUser = useAppStore(state => state.authentication_state.current_user);
+  const supplierProfileGlobal = useAppStore(state => state.authentication_state.supplier_profile);
   
   // ============================================================================
   // URL PARAMS & NAVIGATION

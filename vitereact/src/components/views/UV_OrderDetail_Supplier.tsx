@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
@@ -298,7 +298,7 @@ export default function UV_OrderDetail_Supplier() {
     updateStatusMutation.mutate('shipped');
   };
 
-  const handleUpdateTracking = () => {
+  // const handleUpdateTracking = () => {
     if (!trackingNumber) {
       alert('Please enter a tracking number');
       return;

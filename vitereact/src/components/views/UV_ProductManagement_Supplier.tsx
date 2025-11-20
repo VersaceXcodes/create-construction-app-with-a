@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import  { useState, useEffect, useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
@@ -358,7 +358,7 @@ export default function UV_ProductManagement_Supplier() {
     }).format(amount);
   };
   
-  const formatDate = (dateString: string): string => {
+  // const formatDate = (dateString: string): string => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',

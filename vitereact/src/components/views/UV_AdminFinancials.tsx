@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import  { useState, useEffect, useMemo } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
@@ -418,7 +418,7 @@ export default function UV_AdminFinancials() {
     });
   };
 
-  const formatDateTime = (dateString: string) => {
+  // const formatDateTime = (dateString: string) => {
     return new Date(dateString).toLocaleString('en-US', {
       month: 'short',
       day: 'numeric',

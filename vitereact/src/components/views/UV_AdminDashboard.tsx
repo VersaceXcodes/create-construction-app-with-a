@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import  { useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAppStore } from '@/store/main';
@@ -166,7 +166,7 @@ const dismissAlert = async (authToken: string, alertId: string): Promise<void> =
 
 export default function UV_AdminDashboard() {
   // CRITICAL: Individual selectors to avoid infinite loops
-  const authToken = useAppStore(state => state.authentication_state.auth_token);
+  // const authToken = useAppStore(state => state.authentication_state.auth_token);
   const currentUser = useAppStore(state => state.authentication_state.current_user);
   
   const [searchParams, setSearchParams] = useSearchParams();
@@ -321,7 +321,7 @@ export default function UV_AdminDashboard() {
     return new Intl.NumberFormat('en-US').format(num);
   };
 
-  const getStatusColor = (status: string): string => {
+  // const getStatusColor = (status: string): string => {
     switch (status) {
       case 'operational':
       case 'healthy':

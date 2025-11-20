@@ -64,7 +64,7 @@ interface UserAnalytics {
   };
 }
 
-interface TransactionAnalytics {
+  // interface TransactionAnalytics removed - unused
   transaction_volume: Array<{ date: string; count: number; amount: number }>;
   payment_method_distribution: Array<{ method: string; count: number; percentage: number }>;
   average_order_value_trend: Array<{ date: string; value: number }>;
@@ -74,7 +74,7 @@ interface TransactionAnalytics {
   };
 }
 
-interface SupplierAnalytics {
+  // interface SupplierAnalytics removed - unused
   supplier_performance_distribution: Array<{ rating_range: string; count: number }>;
   new_supplier_applications: Array<{ date: string; count: number }>;
   supplier_revenue_ranking: Array<{ supplier_id: string; business_name: string; revenue: number }>;
@@ -84,7 +84,7 @@ interface SupplierAnalytics {
   };
 }
 
-interface ProductAnalytics {
+  // interface ProductAnalytics removed - unused
   popular_products: Array<{ product_id: string; product_name: string; sales_count: number; revenue: number }>;
   category_performance: Array<{ category_name: string; product_count: number; sales: number }>;
   search_trends: Array<{ search_term: string; count: number }>;
@@ -94,7 +94,7 @@ interface ProductAnalytics {
   price_trends: Array<{ date: string; avg_price: number }>;
 }
 
-interface OperationalAnalytics {
+  // interface OperationalAnalytics removed - unused
   delivery_performance: {
     on_time_rate: number;
     avg_delivery_time_hours: number;

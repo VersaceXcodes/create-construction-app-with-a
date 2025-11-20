@@ -447,7 +447,7 @@ const UV_Contact: React.FC = () => {
           throw new Error(`File ${file.name} has invalid type. Only images and PDFs allowed.`);
         }
         
-        const result = await uploadAttachment(file, authToken);
+        const result = await uploadAttachment(file);
         return result.attachment_url;
       });
       
