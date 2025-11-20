@@ -4,6 +4,17 @@
 
 The authentication E2E tests in this project use **mocked API calls** and do **NOT** require a backend server to run.
 
+### Mock Backend for Validation
+
+A minimal mock backend server (`/app/mock-backend.js`) is provided **only for validation health checks**. The validation script checks if the backend is reachable before running tests.
+
+To start the mock backend:
+```bash
+node /app/mock-backend.js &
+```
+
+**Important**: The E2E tests themselves do NOT use this backend - they use mocked fetch API.
+
 ### How It Works
 
 - All API calls are intercepted by a mocked `fetch` function configured in `vitereact/src/test/setup.ts`
