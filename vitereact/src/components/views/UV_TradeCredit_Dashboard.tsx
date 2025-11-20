@@ -175,8 +175,8 @@ const UV_TradeCredit_Dashboard: React.FC = () => {
 
   // Local state
   const [activeTab, setActiveTab] = useState<'overview' | 'transactions' | 'payment' | 'increase'>('overview');
-  // const [showPaymentModal, setShowPaymentModal] = useState(false);
-  // const [showIncreaseModal, setShowIncreaseModal] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showIncreaseModal, setShowIncreaseModal] = useState(false);
   const [dateRangeFilter, setDateRangeFilter] = useState({
     start_date: '',
     end_date: '',
@@ -203,7 +203,7 @@ const UV_TradeCredit_Dashboard: React.FC = () => {
     refetch: refetchSummary
   } = useQuery({
     queryKey: ['credit-account-summary', customerProfile?.customer_id],
-    queryFn: () => fetchCreditAccountSummary(authToken!, customerProfile!.customer_id),
+    queryFn: () => fetchCreditAccountSummary(authToken!),
     enabled: !!authToken && !!customerProfile,
     staleTime: 60000,
     refetchOnWindowFocus: true,

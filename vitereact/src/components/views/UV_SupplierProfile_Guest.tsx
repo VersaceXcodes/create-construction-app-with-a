@@ -243,8 +243,8 @@ const UV_SupplierProfile_Guest: React.FC = () => {
 
   // Local state
   const [activeTab, setActiveTab] = useState<string>(activeTabParam);
-  const [categorysetCategoryFilter] = useState<string>(productCategory);
-  const [searchsetSearchFilter] = useState<string>(productSearch);
+  const [categoryFilter, setCategoryFilter] = useState<string>(productCategory);
+  const [searchFilter, setSearchFilter] = useState<string>(productSearch);
   const [currentPage, setCurrentPage] = useState<number>(parseInt(productPageParam));
   const [contactGateOpen, setContactGateOpen] = useState(false);
   const [reviewsGateOpen, setReviewsGateOpen] = useState(false);
@@ -290,8 +290,8 @@ const UV_SupplierProfile_Guest: React.FC = () => {
     data: productsData,
     isLoading: isProductsLoading
   } = useQuery({
-    queryKey: ['supplier-products', supplier_id, categorysearchcurrentPage],
-    queryFn: () => fetchSupplierProducts(supplier_id!, categorysearchcurrentPage),
+    queryKey: ['supplier-products', supplier_id, categoryFilter, searchFilter, currentPage],
+    queryFn: () => fetchSupplierProducts(supplier_id!, categoryFilter, searchFilter, currentPage),
     enabled: !!supplier_id && activeTab === 'products',
     staleTime: 2 * 60 * 1000,
     retry: 1

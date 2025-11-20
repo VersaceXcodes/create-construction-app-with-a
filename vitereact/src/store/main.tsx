@@ -29,6 +29,8 @@ interface Customer {
   trade_credit_limit: number;
   trade_credit_balance: number;
   trade_credit_used: number;
+  trade_credit_terms: string | null;
+  trade_credit_status: 'approved' | 'pending' | 'rejected' | 'suspended' | null;
   preferred_brands: string[];
   preferred_suppliers: string[];
   preferred_categories: string[];

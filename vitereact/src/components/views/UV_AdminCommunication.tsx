@@ -233,13 +233,13 @@ const UV_AdminCommunication: React.FC = () => {
     refetchOnWindowFocus: false
   });
   
-  const { data: campaignAnalytics, isLoading: loadingCampaign } = useQuery({
-    queryKey: ['admin-campaign-analytics', selectedCampaign?.campaign_id],
-    queryFn: () => fetchCampaignAnalytics(authToken!, selectedCampaign!.campaign_id),
-    enabled: !!authToken && !!selectedCampaign && activeTab === 'campaigns',
-    staleTime: 60000,
-    refetchOnWindowFocus: false
-  });
+  // const { data: campaignAnalytics, isLoading: loadingCampaign } = useQuery({
+  //   queryKey: ['admin-campaign-analytics', selectedCampaign?.campaign_id],
+  //   queryFn: () => fetchCampaignAnalytics(authToken!, selectedCampaign!.campaign_id),
+  //   enabled: !!authToken && !!selectedCampaign && activeTab === 'campaigns',
+  //   staleTime: 60000,
+  //   refetchOnWindowFocus: false
+  // });
   
   // Mutations
   const createAnnouncementMutation = useMutation({

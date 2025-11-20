@@ -1,23 +1,197 @@
-VALIDATION FAILURE - Frontend TypeScript Compilation (Attempt 16/100)
+VALIDATION FAILURE - Frontend TypeScript Compilation (Attempt 17/100)
 
 The project validation failed at the "Frontend TypeScript Compilation" step. You need to analyze the error and fix it.
 
 ## Error Details:
-src/components/views/UV_AdminDashboard.tsx(972,1): error TS1128: Declaration or statement expected.
-src/components/views/UV_AdminFinancials.tsx(1187,1): error TS1128: Declaration or statement expected.
-src/components/views/UV_KnowledgeBase.tsx(1077,1): error TS1128: Declaration or statement expected.
-src/components/views/UV_OrderDetail_Supplier.tsx(967,1): error TS1128: Declaration or statement expected.
-src/components/views/UV_ProductManagement_Supplier.tsx(935,1): error TS1128: Declaration or statement expected.
+src/components/views/UV_AdminAnalytics.tsx(67,11): error TS6196: 'TransactionAnalytics' is declared but never used.
+src/components/views/UV_AdminAnalytics.tsx(77,11): error TS6196: 'SupplierAnalytics' is declared but never used.
+src/components/views/UV_AdminAnalytics.tsx(87,11): error TS6196: 'ProductAnalytics' is declared but never used.
+src/components/views/UV_AdminAnalytics.tsx(97,11): error TS6196: 'OperationalAnalytics' is declared but never used.
+src/components/views/UV_AdminCommunication.tsx(236,9): error TS6198: All destructured elements are unused.
+src/components/views/UV_AdminDashboard.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
+src/components/views/UV_AdminDashboard.tsx(1,17): error TS6133: 'useEffect' is declared but its value is never read.
+src/components/views/UV_AdminDashboard.tsx(1,28): error TS6133: 'useState' is declared but its value is never read.
+src/components/views/UV_AdminDashboard.tsx(115,34): error TS6133: 'authToken' is declared but its value is never read.
+src/components/views/UV_AdminDashboard.tsx(130,36): error TS6133: 'authToken' is declared but its value is never read.
+src/components/views/UV_AdminDashboard.tsx(136,34): error TS6133: 'authToken' is declared but its value is never read.
+src/components/views/UV_AdminDashboard.tsx(142,35): error TS6133: 'authToken' is declared but its value is never read.
+src/components/views/UV_AdminDashboard.tsx(324,9): error TS6133: 'getStatusColor' is declared but its value is never read.
+src/components/views/UV_AdminDisputeManagement.tsx(2,33): error TS6133: 'useNavigate' is declared but its value is never read.
+src/components/views/UV_AdminFinancials.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
+src/components/views/UV_AdminFinancials.tsx(14,3): error TS6133: 'CheckCircle' is declared but its value is never read.
+src/components/views/UV_AdminFinancials.tsx(20,3): error TS6133: 'ChevronDown' is declared but its value is never read.
+src/components/views/UV_AdminFinancials.tsx(21,3): error TS6133: 'ChevronRight' is declared but its value is never read.
+src/components/views/UV_AdminFinancials.tsx(22,3): error TS6133: 'Search' is declared but its value is never read.
+src/components/views/UV_AdminFinancials.tsx(61,11): error TS6196: 'Transaction' is declared but never used.
+src/components/views/UV_AdminFinancials.tsx(75,11): error TS6196: 'FinancialReport' is declared but never used.
+src/components/views/UV_AdminFinancials.tsx(421,9): error TS6133: 'formatDateTime' is declared but its value is never read.
+src/components/views/UV_AdminPlatformSettings.tsx(15,3): error TS6133: 'X' is declared but its value is never read.
+src/components/views/UV_AdminProductModeration.tsx(1,17): error TS6133: 'useEffect' is declared but its value is never read.
+src/components/views/UV_AdminProductModeration.tsx(129,66): error TS6133: 'productsError' is declared but its value is never read.
+src/components/views/UV_AdminReviewModeration.tsx(21,3): error TS6133: 'BarChart3' is declared but its value is never read.
+src/components/views/UV_AdminReviewModeration.tsx(64,11): error TS6196: 'ModerationQueueStats' is declared but never used.
+src/components/views/UV_AdminReviewModeration.tsx(77,11): error TS6196: 'LoadingStates' is declared but never used.
+src/components/views/UV_AdminSupplierApplications.tsx(2,27): error TS6133: 'useNavigate' is declared but its value is never read.
+src/components/views/UV_AdminSupplierApplications.tsx(17,3): error TS6133: 'Search' is declared but its value is never read.
+src/components/views/UV_AdminSystemLogs.tsx(21,3): error TS6133: 'WifiOff' is declared but its value is never read.
+src/components/views/UV_AdminTeamManagement.tsx(152,3): error TS6133: 'token' is declared but its value is never read.
+src/components/views/UV_AdminTeamManagement.tsx(153,3): error TS6133: 'filters' is declared but its value is never read.
+src/components/views/UV_AdminTeamManagement.tsx(259,14): error TS6133: 'refetchUsers' is declared but its value is never read.
+src/components/views/UV_AdminUserManagement_Customers.tsx(2,27): error TS6133: 'useNavigate' is declared but its value is never read.
+src/components/views/UV_CartPage.tsx(28,11): error TS6196: 'Cart' is declared but never used.
+src/components/views/UV_CartPage.tsx(70,11): error TS6196: 'Product' is declared but never used.
+src/components/views/UV_Checkout.tsx(74,11): error TS6196: 'DeliveryWindow' is declared but never used.
+src/components/views/UV_Checkout.tsx(419,11): error TS6133: 'finalPaymentMethodId' is declared but its value is never read.
+src/components/views/UV_Contact.tsx(450,53): error TS2554: Expected 1 arguments, but got 2.
+src/components/views/UV_CustomerDashboard.tsx(1,17): error TS6133: 'useState' is declared but its value is never read.
+src/components/views/UV_CustomerDashboard.tsx(14,3): error TS6133: 'DollarSign' is declared but its value is never read.
+src/components/views/UV_CustomerDashboard.tsx(59,11): error TS6196: 'WishlistItem' is declared but never used.
+src/components/views/UV_CustomerDashboard.tsx(64,11): error TS6196: 'Project' is declared but never used.
+src/components/views/UV_CustomerDashboard.tsx(256,16): error TS6133: 'wishlistLoading' is declared but its value is never read.
+src/components/views/UV_CustomerDashboard.tsx(268,16): error TS6133: 'projectsLoading' is declared but its value is never read.
+src/components/views/UV_DeliveryManagement_Supplier.tsx(75,11): error TS6196: 'DeliveryPerformance' is declared but never used.
+src/components/views/UV_HowItWorks.tsx(28,11): error TS6196: 'ProcessStep' is declared but never used.
+src/components/views/UV_HowItWorks.tsx(37,11): error TS6196: 'Benefit' is declared but never used.
+src/components/views/UV_InventoryManagement_Supplier.tsx(53,11): error TS6196: 'StockMovement' is declared but never used.
+src/components/views/UV_InventoryManagement_Supplier.tsx(71,11): error TS6196: 'SyncStatus' is declared but never used.
+src/components/views/UV_IssueDetail.tsx(2,27): error TS6133: 'useNavigate' is declared but its value is never read.
+src/components/views/UV_IssueDetail.tsx(16,3): error TS6133: 'User' is declared but its value is never read.
+src/components/views/UV_IssueDetail.tsx(243,14): error TS6133: 'refetchIssue' is declared but its value is never read.
+src/components/views/UV_KnowledgeBase.tsx(3,27): error TS6133: 'useNavigate' is declared but its value is never read.
+src/components/views/UV_KnowledgeBase.tsx(16,3): error TS6133: 'ChevronDown' is declared but its value is never read.
+src/components/views/UV_KnowledgeBase.tsx(17,3): error TS6133: 'ChevronUp' is declared but its value is never read.
+src/components/views/UV_KnowledgeBase.tsx(431,17): error TS6133: 'data' is declared but its value is never read.
+src/components/views/UV_KnowledgeBase.tsx(489,9): error TS6133: 'handleBackToSearch' is declared but its value is never read.
+src/components/views/UV_Landing.tsx(142,12): error TS6133: 'productsError' is declared but its value is never read.
+src/components/views/UV_Landing.tsx(152,12): error TS6133: 'categoriesError' is declared but its value is never read.
+src/components/views/UV_Landing.tsx(162,12): error TS6133: 'suppliersError' is declared but its value is never read.
+src/components/views/UV_MyReviews.tsx(6,40): error TS6133: 'ImageIcon' is declared but its value is never read.
+src/components/views/UV_MyReviews.tsx(36,11): error TS6196: 'ReviewsListState' is declared but never used.
+src/components/views/UV_MySurplusListings.tsx(50,11): error TS6196: 'SaleHistory' is declared but never used.
+src/components/views/UV_NotificationCenter.tsx(17,3): error TS6133: 'Trash2' is declared but its value is never read.
+src/components/views/UV_NotificationCenter.tsx(18,3): error TS6133: 'Filter' is declared but its value is never read.
+src/components/views/UV_OrderConfirmation.tsx(15,3): error TS6133: 'CreditCard' is declared but its value is never read.
+src/components/views/UV_OrderConfirmation.tsx(66,11): error TS6196: 'Address' is declared but never used.
+src/components/views/UV_OrderDashboard.tsx(2,33): error TS6133: 'useNavigate' is declared but its value is never read.
+src/components/views/UV_OrderDashboard.tsx(30,11): error TS6196: 'SupplierOption' is declared but never used.
+src/components/views/UV_OrderDashboard.tsx(79,3): error TS6133: 'search_query' is declared but its value is never read.
+src/components/views/UV_OrderDetail.tsx(81,11): error TS6196: 'DeliveryAddress' is declared but never used.
+src/components/views/UV_OrderDetail.tsx(229,5): error TS6133: 'refetch' is declared but its value is never read.
+src/components/views/UV_OrderDetail_Supplier.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
+src/components/views/UV_OrderDetail_Supplier.tsx(18,3): error TS6133: 'Calendar' is declared but its value is never read.
+src/components/views/UV_OrderDetail_Supplier.tsx(301,9): error TS6133: 'handleUpdateTracking' is declared but its value is never read.
+src/components/views/UV_OrderManagement_Supplier.tsx(2,33): error TS6133: 'useNavigate' is declared but its value is never read.
+src/components/views/UV_OrderManagement_Supplier.tsx(13,3): error TS6133: 'Filter' is declared but its value is never read.
+src/components/views/UV_OrderManagement_Supplier.tsx(154,3): error TS6133: 'rejectionReason' is declared but its value is never read.
+src/components/views/UV_ProductAdd_Supplier.tsx(14,3): error TS6133: 'Save' is declared but its value is never read.
+src/components/views/UV_ProductBulkUpload_Supplier.tsx(2,16): error TS6133: 'useNavigate' is declared but its value is never read.
+src/components/views/UV_ProductDetail_Customer.tsx(7,14): error TS6133: 'Socket' is declared but its value is never read.
+src/components/views/UV_ProductDetail_Customer.tsx(233,38): error TS6133: 'supplierLoading' is declared but its value is never read.
+src/components/views/UV_ProductDetail_Customer.tsx(303,9): error TS6133: 'submitReviewMutation' is declared but its value is never read.
+src/components/views/UV_ProductDetail_Customer.tsx(320,7): error TS2304: Cannot find name 'setShowReviewForm'.
+src/components/views/UV_ProductDetail_Customer.tsx(362,5): error TS2304: Cannot find name 'setWsSocket'.
+src/components/views/UV_ProductDetail_Customer.tsx(980,44): error TS2304: Cannot find name 'setShowReviewForm'.
+src/components/views/UV_ProductDetail_Customer.tsx(1125,40): error TS2304: Cannot find name 'setShowReviewForm'.
+src/components/views/UV_ProductEdit_Supplier.tsx(14,12): error TS6133: 'ImageIcon' is declared but its value is never read.
+src/components/views/UV_ProductEdit_Supplier.tsx(251,17): error TS6133: 'updated_product' is declared but its value is never read.
+src/components/views/UV_ProductManagement_Supplier.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
+src/components/views/UV_ProductManagement_Supplier.tsx(361,9): error TS6133: 'formatDate' is declared but its value is never read.
+src/components/views/UV_Registration_Customer.tsx(133,10): error TS6133: 'searchParams' is declared but its value is never read.
+src/components/views/UV_Registration_Customer.tsx(181,23): error TS6133: 'data' is declared but its value is never read.
+src/components/views/UV_Registration_Supplier.tsx(27,11): error TS6196: 'SubmissionState' is declared but never used.
+src/components/views/UV_Registration_Supplier.tsx(172,17): error TS6133: 'data' is declared but its value is never read.
+src/components/views/UV_ResetPassword.tsx(142,17): error TS6133: 'data' is declared but its value is never read.
+src/components/views/UV_SupplierAnalytics.tsx(19,3): error TS6133: 'PieChart' is declared but its value is never read.
+src/components/views/UV_SupplierDashboard.tsx(146,10): error TS6133: 'searchParams' is declared but its value is never read.
+src/components/views/UV_SupplierDashboard.tsx(254,11): error TS6133: 'now' is declared but its value is never read.
+src/components/views/UV_SupplierEducation.tsx(22,3): error TS6133: 'Download' is declared but its value is never read.
+src/components/views/UV_SupplierEducation.tsx(23,3): error TS6133: 'ExternalLink' is declared but its value is never read.
+src/components/views/UV_SupplierEducation.tsx(86,11): error TS6196: 'ProgressTracking' is declared but never used.
+src/components/views/UV_SupplierEducation.tsx(525,38): error TS2304: Cannot find name 'setSelectedResource'.
+src/components/views/UV_SupplierFinancials.tsx(17,3): error TS6133: 'CreditCard' is declared but its value is never read.
+src/components/views/UV_SupplierFinancials.tsx(47,11): error TS6196: 'TransactionRecord' is declared but never used.
+src/components/views/UV_SupplierFinancials.tsx(66,11): error TS6196: 'TaxDocumentation' is declared but never used.
+src/components/views/UV_SupplierMessages.tsx(11,3): error TS6133: 'Filter' is declared but its value is never read.
+src/components/views/UV_SupplierMessages.tsx(18,3): error TS6133: 'Archive' is declared but its value is never read.
+src/components/views/UV_SupplierMessages.tsx(19,3): error TS6133: 'Star' is declared but its value is never read.
+src/components/views/UV_SupplierMessages.tsx(20,3): error TS6133: 'ThumbsUp' is declared but its value is never read.
+src/components/views/UV_SupplierMessages.tsx(50,11): error TS6196: 'MessageTemplate' is declared but never used.
+src/components/views/UV_SupplierMessages.tsx(57,11): error TS6196: 'ResponseMetrics' is declared but never used.
+src/components/views/UV_SupplierMessages.tsx(435,37): error TS2339: Property 'response_time_average' does not exist on type 'Supplier'.
+src/components/views/UV_SupplierMessages.tsx(438,43): error TS2339: Property 'response_time_average' does not exist on type 'Supplier'.
+src/components/views/UV_SupplierMessages.tsx(838,37): error TS2339: Property 'response_time_average' does not exist on type 'Supplier'.
+src/components/views/UV_SupplierMessages.tsx(839,88): error TS2339: Property 'response_time_average' does not exist on type 'Supplier'.
+src/components/views/UV_SupplierProfile_Guest.tsx(17,3): error TS6133: 'Filter' is declared but its value is never read.
+src/components/views/UV_SupplierProfile_Guest.tsx(65,11): error TS6196: 'ReviewSummary' is declared but never used.
+src/components/views/UV_SupplierProfile_Guest.tsx(246,10): error TS6133: 'categorysetCategoryFilter' is declared but its value is never read.
+src/components/views/UV_SupplierProfile_Guest.tsx(247,10): error TS6133: 'searchsetSearchFilter' is declared but its value is never read.
+src/components/views/UV_SupplierProfile_Guest.tsx(258,5): error TS2304: Cannot find name 'setCategoryFilter'.
+src/components/views/UV_SupplierProfile_Guest.tsx(262,5): error TS2304: Cannot find name 'setSearchFilter'.
+src/components/views/UV_SupplierProfile_Guest.tsx(293,50): error TS2304: Cannot find name 'categorysearchcurrentPage'.
+src/components/views/UV_SupplierProfile_Guest.tsx(294,56): error TS2304: Cannot find name 'categorysearchcurrentPage'.
+src/components/views/UV_SupplierProfile_Guest.tsx(333,9): error TS2304: Cannot find name 'categoryFilter'.
+src/components/views/UV_SupplierProfile_Guest.tsx(333,51): error TS2304: Cannot find name 'categoryFilter'.
+src/components/views/UV_SupplierProfile_Guest.tsx(334,9): error TS2304: Cannot find name 'searchFilter'.
+src/components/views/UV_SupplierProfile_Guest.tsx(334,47): error TS2304: Cannot find name 'searchFilter'.
+src/components/views/UV_SupplierProfile_Guest.tsx(342,9): error TS2304: Cannot find name 'categoryFilter'.
+src/components/views/UV_SupplierProfile_Guest.tsx(342,51): error TS2304: Cannot find name 'categoryFilter'.
+src/components/views/UV_SupplierProfile_Guest.tsx(343,9): error TS2304: Cannot find name 'searchFilter'.
+src/components/views/UV_SupplierProfile_Guest.tsx(343,47): error TS2304: Cannot find name 'searchFilter'.
+src/components/views/UV_SupplierProfile_Guest.tsx(653,30): error TS2304: Cannot find name 'searchFilter'.
+src/components/views/UV_SupplierProfile_Guest.tsx(654,40): error TS2304: Cannot find name 'setSearchFilter'.
+src/components/views/UV_SupplierProfile_Guest.tsx(794,22): error TS2304: Cannot find name 'searchFilter'.
+src/components/views/UV_SupplierProfile_Guest.tsx(794,38): error TS2304: Cannot find name 'categoryFilter'.
+src/components/views/UV_SupplierProfile_Guest.tsx(798,21): error TS2304: Cannot find name 'searchFilter'.
+src/components/views/UV_SupplierProfile_Guest.tsx(798,37): error TS2304: Cannot find name 'categoryFilter'.
+src/components/views/UV_SupplierProfile_Guest.tsx(801,25): error TS2304: Cannot find name 'setSearchFilter'.
+src/components/views/UV_SupplierProfile_Guest.tsx(802,25): error TS2304: Cannot find name 'setCategoryFilter'.
+src/components/views/UV_SupplierSettings.tsx(16,3): error TS6133: 'Edit2' is declared but its value is never read.
+src/components/views/UV_SupplierSettings.tsx(89,11): error TS6196: 'SubscriptionDetails' is declared but never used.
+src/components/views/UV_SupplierSettings.tsx(117,43): error TS2304: Cannot find name 'authToken'.
+src/components/views/UV_SupplierSettings.tsx(124,33): error TS6133: 'authToken' is declared but its value is never read.
+src/components/views/UV_SupplierSettings.tsx(129,30): error TS6133: 'data' is declared but its value is never read.
+src/components/views/UV_SupplierSettings.tsx(139,33): error TS6133: 'memberId' is declared but its value is never read.
+src/components/views/UV_SupportContact.tsx(2,16): error TS6133: 'useNavigate' is declared but its value is never read.
+src/components/views/UV_SupportContact.tsx(688,55): error TS6133: 'url' is declared but its value is never read.
+src/components/views/UV_SurplusListing_Detail.tsx(2,1): error TS6192: All imports in import declaration are unused.
+src/components/views/UV_SurplusListing_Detail.tsx(4,1): error TS6192: All imports in import declaration are unused.
+src/components/views/UV_SurplusListing_Detail.tsx(79,7): error TS6133: 'fetchSurplusListing' is declared but its value is never read.
+src/components/views/UV_SurplusListing_Detail.tsx(86,7): error TS6133: 'fetchSellerProfile' is declared but its value is never read.
+src/components/views/UV_SurplusListing_Detail.tsx(105,7): error TS6133: 'fetchCategory' is declared but its value is never read.
+src/components/views/UV_SurplusListing_Detail.tsx(111,7): error TS6133: 'fetchSimilarListings' is declared but its value is never read.
+src/components/views/UV_SurplusMarketplace_Browse.tsx(13,3): error TS6133: 'ChevronDown' is declared but its value is never read.
+src/components/views/UV_SurplusMarketplace_Browse.tsx(14,3): error TS6133: 'Filter' is declared but its value is never read.
+src/components/views/UV_SurplusMarketplace_Browse.tsx(15,3): error TS6133: 'CheckCircle2' is declared but its value is never read.
+src/components/views/UV_TermsOfService.tsx(492,10): error TS6133: 'current_version' is declared but its value is never read.
+src/components/views/UV_TradeCredit_Application.tsx(102,7): error TS6133: 'validateApplication' is declared but its value is never read.
+src/components/views/UV_TradeCredit_Application.tsx(210,7): error TS2304: Cannot find name 'setExistingApplicationId'.
+src/components/views/UV_TradeCredit_Application.tsx(226,26): error TS2551: Property 'trade_credit_status' does not exist on type 'Customer'. Did you mean 'trade_credit_used'?
+src/components/views/UV_TradeCredit_Application.tsx(248,15): error TS6133: 'error' is declared but its value is never read.
+src/components/views/UV_TradeCredit_Application.tsx(265,17): error TS6133: 'data' is declared but its value is never read.
+src/components/views/UV_TradeCredit_Dashboard.tsx(103,3): error TS6133: 'token' is declared but its value is never read.
+src/components/views/UV_TradeCredit_Dashboard.tsx(104,3): error TS6133: 'customer_id' is declared but its value is never read.
+src/components/views/UV_TradeCredit_Dashboard.tsx(105,3): error TS6133: 'date_from' is declared but its value is never read.
+src/components/views/UV_TradeCredit_Dashboard.tsx(106,3): error TS6133: 'date_to' is declared but its value is never read.
+src/components/views/UV_TradeCredit_Dashboard.tsx(139,3): error TS6133: 'token' is declared but its value is never read.
+src/components/views/UV_TradeCredit_Dashboard.tsx(140,3): error TS6133: 'payment_data' is declared but its value is never read.
+src/components/views/UV_TradeCredit_Dashboard.tsx(153,3): error TS6133: 'token' is declared but its value is never read.
+src/components/views/UV_TradeCredit_Dashboard.tsx(154,3): error TS6133: 'request_data' is declared but its value is never read.
+src/components/views/UV_TradeCredit_Dashboard.tsx(206,58): error TS2554: Expected 1 arguments, but got 2.
+src/components/views/UV_TradeCredit_Dashboard.tsx(252,7): error TS2304: Cannot find name 'setShowPaymentModal'.
+src/components/views/UV_TradeCredit_Dashboard.tsx(270,7): error TS2304: Cannot find name 'setShowIncreaseModal'.
+src/components/views/UV_TradeCredit_Dashboard.tsx(567,17): error TS2304: Cannot find name 'setShowPaymentModal'.
+src/components/views/UV_TradeCredit_Dashboard.tsx(577,17): error TS2304: Cannot find name 'setShowIncreaseModal'.
+src/components/views/UV_Wishlist.tsx(12,11): error TS6196: 'WishlistItem' is declared but never used.
 
 
 ## Validation Context:
 - Step: Frontend TypeScript Compilation
 - Working Directory: /app/vitereact
-- Attempt: 16/100
+- Attempt: 17/100
 - Previous failures for this step: 2
 
 ## Project Memory Summary:
-- Total validation attempts: 17
+- Total validation attempts: 18
 - Common issues encountered: None
 - Known dependencies: @hookform/resolvers, @radix-ui/react-accordion, @radix-ui/react-alert-dialog, @radix-ui/react-aspect-ratio, @radix-ui/react-avatar, @radix-ui/react-checkbox, @radix-ui/react-collapsible, @radix-ui/react-context-menu, @radix-ui/react-dialog, @radix-ui/react-dropdown-menu
 - Missing dependencies: None
@@ -136,8 +310,8 @@ PROTECTED DIRECTORIES (DO NOT MODIFY):
 
 
 ## Previous Validation Failures for Frontend TypeScript Compilation:
-- 8:13:52 PM: 
 - 8:19:38 PM: 
+- 8:23:14 PM: 
 
 ## Your Task:
 1. **Analyze the Error**: Understand what specifically went wrong in the Frontend TypeScript Compilation step

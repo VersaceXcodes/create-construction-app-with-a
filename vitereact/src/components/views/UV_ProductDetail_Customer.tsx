@@ -200,7 +200,7 @@ const UV_ProductDetail_Customer: React.FC = () => {
     verified_only: false,
   });
   const [reviewSortBy, setReviewSortBy] = useState('review_date');
-  // const [showReviewForm, setShowReviewForm] = useState(false);
+  const [showReviewForm, setShowReviewForm] = useState(false);
   const [reviewFormData, setReviewFormData] = useState({
     rating_overall: 0,
     rating_product: 0,
@@ -219,7 +219,7 @@ const UV_ProductDetail_Customer: React.FC = () => {
     last_updated: null,
     websocket_connected: false,
   });
-  // const [wsSocket, setWsSocket] = useState<Socket | null>(null);
+  const [wsSocket, setWsSocket] = useState<Socket | null>(null);
 
   // Fetch product data
   const { data: product, isLoading: productLoading, error: productError } = useQuery({

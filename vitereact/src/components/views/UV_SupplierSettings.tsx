@@ -109,7 +109,7 @@ const fetchSupplierProfile = async (authToken: string): Promise<SupplierProfile>
   return response.data;
 };
 
-const updateSupplierProfile = async (data: Partial<SupplierProfile>) => {
+const updateSupplierProfile = async (data: Partial<SupplierProfile>, authToken: string) => {
   const response = await axios.patch(
     `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api/suppliers/me`,
     data,
@@ -228,7 +228,7 @@ const UV_SupplierSettings: React.FC = () => {
   // ============================================================================
   
   const updateProfileMutation = useMutation({
-    mutationFn: (data: Partial<SupplierProfile>) => updateSupplierProfile(data!),
+    mutationFn: (data: Partial<SupplierProfile>) => updateSupplierProfile(data!, authToken!),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['supplier-profile'] });
       setSuccessMessage('Profile updated successfully!');

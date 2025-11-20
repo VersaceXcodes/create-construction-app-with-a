@@ -203,7 +203,7 @@ const UV_SupplierEducation: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'resources' | 'live' | 'recorded' | 'community' | 'updates'>('resources');
   const [searchQuery, setSearchQuery] = useState(urlSearchQuery || '');
   const [resourceTypeFilter, setResourceTypeFilter] = useState<string>(urlResourceType || 'all');
-  // const [selectedResource, setSelectedResource] = useState<string | null>(null);
+  const [selectedResource, setSelectedResource] = useState<string | null>(null);
   
   const queryClient = useQueryClient();
   

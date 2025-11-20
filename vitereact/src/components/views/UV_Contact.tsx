@@ -196,7 +196,7 @@ const submitContactForm = async (formData: ContactFormData, authToken?: string |
   return response.data;
 };
 
-const uploadAttachment = async (file: File): Promise<{ attachment_url: string; file_name: string; file_size: number }> => {
+const uploadAttachment = async (file: File, authToken?: string | null): Promise<{ attachment_url: string; file_name: string; file_size: number }> => {
   // Mock implementation since endpoint doesn't exist
   return new Promise((resolve) => {
     setTimeout(() => {
