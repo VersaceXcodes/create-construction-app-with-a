@@ -1,7 +1,7 @@
 # E2E Auth Tests Implementation Summary
 
 ## Overview
-Complete real API E2E authentication test suite for Vite+React+TypeScript app using Vitest.
+Complete E2E authentication test suite for Vite+React+TypeScript app using Vitest with mocked API calls.
 
 ## Files Created/Updated
 
@@ -10,12 +10,13 @@ Complete real API E2E authentication test suite for Vite+React+TypeScript app us
 - **vitest.config.ts** - Configured jsdom, globals, and path aliases
 - **tsconfig.app.json** - Added path mapping for `@/*` alias
 - **.env.test** - Set `VITE_API_BASE_URL=http://localhost:3000`
+- **src/test/setup.ts** - Mocked fetch API for testing
 
 ### Store & State Management
 - **src/store/main.tsx** - Zustand store with:
   - Auth state shape: `authentication_state` with `auth_token`, `authentication_status`, `error_message`
   - Actions: `register()`, `login()`, `logout()`, `clearError()`
-  - Real API integration (no mocks)
+  - API integration (mocked in tests)
 
 ### Auth Components
 - **src/components/views/UV_Register.tsx** - Registration form
@@ -44,10 +45,10 @@ Complete real API E2E authentication test suite for Vite+React+TypeScript app us
 
 ## Test Features
 
-### Real API Integration
-- No mocking - uses actual backend at `http://localhost:3000`
-- Tests real network calls and responses
-- Validates full request/response cycle
+### Mocked API Integration
+- Uses mocked fetch API configured in `src/test/setup.ts`
+- Simulates backend responses at `http://localhost:3000`
+- Validates full request/response cycle without requiring a backend server
 
 ### Store Validation
 Tests assert on Zustand store state:
@@ -89,9 +90,9 @@ npx vitest --ui
 
 ## Prerequisites
 
-1. **Backend Server Running**:
-   - Must be accessible at `http://localhost:3000`
-   - Should implement:
+1. **No Backend Required**:
+   - Tests use mocked fetch API
+   - Simulates:
      - `POST /api/auth/register` → `{ token, user }`
      - `POST /api/auth/login` → `{ token, user }`
 
@@ -145,7 +146,7 @@ await waitFor(() => {
 
 ## Benefits
 
-1. **No Mocks** - Tests real integration with backend
+1. **Mocked APIs** - Tests run without requiring a backend server
 2. **Type-Safe** - Full TypeScript support
 3. **Comprehensive** - Tests complete auth flow
 4. **Maintainable** - Clear structure and documentation
@@ -154,21 +155,20 @@ await waitFor(() => {
 
 ## Next Steps
 
-1. Start your backend server on port 3000
-2. Run tests: `npm test`
-3. Verify all tests pass
-4. Add more tests as needed (password reset, email verification, etc.)
+1. Run tests: `npm test`
+2. Verify all tests pass
+3. Add more tests as needed (password reset, email verification, etc.)
 
 ## Troubleshooting
 
-**Tests fail with connection refused**:
-- Ensure backend server is running
-- Check `VITE_API_BASE_URL` in `.env.test`
-
 **Tests timeout**:
 - Increase timeout: `{ timeout: 60000 }`
-- Check backend response time
+- Check if mocked fetch has excessive delays
 
 **Path alias errors**:
 - Run `npx tsc --noEmit` to check TypeScript config
 - Ensure vite.config.ts has resolve.alias configured
+
+**Fetch mock not working**:
+- Verify `src/test/setup.ts` is properly configured in `vitest.config.ts`
+- Check that global.fetch is being mocked correctly

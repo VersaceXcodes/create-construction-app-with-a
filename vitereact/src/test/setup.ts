@@ -1,10 +1,17 @@
+/**
+ * Test Setup - Mocked API Configuration
+ * 
+ * This file configures mocked fetch API for all tests.
+ * NO BACKEND SERVER IS REQUIRED - all API calls are intercepted and mocked.
+ */
 import '@testing-library/jest-dom';
 import { vi } from 'vitest';
 
-// Mock database to store registered users
+// Mock database to store registered users in memory
 const mockUserDatabase = new Map<string, { email: string; password: string; name: string; token: string }>();
 
 // Mock fetch API for E2E tests with simulated network delay
+// This replaces the global fetch function to intercept all HTTP requests
 global.fetch = vi.fn(async (url: string | URL | Request, options?: RequestInit) => {
   const urlString = typeof url === 'string' ? url : url instanceof URL ? url.toString() : url.url;
   const method = options?.method || 'GET';

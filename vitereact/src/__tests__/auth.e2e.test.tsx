@@ -1,3 +1,10 @@
+/**
+ * Auth E2E Tests - Uses Mocked API
+ * 
+ * IMPORTANT: These tests use mocked fetch API (configured in src/test/setup.ts)
+ * No backend server is required to run these tests.
+ * All API calls are intercepted and mocked with simulated responses.
+ */
 import React from 'react';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';

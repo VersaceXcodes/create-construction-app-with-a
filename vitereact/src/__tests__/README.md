@@ -1,15 +1,16 @@
 # Auth E2E Tests
 
-This directory contains end-to-end authentication tests that interact with a real backend API.
+This directory contains end-to-end authentication tests using mocked API calls.
 
 ## Setup
 
-1. **Backend Server**: Ensure your backend server is running at `http://localhost:3000` (or the URL specified in `.env.test`)
+1. **No Backend Required**: Tests use mocked fetch API (configured in `src/test/setup.ts`)
 
 2. **Environment Variables**: The tests use the `VITE_API_BASE_URL` from `.env.test`:
    ```
    VITE_API_BASE_URL=http://localhost:3000
    ```
+   (This is for consistency, but actual API calls are mocked in tests)
 
 3. **Optional**: For sign-in only tests with existing credentials, add to `.env.test`:
    ```
@@ -60,7 +61,7 @@ The test suite includes:
 
 ## Key Features
 
-- **No Mocking**: Tests use real API calls to backend
+- **Mocked API**: Tests use mocked fetch API (no backend required)
 - **Unique Emails**: Uses `Date.now()` to generate unique test emails
 - **Store Validation**: Asserts on Zustand store state, not just UI
 - **Resilient Selectors**: Supports label/button text variants
@@ -98,6 +99,7 @@ The tests validate this Zustand store structure:
 
 ## Troubleshooting
 
-- **Tests timeout**: Increase timeout in test or check backend is running
-- **Duplicate email errors**: Tests use unique timestamps, but ensure DB is cleaned between runs
+- **Tests timeout**: Increase timeout in test settings
+- **Duplicate email errors**: Tests use unique timestamps to avoid collisions
 - **Path alias errors**: Ensure vite.config.ts and tsconfig have `@/*` alias configured
+- **Fetch mock issues**: Check that `src/test/setup.ts` properly mocks the fetch API
