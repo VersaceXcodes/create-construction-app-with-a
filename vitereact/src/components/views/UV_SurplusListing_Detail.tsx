@@ -128,3 +128,21 @@ const fetchSimilarListings = async (category_id: string, current_listing_id: str
       product_name: l.product_name,
       asking_price: l.asking_price,
       condition: l.condition,
+      primary_photo_url: l.photos?.[0] || null,
+      seller_name: l.seller_name || 'Unknown Seller'
+    }));
+};
+
+// Placeholder component since the file was incomplete
+const UV_SurplusListing_Detail: React.FC = () => {
+  return (
+    <div className="min-h-screen bg-gray-50 p-8">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">Surplus Listing Details</h1>
+        <p className="text-gray-600">This page is under construction.</p>
+      </div>
+    </div>
+  );
+};
+
+export default UV_SurplusListing_Detail;

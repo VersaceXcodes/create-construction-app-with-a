@@ -526,7 +526,7 @@ const UV_ProductEdit_Supplier: React.FC = () => {
     const current_pricing = edited_product.bulk_pricing || {};
     updateField('bulk_pricing', { ...current_pricing, [bulk_price_tier]: price });
     
-    setBulkPriceT<br/>ier('');
+    setBulkPriceTier('');
     setBulkPriceValue('');
   };
 
@@ -845,7 +845,7 @@ const UV_ProductEdit_Supplier: React.FC = () => {
                     <input
                       type="text"
                       value={bulk_price_tier}
-                      onChange={(e) => setBulkPriceT<br/>ier(e.target.value)}
+                      onChange={(e) => setBulkPriceTier(e.target.value)}
                       placeholder="Quantity (e.g., 10)"
                       className="flex-1 px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
                     />

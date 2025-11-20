@@ -985,6 +985,7 @@ const UV_SupplierProfile_Customer: React.FC = () => {
                   </div>
                 </div>
               </div>
+              )}
 
               {/* Reviews List */}
               {reviewsLoading ? (
