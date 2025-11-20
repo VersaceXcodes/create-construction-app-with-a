@@ -287,7 +287,7 @@ const useDebounce = <T,>(value: T, delay: number): T => {
 // MAIN COMPONENT
 // ============================================================================
 
-const UV_KnowledgeBase: React.FC = () => {
+export default function UV_KnowledgeBase() {
   // ============================================================================
   // ZUSTAND STORE ACCESS (CRITICAL: Individual selectors)
   // ============================================================================
@@ -1074,6 +1074,4 @@ const UV_KnowledgeBase: React.FC = () => {
       </div>
     </>
   );
-};
-
-export default UV_KnowledgeBase;
+}

@@ -164,7 +164,7 @@ const dismissAlert = async (authToken: string, alertId: string): Promise<void> =
 // MAIN COMPONENT
 // ============================================================================
 
-const UV_AdminDashboard: React.FC = () => {
+export default function UV_AdminDashboard() {
   // CRITICAL: Individual selectors to avoid infinite loops
   const authToken = useAppStore(state => state.authentication_state.auth_token);
   const currentUser = useAppStore(state => state.authentication_state.current_user);
@@ -969,5 +969,4 @@ const UV_AdminDashboard: React.FC = () => {
       </div>
     </>
   );
-};
-export default UV_AdminDashboard;
+}

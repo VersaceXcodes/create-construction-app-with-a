@@ -97,7 +97,7 @@ interface OrderResponse {
 // MAIN COMPONENT
 // ============================================================================
 
-const UV_OrderDetail_Supplier: React.FC = () => {
+export default function UV_OrderDetail_Supplier() {
   const { order_id } = useParams<{ order_id: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -964,6 +964,4 @@ const UV_OrderDetail_Supplier: React.FC = () => {
       </div>
     </>
   );
-};
-
-export default UV_OrderDetail_Supplier;
+}

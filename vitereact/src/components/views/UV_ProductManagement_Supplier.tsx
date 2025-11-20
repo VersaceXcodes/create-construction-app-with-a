@@ -153,7 +153,7 @@ const fetchCategories = async (): Promise<Category[]> => {
 // MAIN COMPONENT
 // ============================================================================
 
-const UV_ProductManagement_Supplier: React.FC = () => {
+export default function UV_ProductManagement_Supplier() {
   // ============================================================================
   // GLOBAL STATE ACCESS (CRITICAL: Individual selectors only)
   // ============================================================================
@@ -932,6 +932,4 @@ const UV_ProductManagement_Supplier: React.FC = () => {
       </div>
     </>
   );
-};
-
-export default UV_ProductManagement_Supplier;
+}

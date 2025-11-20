@@ -223,7 +223,7 @@ const updateCommissionRates = async (
 // MAIN COMPONENT
 // ============================================================================
 
-const UV_AdminFinancials: React.FC = () => {
+export default function UV_AdminFinancials() {
   // URL params
   const [searchParams, setSearchParams] = useSearchParams();
   const periodParam = searchParams.get('period') || 'current_month';
@@ -1184,6 +1184,4 @@ const UV_AdminFinancials: React.FC = () => {
       </div>
     </>
   );
-};
-
-export default UV_AdminFinancials;
+}
