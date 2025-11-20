@@ -194,6 +194,41 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000
 // Set axios baseURL to include /api suffix for all API requests
 axios.defaults.baseURL = `${API_BASE_URL}/api`;
 
+// Add response interceptor for better error handling
+axios.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    // Enhanced error handling
+    if (error.response) {
+      // Server responded with error status
+      const status = error.response.status;
+      const message = error.response.data?.message || 'An error occurred';
+      
+      if (status === 401) {
+        // Unauthorized - clear auth state
+        console.error('Authentication error - clearing session');
+        // Will be handled by logout_user action
+      } else if (status === 403) {
+        console.error('Access forbidden:', message);
+      } else if (status === 404) {
+        console.error('Resource not found:', error.config?.url);
+      } else if (status >= 500) {
+        console.error('Server error:', message);
+      }
+    } else if (error.request) {
+      // Request made but no response received
+      console.error('Network error - no response received');
+    } else {
+      // Error setting up the request
+      console.error('Request setup error:', error.message);
+    }
+    
+    return Promise.reject(error);
+  }
+);
+
 // ============================================================================
 // STORE IMPLEMENTATION
 // ============================================================================

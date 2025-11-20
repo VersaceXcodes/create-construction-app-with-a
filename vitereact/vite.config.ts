@@ -45,5 +45,21 @@ export default defineConfig({
 	},
 	build: {
 		outDir: "public",
+		// Performance optimizations (using esbuild for minification - faster than terser)
+		minify: 'esbuild',
+		// Code splitting for better performance
+		rollupOptions: {
+			output: {
+				manualChunks: {
+					// Split vendor code
+					'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+					'state-vendor': ['zustand', '@tanstack/react-query'],
+					'ui-vendor': ['lucide-react'],
+					'form-vendor': ['react-hook-form', '@hookform/resolvers', 'zod'],
+				},
+			},
+		},
+		// Increase chunk size warning limit (we're aware of the large bundle)
+		chunkSizeWarningLimit: 1000,
 	},
 });
