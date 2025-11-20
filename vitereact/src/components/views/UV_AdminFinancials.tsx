@@ -418,7 +418,7 @@ export default function UV_AdminFinancials() {
     });
   };
 
-  // const formatDateTime = (dateString: string) => {
+  const formatDateTime = (dateString: string) => {
     return new Date(dateString).toLocaleString('en-US', {
       month: 'short',
       day: 'numeric',

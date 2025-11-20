@@ -64,54 +64,10 @@ interface UserAnalytics {
   };
 }
 
-  // interface TransactionAnalytics removed - unused
-  transaction_volume: Array<{ date: string; count: number; amount: number }>;
-  payment_method_distribution: Array<{ method: string; count: number; percentage: number }>;
-  average_order_value_trend: Array<{ date: string; value: number }>;
-  refund_rates: {
-    total_refunds: number;
-    refund_rate: number;
-  };
-}
-
-  // interface SupplierAnalytics removed - unused
-  supplier_performance_distribution: Array<{ rating_range: string; count: number }>;
-  new_supplier_applications: Array<{ date: string; count: number }>;
-  supplier_revenue_ranking: Array<{ supplier_id: string; business_name: string; revenue: number }>;
-  supplier_satisfaction_metrics: {
-    avg_fulfillment_rate: number;
-    avg_response_time: number;
-  };
-}
-
-  // interface ProductAnalytics removed - unused
-  popular_products: Array<{ product_id: string; product_name: string; sales_count: number; revenue: number }>;
-  category_performance: Array<{ category_name: string; product_count: number; sales: number }>;
-  search_trends: Array<{ search_term: string; count: number }>;
-  inventory_turnover: {
-    avg_turnover_days: number;
-  };
-  price_trends: Array<{ date: string; avg_price: number }>;
-}
-
-  // interface OperationalAnalytics removed - unused
-  delivery_performance: {
-    on_time_rate: number;
-    avg_delivery_time_hours: number;
-  };
-  support_ticket_analytics: {
-    total_tickets: number;
-    avg_resolution_time_hours: number;
-    satisfaction_rating: number;
-  };
-  system_performance_metrics: {
-    avg_response_time_ms: number;
-    error_rate: number;
-  };
-  uptime_statistics: {
-    uptime_percentage: number;
-  };
-}
+// interface TransactionAnalytics removed - unused
+// interface SupplierAnalytics removed - unused
+// interface ProductAnalytics removed - unused
+// interface OperationalAnalytics removed - unused
 
 // ============================================================================
 // API FUNCTIONS
