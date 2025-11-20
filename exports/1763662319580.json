@@ -1,0 +1,19 @@
+{
+  "timestamp": 1763662319580,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_Login",
+      "version": "1763662198600"
+    }
+  },
+  "projectId": "create-construction-app-with-a",
+  "files": [
+    {
+      "path": "/mnt/data/create-construction-app-with-a/vitereact/src/components/views/UV_Login.tsx",
+      "type": "text",
+      "size": 18150,
+      "dependencies": false
+    }
+  ]
+}

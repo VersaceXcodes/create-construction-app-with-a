@@ -1,0 +1,15 @@
+{
+  "timestamp": 1763658726267,
+  "operation": {
+    "id": "db:schemas:zod"
+  },
+  "projectId": "create-construction-app-with-a",
+  "files": [
+    {
+      "path": "/mnt/data/create-construction-app-with-a/backend/schema.ts",
+      "type": "text",
+      "size": 48676,
+      "dependencies": false
+    }
+  ]
+}

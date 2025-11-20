@@ -1,0 +1,21 @@
+{
+  "timestamp": 1763662075215,
+  "operation": {
+    "id": "backend:tests:main"
+  },
+  "projectId": "create-construction-app-with-a",
+  "files": [
+    {
+      "path": "/mnt/data/create-construction-app-with-a/backend/server.test.ts",
+      "type": "text",
+      "size": 160569,
+      "dependencies": false
+    },
+    {
+      "path": "/mnt/data/create-construction-app-with-a/backend/jest.config.ts",
+      "type": "text",
+      "size": 1113,
+      "dependencies": false
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "timestamp": 1763657661502,
+  "operation": {
+    "id": "db:postgres"
+  },
+  "projectId": "create-construction-app-with-a",
+  "files": [
+    {
+      "path": "/mnt/data/create-construction-app-with-a/backend/db.sql",
+      "type": "text",
+      "size": 90787,
+      "dependencies": false
+    }
+  ]
+}

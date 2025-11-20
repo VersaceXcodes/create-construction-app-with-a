@@ -1,0 +1,19 @@
+{
+  "timestamp": 1763662395055,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_SurplusMarketplace_Browse",
+      "version": "1763662200658"
+    }
+  },
+  "projectId": "create-construction-app-with-a",
+  "files": [
+    {
+      "path": "/mnt/data/create-construction-app-with-a/vitereact/src/components/views/UV_SurplusMarketplace_Browse.tsx",
+      "type": "text",
+      "size": 42082,
+      "dependencies": false
+    }
+  ]
+}

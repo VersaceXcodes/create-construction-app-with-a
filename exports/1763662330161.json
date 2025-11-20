@@ -1,0 +1,19 @@
+{
+  "timestamp": 1763662330161,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_OrderConfirmation",
+      "version": "latest"
+    }
+  },
+  "projectId": "create-construction-app-with-a",
+  "files": [
+    {
+      "path": "/mnt/data/create-construction-app-with-a/vitereact/src/components/views/UV_OrderConfirmation.tsx",
+      "type": "text",
+      "size": 26800,
+      "dependencies": false
+    }
+  ]
+}

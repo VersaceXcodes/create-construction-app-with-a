@@ -1,0 +1,19 @@
+{
+  "timestamp": 1763662371159,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_CartPage",
+      "version": "1763662199220"
+    }
+  },
+  "projectId": "create-construction-app-with-a",
+  "files": [
+    {
+      "path": "/mnt/data/create-construction-app-with-a/vitereact/src/components/views/UV_CartPage.tsx",
+      "type": "text",
+      "size": 40954,
+      "dependencies": false
+    }
+  ]
+}

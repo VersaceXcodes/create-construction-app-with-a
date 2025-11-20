@@ -1,0 +1,19 @@
+{
+  "timestamp": 1763662326937,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_OrderDashboard",
+      "version": "latest"
+    }
+  },
+  "projectId": "create-construction-app-with-a",
+  "files": [
+    {
+      "path": "/mnt/data/create-construction-app-with-a/vitereact/src/components/views/UV_OrderDashboard.tsx",
+      "type": "text",
+      "size": 30953,
+      "dependencies": false
+    }
+  ]
+}

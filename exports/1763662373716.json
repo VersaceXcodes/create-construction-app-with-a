@@ -1,0 +1,19 @@
+{
+  "timestamp": 1763662373716,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_CustomerOnboarding",
+      "version": "1763662198916"
+    }
+  },
+  "projectId": "create-construction-app-with-a",
+  "files": [
+    {
+      "path": "/mnt/data/create-construction-app-with-a/vitereact/src/components/views/UV_CustomerOnboarding.tsx",
+      "type": "text",
+      "size": 42589,
+      "dependencies": false
+    }
+  ]
+}

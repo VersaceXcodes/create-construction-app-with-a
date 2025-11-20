@@ -1,0 +1,19 @@
+{
+  "timestamp": 1763662324156,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_IssueSubmit",
+      "version": "latest"
+    }
+  },
+  "projectId": "create-construction-app-with-a",
+  "files": [
+    {
+      "path": "/mnt/data/create-construction-app-with-a/vitereact/src/components/views/UV_IssueSubmit.tsx",
+      "type": "text",
+      "size": 32622,
+      "dependencies": false
+    }
+  ]
+}

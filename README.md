@@ -1,2 +1,3 @@
-# create-construction-app-with-a
-Project create-construction-app-with-a generated.
+app generated from cofounder/boilerplate
+
+instructions here on how to start api and frontend , whether in parallel or separately

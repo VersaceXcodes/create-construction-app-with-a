@@ -1,0 +1,19 @@
+{
+  "timestamp": 1763662267828,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_Registration_AccountTypeSelect",
+      "version": "1763662198206"
+    }
+  },
+  "projectId": "create-construction-app-with-a",
+  "files": [
+    {
+      "path": "/mnt/data/create-construction-app-with-a/vitereact/src/components/views/UV_Registration_AccountTypeSelect.tsx",
+      "type": "text",
+      "size": 12023,
+      "dependencies": false
+    }
+  ]
+}

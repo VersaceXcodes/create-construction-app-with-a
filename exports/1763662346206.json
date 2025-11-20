@@ -1,0 +1,19 @@
+{
+  "timestamp": 1763662346206,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_ProductComparison",
+      "version": "latest"
+    }
+  },
+  "projectId": "create-construction-app-with-a",
+  "files": [
+    {
+      "path": "/mnt/data/create-construction-app-with-a/vitereact/src/components/views/UV_ProductComparison.tsx",
+      "type": "text",
+      "size": 32572,
+      "dependencies": false
+    }
+  ]
+}

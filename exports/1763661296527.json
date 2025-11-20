@@ -1,0 +1,15 @@
+{
+  "timestamp": 1763661296527,
+  "operation": {
+    "id": "settings:config:package"
+  },
+  "projectId": "create-construction-app-with-a",
+  "files": [
+    {
+      "path": "/mnt/data/create-construction-app-with-a/vitereact/package.json",
+      "type": "text",
+      "size": 2949,
+      "dependencies": true
+    }
+  ]
+}

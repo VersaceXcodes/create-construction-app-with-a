@@ -1,0 +1,19 @@
+{
+  "timestamp": 1763662356553,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_SupplierProfile_Guest",
+      "version": "1763662197981"
+    }
+  },
+  "projectId": "create-construction-app-with-a",
+  "files": [
+    {
+      "path": "/mnt/data/create-construction-app-with-a/vitereact/src/components/views/UV_SupplierProfile_Guest.tsx",
+      "type": "text",
+      "size": 40998,
+      "dependencies": false
+    }
+  ]
+}

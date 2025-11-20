@@ -1,0 +1,15 @@
+{
+  "timestamp": 1763661101334,
+  "operation": {
+    "id": "backend:server:main"
+  },
+  "projectId": "create-construction-app-with-a",
+  "files": [
+    {
+      "path": "/mnt/data/create-construction-app-with-a/backend/server.ts",
+      "type": "text",
+      "size": 151903,
+      "dependencies": false
+    }
+  ]
+}

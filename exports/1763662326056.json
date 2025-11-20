@@ -1,0 +1,19 @@
+{
+  "timestamp": 1763662326056,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_NotificationCenter",
+      "version": "1763662199991"
+    }
+  },
+  "projectId": "create-construction-app-with-a",
+  "files": [
+    {
+      "path": "/mnt/data/create-construction-app-with-a/vitereact/src/components/views/UV_NotificationCenter.tsx",
+      "type": "text",
+      "size": 29387,
+      "dependencies": false
+    }
+  ]
+}

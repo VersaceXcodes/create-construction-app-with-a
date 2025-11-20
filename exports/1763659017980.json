@@ -1,0 +1,15 @@
+{
+  "timestamp": 1763659017980,
+  "operation": {
+    "id": "backend:specifications:openapi"
+  },
+  "projectId": "create-construction-app-with-a",
+  "files": [
+    {
+      "path": "/mnt/data/create-construction-app-with-a/backend/openapi.yaml",
+      "type": "text",
+      "size": 130711,
+      "dependencies": false
+    }
+  ]
+}

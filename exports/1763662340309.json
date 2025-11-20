@@ -1,0 +1,19 @@
+{
+  "timestamp": 1763662340309,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_MyProjects",
+      "version": "1763662199398"
+    }
+  },
+  "projectId": "create-construction-app-with-a",
+  "files": [
+    {
+      "path": "/mnt/data/create-construction-app-with-a/vitereact/src/components/views/UV_MyProjects.tsx",
+      "type": "text",
+      "size": 28712,
+      "dependencies": false
+    }
+  ]
+}
