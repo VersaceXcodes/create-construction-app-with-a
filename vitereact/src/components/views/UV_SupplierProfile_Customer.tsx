@@ -6,12 +6,9 @@ import { useAppStore } from '@/store/main';
 import { 
   Star, 
   MapPin, 
-  Phone, 
-  Mail, 
   Clock, 
   ShoppingCart, 
   MessageCircle, 
-  Check, 
   X,
   Heart,
   Filter,
@@ -19,8 +16,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ShieldCheck,
-  Package,
-  TrendingUp
+  Package
 } from 'lucide-react';
 
 // ============================================================================
@@ -97,6 +93,7 @@ interface ProductFilters {
   in_stock_only: boolean | null;
   sort_by: string;
   sort_order: string;
+  status?: string;
 }
 
 interface ReviewFilters {
@@ -328,7 +325,7 @@ const UV_SupplierProfile_Customer: React.FC = () => {
   // Contact supplier mutation
   const contactMutation = useMutation({
     mutationFn: () => createChatConversation(supplier_id!, authToken!),
-    onSuccess: (data) => {
+    onSuccess: () => {
       // Could redirect to chat or open chat widget
       setContactModalOpen(false);
       // Assuming chat widget exists in global views
@@ -984,7 +981,6 @@ const UV_SupplierProfile_Customer: React.FC = () => {
                     </select>
                   </div>
                 </div>
-              </div>
               )}
 
               {/* Reviews List */}
