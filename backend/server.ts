@@ -78,7 +78,6 @@ const publicDir = isDist
   ? path.resolve(__dirname, '..', 'public')
   : path.resolve(__dirname, 'public');
 
-app.use(express.static(publicDir));
 app.use(cors({ origin: process.env.FRONTEND_URL || '*', credentials: true }));
 app.use(express.json({ limit: '5mb' }));
 app.use(morgan('combined'));
@@ -4035,6 +4034,10 @@ io.on('connection', (socket: AuthSocket) => {
   });
 });
 
+// Serve static files (must come after API routes)
+app.use(express.static(publicDir));
+
+// Catch-all route for SPA (must be last)
 app.get(/^(?!\/api).*/, (req, res) => {
   res.sendFile(path.join(publicDir, 'index.html'));
 });

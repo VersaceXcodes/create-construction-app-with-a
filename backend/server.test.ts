@@ -1,7 +1,7 @@
 import request from 'supertest';
 import { Server } from 'socket.io';
 import { io as ioClient, Socket as ClientSocket } from 'socket.io-client';
-import { app, pool } from './server.ts';
+import { app, pool } from './server.js';
 
 // ============================================
 // TEST SETUP & UTILITIES
