@@ -99,7 +99,7 @@ const uploadDocument = async (
   };
 };
 
-// const validateApplication = async (
+const validateApplication = async (
   applicationData: ApplicationFormData,
   authToken: string
 ): Promise<{ is_valid: boolean; errors: Record<string, string>; estimated_timeline: string }> => {
@@ -245,7 +245,7 @@ const UV_TradeCredit_Application: React.FC = () => {
         [variables.documentType]: { progress: 100, status: 'success' }
       }));
     },
-    onError: (// error, variables) => {
+    onError: (error, variables) => {
       setDocumentUploadProgress(prev => ({
         ...prev,
         [variables.documentType]: { progress: 0, status: 'error' }

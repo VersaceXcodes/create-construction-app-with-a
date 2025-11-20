@@ -76,14 +76,14 @@ interface SimilarListing {
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
 
 // Fetch surplus listing details
-// const fetchSurplusListing = async (listing_id: string, auth_token: string | null): Promise<SurplusListing> => {
+const fetchSurplusListing = async (listing_id: string, auth_token: string | null): Promise<SurplusListing> => {
   const headers = auth_token ? { 'Authorization': `Bearer ${auth_token}` } : {};
   const response = await axios.get(`${API_BASE_URL}/surplus/${listing_id}`, { headers });
   return response.data;
 };
 
 // Fetch seller profile
-// const fetchSellerProfile = async (seller_id: string): Promise<SellerProfile> => {
+const fetchSellerProfile = async (seller_id: string): Promise<SellerProfile> => {
   // Since backend returns customer via customers table, we need to fetch customer + user data
   // Backend doesn't have explicit seller profile endpoint, so we construct from available data
   // const customerResponse = await axios.get(`${API_BASE_URL}/customers/me`);
@@ -102,13 +102,13 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000
 };
 
 // Fetch category info
-// const fetchCategory = async (category_id: string): Promise<CategoryInfo> => {
+const fetchCategory = async (category_id: string): Promise<CategoryInfo> => {
   const response = await axios.get(`${API_BASE_URL}/categories/${category_id}`);
   return response.data;
 };
 
 // Fetch similar listings
-// const fetchSimilarListings = async (category_id: string, current_listing_id: string): Promise<SimilarListing[]> => {
+const fetchSimilarListings = async (category_id: string, current_listing_id: string): Promise<SimilarListing[]> => {
   const response = await axios.get(`${API_BASE_URL}/surplus`, {
     params: {
       category_id,

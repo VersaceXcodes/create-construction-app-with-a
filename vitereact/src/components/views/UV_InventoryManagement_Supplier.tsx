@@ -186,11 +186,11 @@ const UV_InventoryManagement_Supplier: React.FC = () => {
   });
   
   // const [syncStatus, setSyncStatus] = useState<SyncStatus>({
-    enabled: false,
-    last_sync_timestamp: null,
-    sync_in_progress: false,
-    sync_errors: [],
-  });
+  //   enabled: false,
+  //   last_sync_timestamp: null,
+  //   sync_in_progress: false,
+  //   sync_errors: [],
+  // });
   
   const [bulkUpdateState, setBulkUpdateState] = useState<BulkUpdateState>({
     selected_product_ids: [],

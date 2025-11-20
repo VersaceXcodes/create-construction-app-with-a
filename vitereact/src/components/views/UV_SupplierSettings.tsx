@@ -109,7 +109,7 @@ const fetchSupplierProfile = async (authToken: string): Promise<SupplierProfile>
   return response.data;
 };
 
-const updateSupplierProfile = async (data: Partial<SupplierProfile>: string) => {
+const updateSupplierProfile = async (data: Partial<SupplierProfile>) => {
   const response = await axios.patch(
     `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api/suppliers/me`,
     data,
@@ -126,17 +126,17 @@ const fetchTeamMembers = async (authToken: string): Promise<TeamMember[]> => {
   return [];
 };
 
-const addTeamMember = async (data: { email: string; role: string; permissions: Record<string, boolean> }: string) => {
+const addTeamMember = async (data: { email: string; role: string; permissions: Record<string, boolean> }) => {
   // Mock for MVP
   return { success: true, member_id: `member_${Date.now()}` };
 };
 
-// const updateTeamMember = async (memberId: string, data: { role: string; permissions: Record<string, boolean> }: string) => {
-  // Mock for MVP
-  return { success: true };
-};
+// const updateTeamMember = async (memberId: string, data: { role: string; permissions: Record<string, boolean> }) => {
+//   // Mock for MVP
+//   return { success: true };
+// };
 
-const removeTeamMember = async (memberId: string: string) => {
+const removeTeamMember = async (memberId: string) => {
   // Mock for MVP
   return { success: true };
 };
@@ -354,12 +354,12 @@ const UV_SupplierSettings: React.FC = () => {
   ];
   
   // const defaultPermissions = {
-    manage_products: false,
-    manage_orders: true,
-    manage_inventory: true,
-    view_analytics: false,
-    manage_team: false
-  };
+  //   manage_products: false,
+  //   manage_orders: true,
+  //   manage_inventory: true,
+  //   view_analytics: false,
+  //   manage_team: false
+  // };
   
   // ============================================================================
   // LOADING & ERROR STATES
