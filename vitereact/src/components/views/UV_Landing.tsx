@@ -494,12 +494,21 @@ const UV_Landing: React.FC = () => {
                       )}
                       
                       {product.rating_average && (
-                        <div className="flex items-center space-x-1">
-                          <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                          <span className="text-sm font-medium text-gray-700">
-                            {Number(product.rating_average).toFixed(1)}
-                          </span>
-                        </div>
+                      <div className="flex items-center space-x-1">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`w-4 h-4 ${
+                              i < Math.floor(Number(supplier.rating_average))
+                                ? 'text-yellow-400 fill-current'
+                                : 'text-gray-300'
+                            }`}
+                          />
+                        ))}
+                        <span className="ml-2 text-sm font-medium text-gray-700">
+                          {Number(supplier.rating_average).toFixed(1)}
+                        </span>
+                      </div>
                       )}
                     </div>
                     
@@ -651,14 +660,14 @@ const UV_Landing: React.FC = () => {
                           <Star
                             key={i}
                             className={`w-4 h-4 ${
-                              i < Math.floor(supplier.rating_average)
+                              i < Math.floor(Number(supplier.rating_average))
                                 ? 'text-yellow-400 fill-current'
                                 : 'text-gray-300'
                             }`}
                           />
                         ))}
                         <span className="ml-2 text-sm font-medium text-gray-700">
-                          {supplier.rating_average.toFixed(1)}
+                          {Number(supplier.rating_average).toFixed(1)}
                         </span>
                       </div>
                       

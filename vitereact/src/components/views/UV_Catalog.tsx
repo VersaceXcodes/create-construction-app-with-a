@@ -781,7 +781,7 @@ const UV_Catalog: React.FC = () => {
                           {product.rating_average && (
                             <div className="flex items-center gap-1">
                               <Star className="size-4 fill-amber-400 text-amber-400" />
-                              <span className="font-medium">{product.rating_average.toFixed(1)}</span>
+                              <span className="font-medium">{Number(product.rating_average).toFixed(1)}</span>
                             </div>
                           )}
                         </Link>

@@ -699,7 +699,7 @@ const UV_SupplierDashboard: React.FC = () => {
                           <div className="flex items-center space-x-1">
                             <Star className="size-4 text-yellow-500 fill-yellow-500" />
                             <span className="font-bold text-gray-900">
-                              {profile?.rating_average.toFixed(1) || '0.0'}
+                              {Number(profile?.rating_average || 0).toFixed(1)}
                             </span>
                           </div>
                         </div>
@@ -719,7 +719,7 @@ const UV_SupplierDashboard: React.FC = () => {
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-sm font-medium text-gray-600">Fulfillment Rate</span>
                           <span className="font-bold text-gray-900">
-                            {profile?.fulfillment_rate.toFixed(1) || '0.0'}%
+                            {Number(profile?.fulfillment_rate || 0).toFixed(1)}%
                           </span>
                         </div>
                         <div className="bg-gray-200 rounded-full h-2 overflow-hidden">
@@ -736,7 +736,7 @@ const UV_SupplierDashboard: React.FC = () => {
                           <div className="flex items-center justify-between mb-2">
                             <span className="text-sm font-medium text-gray-600">Avg Response Time</span>
                             <span className="font-bold text-gray-900">
-                              {profile.response_time_average.toFixed(1)}h
+                              {Number(profile.response_time_average).toFixed(1)}h
                             </span>
                           </div>
                           <p className="text-xs text-gray-500">

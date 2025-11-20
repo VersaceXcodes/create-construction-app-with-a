@@ -505,7 +505,7 @@ const UV_SupplierProfile_Customer: React.FC = () => {
                               ))}
                             </div>
                             <span className="font-medium text-gray-900">
-                              {supplierProfile.rating_average.toFixed(1)}
+                              {Number(supplierProfile.rating_average).toFixed(1)}
                             </span>
                             <span>({supplierProfile.total_reviews} reviews)</span>
                           </div>
@@ -521,7 +521,7 @@ const UV_SupplierProfile_Customer: React.FC = () => {
                             <div className="flex items-center gap-1">
                               <MessageCircle className="w-4 h-4" />
                               <span>
-                                Replies within {supplierProfile.response_time_average.toFixed(1)} hours
+                                Replies within {Number(supplierProfile.response_time_average).toFixed(1)} hours
                               </span>
                             </div>
                           )}
@@ -573,7 +573,7 @@ const UV_SupplierProfile_Customer: React.FC = () => {
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-gray-900">
-                      {supplierProfile.fulfillment_rate.toFixed(1)}%
+                      {Number(supplierProfile.fulfillment_rate).toFixed(1)}%
                     </div>
                     <div className="text-sm text-gray-600">Fulfillment</div>
                   </div>
@@ -902,14 +902,14 @@ const UV_SupplierProfile_Customer: React.FC = () => {
                     {/* Overall Rating */}
                     <div className="text-center md:text-left">
                       <div className="text-5xl font-bold text-gray-900 mb-2">
-                        {reviewsData.average_rating.toFixed(1)}
+                        {Number(reviewsData.average_rating).toFixed(1)}
                       </div>
                       <div className="flex items-center justify-center md:justify-start gap-1 mb-2">
                         {[1, 2, 3, 4, 5].map((star) => (
                           <Star
                             key={star}
                             className={`w-6 h-6 ${
-                              star <= Math.round(reviewsData.average_rating)
+                              star <= Math.round(Number(reviewsData.average_rating))
                                 ? 'text-yellow-400 fill-yellow-400'
                                 : 'text-gray-300'
                             }`}
@@ -1140,7 +1140,7 @@ const UV_SupplierProfile_Customer: React.FC = () => {
                       <div>
                         <div className="font-semibold text-gray-900">Response Time</div>
                         <div className="text-sm text-gray-600">
-                          Usually replies within {supplierProfile.response_time_average.toFixed(1)} hours
+                          Usually replies within {Number(supplierProfile.response_time_average).toFixed(1)} hours
                         </div>
                       </div>
                     </div>
@@ -1208,7 +1208,7 @@ const UV_SupplierProfile_Customer: React.FC = () => {
                 <p className="text-sm text-gray-600 text-center">
                   Our team typically responds within{' '}
                   {supplierProfile.response_time_average !== null
-                    ? `${supplierProfile.response_time_average.toFixed(1)} hours`
+                    ? `${Number(supplierProfile.response_time_average).toFixed(1)} hours`
                     : 'a few hours'}
                 </p>
               </div>

@@ -463,7 +463,7 @@ const UV_SupplierProfile_Guest: React.FC = () => {
               <div className="flex items-center space-x-1">
                 <Star className="w-5 h-5 text-yellow-500 fill-current" />
                 <span className="font-semibold text-gray-900">
-                  {supplier.rating_average.toFixed(1)}
+                  {Number(supplier.rating_average).toFixed(1)}
                 </span>
                 <span className="text-sm">
                   ({supplier.total_reviews} reviews)
@@ -599,7 +599,7 @@ const UV_SupplierProfile_Guest: React.FC = () => {
                       <span className="text-gray-600 text-sm">Average Rating</span>
                       <div className="flex items-center space-x-1">
                         <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                        <span className="font-semibold text-gray-900">{supplier.rating_average.toFixed(1)}</span>
+                        <span className="font-semibold text-gray-900">{Number(supplier.rating_average).toFixed(1)}</span>
                       </div>
                     </div>
                     <div className="flex justify-between items-center">
@@ -822,7 +822,7 @@ const UV_SupplierProfile_Guest: React.FC = () => {
                   <div className="text-center md:text-left">
                     <div className="flex items-center justify-center md:justify-start space-x-2 mb-2">
                       <span className="text-5xl font-bold text-gray-900">
-                        {supplier.rating_average.toFixed(1)}
+                        {Number(supplier.rating_average).toFixed(1)}
                       </span>
                       <Star className="w-12 h-12 text-yellow-500 fill-current" />
                     </div>
@@ -834,7 +834,7 @@ const UV_SupplierProfile_Guest: React.FC = () => {
                         <Star
                           key={star}
                           className={`w-6 h-6 ${
-                            star <= Math.round(supplier.rating_average)
+                            star <= Math.round(Number(supplier.rating_average))
                               ? 'text-yellow-500 fill-current'
                               : 'text-gray-300'
                           }`}

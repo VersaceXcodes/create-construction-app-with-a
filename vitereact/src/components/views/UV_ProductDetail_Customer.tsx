@@ -774,14 +774,14 @@ const UV_ProductDetail_Customer: React.FC = () => {
                           />
                         ))}
                         <span className="text-sm text-gray-600 ml-1">
-                          {supplier.rating_average.toFixed(1)} ({supplier.total_reviews} reviews)
+                          {Number(supplier.rating_average).toFixed(1)} ({supplier.total_reviews} reviews)
                         </span>
                       </div>
                       
                       {supplier.response_time_average && (
                         <div className="flex items-center space-x-1 text-sm text-gray-600 mb-3">
                           <Clock className="h-4 w-4" />
-                          <span>Replies within {supplier.response_time_average.toFixed(1)} hours</span>
+                          <span>Replies within {Number(supplier.response_time_average).toFixed(1)} hours</span>
                         </div>
                       )}
                       
@@ -957,14 +957,14 @@ const UV_ProductDetail_Customer: React.FC = () => {
                         <div className="flex items-center justify-between mb-4">
                           <div>
                             <div className="flex items-center space-x-4 mb-2">
-                              <span className="text-5xl font-bold text-gray-900">{reviewData.average_rating.toFixed(1)}</span>
+                              <span className="text-5xl font-bold text-gray-900">{Number(reviewData.average_rating).toFixed(1)}</span>
                               <div>
                                 <div className="flex items-center space-x-1 mb-1">
                                   {[...Array(5)].map((_, i) => (
                                     <Star
                                       key={i}
                                       className={`h-6 w-6 ${
-                                        i < Math.floor(reviewData.average_rating)
+                                        i < Math.floor(Number(reviewData.average_rating))
                                           ? 'fill-yellow-400 text-yellow-400'
                                           : 'text-gray-300'
                                       }`}

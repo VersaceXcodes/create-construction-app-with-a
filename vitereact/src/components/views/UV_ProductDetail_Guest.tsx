@@ -527,7 +527,7 @@ const UV_ProductDetail_Guest: React.FC = () => {
                       <div className="flex items-center space-x-2 mt-1">
                         {renderStars(supplier.rating_average, 'sm')}
                         <span className="text-sm text-gray-600">
-                          {supplier.rating_average.toFixed(1)} ({supplier.total_reviews} reviews)
+                          {Number(supplier.rating_average).toFixed(1)} ({supplier.total_reviews} reviews)
                         </span>
                       </div>
                     </div>
