@@ -321,7 +321,7 @@ export default function UV_AdminDashboard() {
     return new Intl.NumberFormat('en-US').format(num);
   };
 
-  // const getStatusColor = (status: string): string => {
+  const getStatusColor = (status: string): string => {
     switch (status) {
       case 'operational':
       case 'healthy':
@@ -970,4 +970,3 @@ export default function UV_AdminDashboard() {
     </>
   );
 }
-

@@ -486,7 +486,7 @@ export default function UV_KnowledgeBase() {
     handleArticleClick(articleId);
   };
 
-  // const handleBackToSearch = () => {
+  const handleBackToSearch = () => {
     setSelectedArticleId(null);
     setSearchParams({});
   };
@@ -1075,4 +1075,3 @@ export default function UV_KnowledgeBase() {
     </>
   );
 }
-

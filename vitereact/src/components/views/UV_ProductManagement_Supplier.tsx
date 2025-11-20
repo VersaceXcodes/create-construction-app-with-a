@@ -358,7 +358,7 @@ export default function UV_ProductManagement_Supplier() {
     }).format(amount);
   };
   
-  // const formatDate = (dateString: string): string => {
+  const formatDate = (dateString: string): string => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
@@ -933,4 +933,3 @@ export default function UV_ProductManagement_Supplier() {
     </>
   );
 }
-
