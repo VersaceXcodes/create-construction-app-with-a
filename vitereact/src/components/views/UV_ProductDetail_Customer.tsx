@@ -185,7 +185,6 @@ const UV_ProductDetail_Customer: React.FC = () => {
   // CRITICAL: Individual selectors to avoid infinite loops
   const authToken = useAppStore(state => state.authentication_state.auth_token);
   // const currentUser = useAppStore(state => state.authentication_state.current_user);
-  const customerId = useAppStore(state => state.authentication_state.customer_profile?.customer_id);
   const fetchCart = useAppStore(state => state.fetch_cart);
   const cartItems = useAppStore(state => state.cart_state.items);
   
@@ -200,16 +199,6 @@ const UV_ProductDetail_Customer: React.FC = () => {
     verified_only: false,
   });
   const [reviewSortBy, setReviewSortBy] = useState('review_date');
-  const [_showReviewForm, setShowReviewForm] = useState(false);
-  const [reviewFormData, setReviewFormData] = useState({
-    rating_overall: 0,
-    rating_product: 0,
-    rating_service: 0,
-    rating_delivery: 0,
-    review_text: '',
-    would_buy_again: 'yes' as 'yes' | 'no' | 'maybe',
-    is_anonymous: false,
-  });
   const [realTimeStock, setRealTimeStock] = useState<{
     stock_quantity: number | null;
     last_updated: string | null;
@@ -219,7 +208,7 @@ const UV_ProductDetail_Customer: React.FC = () => {
     last_updated: null,
     websocket_connected: false,
   });
-  const [_wsSocket, _setWsSocket] = useState<any | null>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
+
 
   // Fetch product data
   const { data: product, isLoading: productLoading, error: productError } = useQuery({
@@ -230,7 +219,7 @@ const UV_ProductDetail_Customer: React.FC = () => {
   });
 
   // Fetch supplier data
-  const { data: supplier, isLoading: _supplierLoading } = useQuery({
+  const { data: supplier } = useQuery({
     queryKey: ['supplier', product?.supplier_id],
     queryFn: () => fetchSupplier(product!.supplier_id, authToken),
     enabled: !!product?.supplier_id,
@@ -296,38 +285,6 @@ const UV_ProductDetail_Customer: React.FC = () => {
     onSuccess: () => {
       refetchWishlistStatus();
       alert('Removed from wishlist');
-    },
-  });
-
-  // Submit review mutation
-  const _submitReviewMutation = useMutation({
-    mutationFn: async (reviewData: any) => {
-      const response = await axios.post(
-        `${API_BASE_URL}/reviews`,
-        {
-          order_id: reviewData.order_id, // Would need to get from eligible orders
-          customer_id: customerId,
-          supplier_id: product!.supplier_id,
-          product_id: product_id,
-          ...reviewFormData,
-        },
-        { headers: { Authorization: `Bearer ${authToken}` } }
-      );
-      return response.data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['reviews', product_id] });
-      setShowReviewForm(false);
-      setReviewFormData({
-        rating_overall: 0,
-        rating_product: 0,
-        rating_service: 0,
-        rating_delivery: 0,
-        review_text: '',
-        would_buy_again: 'yes',
-        is_anonymous: false,
-      });
-      alert('Review submitted successfully!');
     },
   });
 
@@ -976,13 +933,6 @@ const UV_ProductDetail_Customer: React.FC = () => {
                               </div>
                             </div>
                           </div>
-                          
-                          <button
-                            onClick={() => setShowReviewForm(true)}
-                            className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
-                          >
-                            Write a Review
-                          </button>
                         </div>
                         
                         {/* Filters */}
@@ -1122,12 +1072,6 @@ const UV_ProductDetail_Customer: React.FC = () => {
                   ) : (
                     <div className="text-center py-12">
                       <p className="text-gray-600">No reviews yet for this product.</p>
-                      <button
-                        onClick={() => setShowReviewForm(true)}
-                        className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
-                      >
-                        Be the first to review
-                      </button>
                     </div>
                   )}
                 </div>
