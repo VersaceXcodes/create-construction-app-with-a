@@ -1,0 +1,248 @@
+{
+  "generated_at": "2025-01-20T10:30:00Z",
+  "project_name": "BuildEasy Construction Marketplace",
+  "description": "A comprehensive B2B and B2C construction materials marketplace platform connecting customers, suppliers, and administrators with features for product management, ordering, delivery tracking, and financial transactions",
+  "tech_stack": {
+    "frontend": ["React 18", "TypeScript", "Vite", "React Router", "TanStack Query", "Zustand", "Tailwind CSS", "Radix UI", "Framer Motion"],
+    "backend": ["Node.js", "Express", "TypeScript", "PostgreSQL", "Socket.io", "JWT", "Zod"],
+    "database": ["PostgreSQL"],
+    "testing": ["Vitest", "Jest", "@testing-library/react"],
+    "build_tools": ["Vite", "TypeScript Compiler"]
+  },
+  "architecture": {
+    "pattern": "Multi-tier Architecture",
+    "frontend_pattern": "Component-based SPA with state management",
+    "backend_pattern": "RESTful API with WebSocket support",
+    "authentication": "JWT-based with role-based access control",
+    "state_management": "Zustand for global state, TanStack Query for server state"
+  },
+  "features": [
+    {
+      "name": "User Authentication & Authorization",
+      "description": "Multi-role authentication system with customer, supplier, and admin roles. Includes registration, login, password reset, and email verification flows",
+      "files": ["backend/server.ts:147-466", "vitereact/src/store/main.tsx", "vitereact/src/components/views/UV_Login.tsx", "vitereact/src/components/views/UV_Registration_*.tsx"],
+      "endpoints": ["/api/auth/register/customer", "/api/auth/register/supplier", "/api/auth/login", "/api/auth/logout", "/api/auth/verify-email", "/api/auth/forgot-password", "/api/auth/reset-password"]
+    },
+    {
+      "name": "Product Catalog & Management",
+      "description": "Comprehensive product catalog with search, filtering, categories, and comparison. Suppliers can manage products with inventory tracking",
+      "files": ["backend/server.ts:820-1074", "vitereact/src/components/views/UV_Catalog.tsx", "vitereact/src/components/views/UV_ProductDetail_*.tsx", "vitereact/src/components/views/UV_ProductManagement_Supplier.tsx"],
+      "endpoints": ["/api/products", "/api/products/:product_id", "/api/products/:product_id/view", "/api/products/compare", "/api/suppliers/me/products"],
+      "key_features": ["Advanced search and filtering", "Product comparison", "Category hierarchy", "Bulk pricing", "Stock management", "Product views tracking"]
+    },
+    {
+      "name": "Shopping Cart & Wishlist",
+      "description": "Full shopping cart functionality with cart item management, saved carts, and wishlist with price drop alerts",
+      "files": ["backend/server.ts:1415-1730", "vitereact/src/components/views/UV_CartPage.tsx", "vitereact/src/components/views/UV_Wishlist.tsx", "vitereact/src/components/views/GV_MiniCart_Customer.tsx"],
+      "endpoints": ["/api/cart", "/api/cart/items", "/api/cart/items/:cart_item_id", "/api/cart/save", "/api/wishlist"],
+      "key_features": ["Add/remove items", "Quantity updates", "Save cart to project", "Wishlist with alerts", "Stock validation"]
+    },
+    {
+      "name": "Order Management",
+      "description": "Complete order lifecycle management from checkout to delivery with order tracking, cancellation, and reordering",
+      "files": ["backend/server.ts:1904-2300", "vitereact/src/components/views/UV_Checkout.tsx", "vitereact/src/components/views/UV_OrderDashboard.tsx", "vitereact/src/components/views/UV_OrderDetail.tsx"],
+      "endpoints": ["/api/orders", "/api/orders/:order_id", "/api/orders/:order_id/cancel", "/api/orders/:order_id/timeline", "/api/orders/:order_id/reorder"],
+      "key_features": ["Multi-step checkout", "Order timeline tracking", "Delivery management", "Order cancellation", "Reorder functionality"]
+    },
+    {
+      "name": "Project Management",
+      "description": "Customers can create and manage projects, save product lists, and load projects to cart for repeat ordering",
+      "files": ["backend/server.ts:1732-1902", "vitereact/src/components/views/UV_MyProjects.tsx", "vitereact/src/components/views/UV_ProjectDetail.tsx"],
+      "endpoints": ["/api/projects", "/api/projects/:project_id", "/api/projects/:project_id/load-to-cart"],
+      "key_features": ["Create projects", "Add products to projects", "Load project to cart", "Track project value"]
+    },
+    {
+      "name": "Supplier Management",
+      "description": "Suppliers can manage their business profile, products, inventory, orders, deliveries, and view analytics",
+      "files": ["backend/server.ts:1150-1413", "vitereact/src/components/views/UV_SupplierDashboard.tsx", "vitereact/src/components/views/UV_SupplierSettings.tsx", "vitereact/src/components/views/UV_SupplierAnalytics.tsx"],
+      "endpoints": ["/api/suppliers", "/api/suppliers/:supplier_id", "/api/suppliers/me", "/api/suppliers/:supplier_id/products"],
+      "key_features": ["Business profile management", "Product catalog", "Inventory tracking", "Order fulfillment", "Analytics dashboard", "Financial reports"]
+    },
+    {
+      "name": "Review & Rating System",
+      "description": "Customers can leave reviews for products and suppliers, with supplier responses and helpful vote tracking",
+      "files": ["backend/server.ts:2300-2500", "vitereact/src/components/views/UV_MyReviews.tsx", "vitereact/src/components/views/UV_ReviewsManagement_Supplier.tsx"],
+      "endpoints": ["/api/reviews", "/api/reviews/:review_id", "/api/reviews/:review_id/helpful", "/api/reviews/:review_id/response"],
+      "key_features": ["Multi-criteria ratings", "Photo uploads", "Verified purchase badge", "Supplier responses", "Helpful votes"]
+    },
+    {
+      "name": "Surplus Marketplace",
+      "description": "Peer-to-peer marketplace for customers to sell surplus materials to other customers",
+      "files": ["backend/server.ts:2800-3100", "vitereact/src/components/views/UV_SurplusMarketplace_Browse.tsx", "vitereact/src/components/views/UV_SurplusListing_Detail.tsx", "vitereact/src/components/views/UV_MySurplusListings.tsx"],
+      "endpoints": ["/api/surplus", "/api/surplus/:listing_id", "/api/surplus/my-listings", "/api/surplus/:listing_id/offers"],
+      "key_features": ["Create listings", "Browse surplus items", "Make offers", "Negotiation system", "Escrow transactions"]
+    },
+    {
+      "name": "Trade Credit System",
+      "description": "Trade customers can apply for and manage credit lines with terms and payment tracking",
+      "files": ["backend/server.ts:562-629", "vitereact/src/components/views/UV_TradeCredit_Application.tsx", "vitereact/src/components/views/UV_TradeCredit_Dashboard.tsx"],
+      "endpoints": ["/api/customers/me"],
+      "key_features": ["Credit application", "Credit limit management", "Terms tracking", "Balance monitoring"]
+    },
+    {
+      "name": "Notification System",
+      "description": "Multi-channel notification system for order updates, promotions, and alerts",
+      "files": ["backend/server.ts:2500-2700", "vitereact/src/components/views/UV_NotificationCenter.tsx"],
+      "endpoints": ["/api/notifications", "/api/notifications/:notification_id/read", "/api/notifications/read-all"],
+      "key_features": ["Email notifications", "SMS alerts", "Push notifications", "In-app notifications", "Read status tracking"]
+    },
+    {
+      "name": "Chat & Messaging",
+      "description": "Real-time chat system for customer-supplier and customer-support communication",
+      "files": ["backend/server.ts:3300-3500", "vitereact/src/components/views/GV_ChatWidget.tsx", "vitereact/src/components/views/UV_SupplierMessages.tsx"],
+      "endpoints": ["/api/chat/conversations", "/api/chat/conversations/:conversation_id/messages"],
+      "key_features": ["Real-time messaging", "Conversation threading", "File attachments", "Read receipts"]
+    },
+    {
+      "name": "Issue & Dispute Management",
+      "description": "System for reporting and resolving order issues with escalation to admin",
+      "files": ["backend/server.ts:3100-3300", "vitereact/src/components/views/UV_IssueSubmit.tsx", "vitereact/src/components/views/UV_IssueDetail.tsx"],
+      "endpoints": ["/api/issues", "/api/issues/:issue_id", "/api/issues/:issue_id/messages", "/api/issues/:issue_id/accept-resolution", "/api/issues/:issue_id/escalate"],
+      "key_features": ["Report issues", "Upload evidence", "Resolution offers", "Admin escalation", "Issue tracking"]
+    },
+    {
+      "name": "Admin Dashboard",
+      "description": "Comprehensive admin panel for platform management, user oversight, and analytics",
+      "files": ["vitereact/src/components/views/UV_AdminDashboard.tsx", "vitereact/src/components/views/UV_AdminUserManagement_*.tsx", "vitereact/src/components/views/UV_AdminAnalytics.tsx"],
+      "endpoints": ["/api/admin/users", "/api/admin/supplier-applications", "/api/admin/orders", "/api/admin/disputes", "/api/admin/analytics/dashboard", "/api/admin/settings"],
+      "key_features": ["User management", "Supplier approvals", "Order oversight", "Dispute resolution", "Platform analytics", "Settings management"]
+    },
+    {
+      "name": "Delivery Management",
+      "description": "Track deliveries with real-time updates, driver information, and proof of delivery",
+      "files": ["backend/server.ts:2200-2400", "vitereact/src/components/views/UV_DeliveryManagement_Supplier.tsx"],
+      "endpoints": ["/api/deliveries/:delivery_id", "/api/deliveries/:delivery_id/reschedule"],
+      "key_features": ["Delivery tracking", "Driver assignment", "GPS tracking", "Delivery proof", "Rescheduling"]
+    },
+    {
+      "name": "Financial Management",
+      "description": "Comprehensive financial system for supplier payouts, platform commissions, and transaction tracking",
+      "files": ["backend/server.ts:3500-3700", "vitereact/src/components/views/UV_SupplierFinancials.tsx", "vitereact/src/components/views/UV_AdminFinancials.tsx"],
+      "endpoints": ["/api/admin/payouts", "/api/admin/analytics/dashboard"],
+      "key_features": ["Payout scheduling", "Commission tracking", "Financial reports", "Transaction history"]
+    },
+    {
+      "name": "Promotions & Pricing",
+      "description": "Dynamic pricing with bulk discounts, promotional codes, and time-based offers",
+      "files": ["backend/server.ts:2700-2800", "vitereact/src/components/views/UV_PricingPromotions_Supplier.tsx"],
+      "endpoints": ["/api/promotions", "/api/promotions/validate"],
+      "key_features": ["Promo codes", "Bulk pricing", "Time-based promotions", "Usage limits", "Discount validation"]
+    },
+    {
+      "name": "Support Ticketing",
+      "description": "Customer support ticket system with categorization, priority levels, and admin assignment",
+      "files": ["backend/server.ts:2400-2500", "vitereact/src/components/views/UV_SupportContact.tsx"],
+      "endpoints": ["/api/support/tickets", "/api/support/tickets/:ticket_id", "/api/support/tickets/:ticket_id/responses"],
+      "key_features": ["Create tickets", "Categorization", "Priority levels", "Admin assignment", "Response threading", "Satisfaction ratings"]
+    },
+    {
+      "name": "Address Management",
+      "description": "Multiple address management with default settings and delivery instructions",
+      "files": ["backend/server.ts:631-733"],
+      "endpoints": ["/api/addresses", "/api/addresses/:address_id"],
+      "key_features": ["Multiple addresses", "Default address", "Delivery instructions", "Address types (residential/commercial)"]
+    },
+    {
+      "name": "Payment Methods",
+      "description": "Manage multiple payment methods with support for credit/debit cards and trade credit",
+      "files": ["backend/server.ts:735-818"],
+      "endpoints": ["/api/payment-methods", "/api/payment-methods/:payment_method_id"],
+      "key_features": ["Credit/debit cards", "Trade credit", "Default payment method", "Tokenized storage"]
+    }
+  ],
+  "database_tables": [
+    "users", "addresses", "categories", "customers", "suppliers", "admins", "products", 
+    "payment_methods", "carts", "cart_items", "orders", "order_items", "deliveries", 
+    "order_timeline", "reviews", "review_votes", "wishlist_items", "projects", "project_items",
+    "notifications", "issues", "issue_messages", "chat_conversations", "chat_messages",
+    "surplus_listings", "surplus_offers", "surplus_transactions", "promotions", "promo_code_usage",
+    "payouts", "financial_transactions", "inventory_logs", "search_history", "product_views",
+    "support_tickets", "ticket_responses", "supplier_applications", "admin_activity_logs",
+    "flagged_content", "platform_settings", "delivery_zones"
+  ],
+  "api_endpoints_summary": {
+    "authentication": 8,
+    "users": 3,
+    "customers": 2,
+    "addresses": 5,
+    "payment_methods": 4,
+    "products": 7,
+    "categories": 3,
+    "suppliers": 7,
+    "cart": 5,
+    "wishlist": 4,
+    "projects": 5,
+    "orders": 7,
+    "deliveries": 2,
+    "reviews": 5,
+    "notifications": 3,
+    "issues": 5,
+    "chat": 3,
+    "surplus": 5,
+    "promotions": 2,
+    "support": 3,
+    "admin": 16,
+    "total": 109
+  },
+  "key_integrations": [
+    {
+      "name": "Payment Gateway",
+      "type": "External API (Mock)",
+      "description": "Payment processing for credit/debit cards (Stripe/PayPal pattern)",
+      "status": "Mock implementation"
+    },
+    {
+      "name": "Email Service",
+      "type": "External API (Mock)",
+      "description": "Email notifications for various events",
+      "status": "Mock implementation"
+    },
+    {
+      "name": "SMS Service",
+      "type": "External API (Mock)",
+      "description": "SMS alerts for critical updates",
+      "status": "Mock implementation"
+    },
+    {
+      "name": "WebSocket",
+      "type": "Socket.io",
+      "description": "Real-time updates for chat, notifications, and inventory",
+      "status": "Implemented"
+    }
+  ],
+  "user_roles": [
+    {
+      "role": "customer",
+      "type": "retail/trade",
+      "capabilities": ["Browse products", "Place orders", "Manage cart", "Create projects", "Write reviews", "Use surplus marketplace", "Apply for trade credit"],
+      "dashboard": "/dashboard"
+    },
+    {
+      "role": "supplier",
+      "type": "business",
+      "capabilities": ["Manage products", "Fulfill orders", "Track inventory", "Manage deliveries", "Respond to reviews", "View analytics", "Manage pricing/promotions"],
+      "dashboard": "/supplier/dashboard"
+    },
+    {
+      "role": "admin",
+      "type": "platform",
+      "capabilities": ["Manage users", "Approve suppliers", "Oversee orders", "Resolve disputes", "Moderate content", "Manage platform settings", "View analytics"],
+      "dashboard": "/admin"
+    }
+  ],
+  "security_features": [
+    "JWT-based authentication",
+    "Role-based access control (RBAC)",
+    "Password hashing (plaintext in seed data for testing)",
+    "Email verification",
+    "Password reset with expiring tokens",
+    "Session management",
+    "Protected API routes with middleware"
+  ],
+  "real_time_features": [
+    "Chat messaging",
+    "Inventory updates",
+    "Order status notifications",
+    "Real-time notifications"
+  ]
+}

@@ -1,0 +1,550 @@
+{
+  "generated_at": "2025-01-20T10:30:00Z",
+  "project_name": "BuildEasy Construction Marketplace",
+  "user_structure": {
+    "table_name": "users",
+    "role_field": "user_type",
+    "role_values": ["customer", "supplier", "admin"],
+    "registration_endpoints": {
+      "customer": "/api/auth/register/customer",
+      "supplier": "/api/auth/register/supplier"
+    },
+    "login_endpoint": "/api/auth/login",
+    "authentication_method": "JWT",
+    "password_field": "password_hash",
+    "email_verified_field": "email_verified"
+  },
+  "total_users": 13,
+  "verified_users": 13,
+  "users_by_type": {
+    "customers": 5,
+    "suppliers": 5,
+    "admins": 3
+  },
+  "password_note": "All seed data users use plaintext passwords for testing. In production, these would be hashed.",
+  "users": [
+    {
+      "user_id": "user_001",
+      "email": "john.contractor@example.com",
+      "password": "password123",
+      "user_type": "customer",
+      "role": "customer",
+      "first_name": "John",
+      "last_name": "Smith",
+      "phone_number": "+1-555-0101",
+      "profile_photo_url": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400",
+      "status": "active",
+      "email_verified": true,
+      "verified": true,
+      "customer_id": "cust_001",
+      "account_type": "trade",
+      "trade_credit_limit": 50000,
+      "trade_credit_balance": 50000,
+      "default_address": "addr_001",
+      "description": "Trade customer with Net 30 terms, $50k credit limit",
+      "token": "Will be generated upon login"
+    },
+    {
+      "user_id": "user_002",
+      "email": "sarah.builder@example.com",
+      "password": "password123",
+      "user_type": "customer",
+      "role": "customer",
+      "first_name": "Sarah",
+      "last_name": "Johnson",
+      "phone_number": "+1-555-0102",
+      "profile_photo_url": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400",
+      "status": "active",
+      "email_verified": true,
+      "verified": true,
+      "customer_id": "cust_002",
+      "account_type": "trade",
+      "trade_credit_limit": 75000,
+      "trade_credit_balance": 65000,
+      "trade_credit_used": 10000,
+      "default_address": "addr_003",
+      "description": "Trade customer with Net 45 terms, $75k credit limit, active orders",
+      "token": "Will be generated upon login"
+    },
+    {
+      "user_id": "user_003",
+      "email": "mike.renovator@example.com",
+      "password": "password123",
+      "user_type": "customer",
+      "role": "customer",
+      "first_name": "Michael",
+      "last_name": "Williams",
+      "phone_number": "+1-555-0103",
+      "profile_photo_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400",
+      "status": "active",
+      "email_verified": true,
+      "verified": true,
+      "customer_id": "cust_003",
+      "account_type": "trade",
+      "trade_credit_limit": 30000,
+      "trade_credit_balance": 22000,
+      "trade_credit_used": 8000,
+      "default_address": "addr_004",
+      "description": "Trade customer with Net 30 terms, $30k credit limit",
+      "token": "Will be generated upon login"
+    },
+    {
+      "user_id": "user_004",
+      "email": "emily.homeowner@example.com",
+      "password": "password123",
+      "user_type": "customer",
+      "role": "customer",
+      "first_name": "Emily",
+      "last_name": "Brown",
+      "phone_number": "+1-555-0104",
+      "profile_photo_url": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400",
+      "status": "active",
+      "email_verified": true,
+      "verified": true,
+      "customer_id": "cust_004",
+      "account_type": "retail",
+      "trade_credit_limit": 0,
+      "trade_credit_balance": 0,
+      "default_address": "addr_005",
+      "description": "Retail customer (homeowner), no trade credit",
+      "token": "Will be generated upon login"
+    },
+    {
+      "user_id": "user_005",
+      "email": "david.tradecustomer@example.com",
+      "password": "password123",
+      "user_type": "customer",
+      "role": "customer",
+      "first_name": "David",
+      "last_name": "Martinez",
+      "phone_number": "+1-555-0105",
+      "profile_photo_url": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400",
+      "status": "active",
+      "email_verified": true,
+      "verified": true,
+      "customer_id": "cust_005",
+      "account_type": "trade",
+      "trade_credit_limit": 100000,
+      "trade_credit_balance": 80000,
+      "trade_credit_used": 20000,
+      "default_address": "addr_006",
+      "description": "Trade customer with Net 60 terms, $100k credit limit",
+      "token": "Will be generated upon login"
+    },
+    {
+      "user_id": "user_006",
+      "email": "supplier.acme@example.com",
+      "password": "supplier123",
+      "user_type": "supplier",
+      "role": "supplier",
+      "first_name": "James",
+      "last_name": "Anderson",
+      "phone_number": "+1-555-0201",
+      "profile_photo_url": "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400",
+      "status": "active",
+      "email_verified": true,
+      "verified": true,
+      "supplier_id": "sup_001",
+      "business_name": "Acme Building Supply Co",
+      "business_type": "Corporation",
+      "verification_status": "verified",
+      "rating_average": 4.7,
+      "total_reviews": 156,
+      "commission_rate": 8.5,
+      "subscription_plan": "premium",
+      "description": "Leading supplier of construction materials, premium plan, 4.7 rating",
+      "token": "Will be generated upon login"
+    },
+    {
+      "user_id": "user_007",
+      "email": "supplier.buildpro@example.com",
+      "password": "supplier123",
+      "user_type": "supplier",
+      "role": "supplier",
+      "first_name": "Lisa",
+      "last_name": "Taylor",
+      "phone_number": "+1-555-0202",
+      "profile_photo_url": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400",
+      "status": "active",
+      "email_verified": true,
+      "verified": true,
+      "supplier_id": "sup_002",
+      "business_name": "BuildPro Materials Inc",
+      "business_type": "LLC",
+      "verification_status": "verified",
+      "rating_average": 4.8,
+      "total_reviews": 203,
+      "commission_rate": 7.5,
+      "subscription_plan": "premium",
+      "description": "Premium lumber supplier, highest rating at 4.8, premium plan",
+      "token": "Will be generated upon login"
+    },
+    {
+      "user_id": "user_008",
+      "email": "supplier.timbertrade@example.com",
+      "password": "supplier123",
+      "user_type": "supplier",
+      "role": "supplier",
+      "first_name": "Robert",
+      "last_name": "Wilson",
+      "phone_number": "+1-555-0203",
+      "profile_photo_url": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400",
+      "status": "active",
+      "email_verified": true,
+      "verified": true,
+      "supplier_id": "sup_003",
+      "business_name": "TimberTrade Wholesale",
+      "business_type": "Partnership",
+      "verification_status": "verified",
+      "rating_average": 4.6,
+      "total_reviews": 89,
+      "commission_rate": 9.0,
+      "subscription_plan": "standard",
+      "description": "Wholesale lumber supplier, standard plan",
+      "token": "Will be generated upon login"
+    },
+    {
+      "user_id": "user_009",
+      "email": "supplier.electricplus@example.com",
+      "password": "supplier123",
+      "user_type": "supplier",
+      "role": "supplier",
+      "first_name": "Jennifer",
+      "last_name": "Moore",
+      "phone_number": "+1-555-0204",
+      "profile_photo_url": "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=400",
+      "status": "active",
+      "email_verified": true,
+      "verified": true,
+      "supplier_id": "sup_004",
+      "business_name": "ElectricPlus Supply",
+      "business_type": "Corporation",
+      "verification_status": "verified",
+      "rating_average": 4.9,
+      "total_reviews": 178,
+      "commission_rate": 8.0,
+      "subscription_plan": "premium",
+      "description": "Electrical supplies, highest rating at 4.9, premium plan",
+      "token": "Will be generated upon login"
+    },
+    {
+      "user_id": "user_010",
+      "email": "supplier.plumbmaster@example.com",
+      "password": "supplier123",
+      "user_type": "supplier",
+      "role": "supplier",
+      "first_name": "William",
+      "last_name": "Garcia",
+      "phone_number": "+1-555-0205",
+      "profile_photo_url": "https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?w=400",
+      "status": "active",
+      "email_verified": true,
+      "verified": true,
+      "supplier_id": "sup_005",
+      "business_name": "PlumbMaster Distributors",
+      "business_type": "LLC",
+      "verification_status": "verified",
+      "rating_average": 4.7,
+      "total_reviews": 124,
+      "commission_rate": 8.5,
+      "subscription_plan": "standard",
+      "description": "Professional plumbing supplies, standard plan",
+      "token": "Will be generated upon login"
+    },
+    {
+      "user_id": "user_011",
+      "email": "admin.super@example.com",
+      "password": "admin123",
+      "user_type": "admin",
+      "role": "admin",
+      "first_name": "Admin",
+      "last_name": "Superuser",
+      "phone_number": "+1-555-0301",
+      "profile_photo_url": "https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=400",
+      "status": "active",
+      "email_verified": true,
+      "verified": true,
+      "admin_id": "admin_001",
+      "admin_role": "super_admin",
+      "permissions": {
+        "users": {"create": true, "read": true, "update": true, "delete": true},
+        "suppliers": {"create": true, "read": true, "update": true, "delete": true},
+        "orders": {"create": true, "read": true, "update": true, "delete": true},
+        "products": {"create": true, "read": true, "update": true, "delete": true},
+        "settings": {"create": true, "read": true, "update": true, "delete": true}
+      },
+      "description": "Super admin with full platform access",
+      "token": "Will be generated upon login"
+    },
+    {
+      "user_id": "user_012",
+      "email": "admin.support@example.com",
+      "password": "admin123",
+      "user_type": "admin",
+      "role": "admin",
+      "first_name": "Support",
+      "last_name": "Admin",
+      "phone_number": "+1-555-0302",
+      "profile_photo_url": "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400",
+      "status": "active",
+      "email_verified": true,
+      "verified": true,
+      "admin_id": "admin_002",
+      "admin_role": "support_admin",
+      "permissions": {
+        "users": {"create": false, "read": true, "update": true, "delete": false},
+        "orders": {"create": false, "read": true, "update": true, "delete": false},
+        "tickets": {"create": true, "read": true, "update": true, "delete": false},
+        "issues": {"create": false, "read": true, "update": true, "delete": false}
+      },
+      "description": "Support admin for customer service and issue resolution",
+      "token": "Will be generated upon login"
+    },
+    {
+      "user_id": "user_013",
+      "email": "admin.finance@example.com",
+      "password": "admin123",
+      "user_type": "admin",
+      "role": "admin",
+      "first_name": "Finance",
+      "last_name": "Manager",
+      "phone_number": "+1-555-0303",
+      "profile_photo_url": "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400",
+      "status": "active",
+      "email_verified": true,
+      "verified": true,
+      "admin_id": "admin_003",
+      "admin_role": "finance_admin",
+      "permissions": {
+        "suppliers": {"create": false, "read": true, "update": false, "delete": false},
+        "orders": {"create": false, "read": true, "update": false, "delete": false},
+        "payouts": {"create": true, "read": true, "update": true, "delete": false},
+        "transactions": {"create": true, "read": true, "update": true, "delete": false}
+      },
+      "description": "Finance admin for payouts and financial management",
+      "token": "Will be generated upon login"
+    }
+  ],
+  "by_role": {
+    "customer": [
+      {
+        "email": "john.contractor@example.com",
+        "password": "password123",
+        "user_type": "customer",
+        "account_type": "trade",
+        "verified": true,
+        "description": "Trade customer, $50k credit"
+      },
+      {
+        "email": "sarah.builder@example.com",
+        "password": "password123",
+        "user_type": "customer",
+        "account_type": "trade",
+        "verified": true,
+        "description": "Trade customer, $75k credit, has orders"
+      },
+      {
+        "email": "mike.renovator@example.com",
+        "password": "password123",
+        "user_type": "customer",
+        "account_type": "trade",
+        "verified": true,
+        "description": "Trade customer, $30k credit"
+      },
+      {
+        "email": "emily.homeowner@example.com",
+        "password": "password123",
+        "user_type": "customer",
+        "account_type": "retail",
+        "verified": true,
+        "description": "Retail customer, no trade credit"
+      },
+      {
+        "email": "david.tradecustomer@example.com",
+        "password": "password123",
+        "user_type": "customer",
+        "account_type": "trade",
+        "verified": true,
+        "description": "Trade customer, $100k credit"
+      }
+    ],
+    "supplier": [
+      {
+        "email": "supplier.acme@example.com",
+        "password": "supplier123",
+        "user_type": "supplier",
+        "business_name": "Acme Building Supply Co",
+        "verified": true,
+        "description": "Premium supplier, 4.7 rating"
+      },
+      {
+        "email": "supplier.buildpro@example.com",
+        "password": "supplier123",
+        "user_type": "supplier",
+        "business_name": "BuildPro Materials Inc",
+        "verified": true,
+        "description": "Premium supplier, 4.8 rating (highest)"
+      },
+      {
+        "email": "supplier.timbertrade@example.com",
+        "password": "supplier123",
+        "user_type": "supplier",
+        "business_name": "TimberTrade Wholesale",
+        "verified": true,
+        "description": "Standard supplier, lumber specialist"
+      },
+      {
+        "email": "supplier.electricplus@example.com",
+        "password": "supplier123",
+        "user_type": "supplier",
+        "business_name": "ElectricPlus Supply",
+        "verified": true,
+        "description": "Premium supplier, 4.9 rating (highest), electrical"
+      },
+      {
+        "email": "supplier.plumbmaster@example.com",
+        "password": "supplier123",
+        "user_type": "supplier",
+        "business_name": "PlumbMaster Distributors",
+        "verified": true,
+        "description": "Standard supplier, plumbing specialist"
+      }
+    ],
+    "admin": [
+      {
+        "email": "admin.super@example.com",
+        "password": "admin123",
+        "user_type": "admin",
+        "admin_role": "super_admin",
+        "verified": true,
+        "description": "Super admin, full access"
+      },
+      {
+        "email": "admin.support@example.com",
+        "password": "admin123",
+        "user_type": "admin",
+        "admin_role": "support_admin",
+        "verified": true,
+        "description": "Support admin, limited to customer service"
+      },
+      {
+        "email": "admin.finance@example.com",
+        "password": "admin123",
+        "user_type": "admin",
+        "admin_role": "finance_admin",
+        "verified": true,
+        "description": "Finance admin, payouts and transactions"
+      }
+    ]
+  },
+  "test_scenarios": {
+    "new_user_registration": {
+      "customer": {
+        "endpoint": "/api/auth/register/customer",
+        "required_fields": ["email", "password", "first_name", "last_name", "phone_number", "account_type"],
+        "account_types": ["retail", "trade"],
+        "example_payload": {
+          "email": "newcustomer@test.com",
+          "password": "Test123!@#",
+          "first_name": "New",
+          "last_name": "Customer",
+          "phone_number": "+1-555-9999",
+          "account_type": "retail"
+        }
+      },
+      "supplier": {
+        "endpoint": "/api/auth/register/supplier",
+        "required_fields": ["email", "password", "business_name", "business_registration_number", "business_type", "contact_person_name", "phone_number", "business_address"],
+        "business_types": ["Corporation", "LLC", "Partnership", "Sole Proprietorship"],
+        "example_payload": {
+          "email": "newsupplier@test.com",
+          "password": "Test123!@#",
+          "business_name": "Test Supplier Co",
+          "business_registration_number": "EIN-999999999",
+          "business_type": "LLC",
+          "contact_person_name": "John Doe",
+          "phone_number": "+1-555-8888",
+          "business_address": "123 Test St, Austin, TX 78701"
+        },
+        "note": "Supplier registration creates an application that requires admin approval"
+      }
+    },
+    "login_verification": {
+      "endpoint": "/api/auth/login",
+      "method": "POST",
+      "required_fields": ["email", "password"],
+      "returns": {
+        "token": "JWT token for authentication",
+        "user": "User object with profile information",
+        "customer": "Customer object (if user_type is customer)",
+        "supplier": "Supplier object (if user_type is supplier)",
+        "admin": "Admin object (if user_type is admin)"
+      },
+      "test_cases": [
+        {
+          "scenario": "Valid customer login",
+          "email": "john.contractor@example.com",
+          "password": "password123",
+          "expected": "Success with customer data"
+        },
+        {
+          "scenario": "Valid supplier login",
+          "email": "supplier.acme@example.com",
+          "password": "supplier123",
+          "expected": "Success with supplier data"
+        },
+        {
+          "scenario": "Valid admin login",
+          "email": "admin.super@example.com",
+          "password": "admin123",
+          "expected": "Success with admin data"
+        },
+        {
+          "scenario": "Invalid credentials",
+          "email": "john.contractor@example.com",
+          "password": "wrongpassword",
+          "expected": "401 error with 'Invalid email or password'"
+        },
+        {
+          "scenario": "Non-existent user",
+          "email": "nonexistent@example.com",
+          "password": "password123",
+          "expected": "401 error with 'Invalid email or password'"
+        }
+      ]
+    }
+  },
+  "curl_examples": {
+    "login_customer": {
+      "command": "curl -X POST https://123create-construction-app-with-a.launchpulse.ai/api/auth/login -H 'Content-Type: application/json' -d '{\"email\":\"john.contractor@example.com\",\"password\":\"password123\"}'",
+      "expected_status": 200
+    },
+    "login_supplier": {
+      "command": "curl -X POST https://123create-construction-app-with-a.launchpulse.ai/api/auth/login -H 'Content-Type: application/json' -d '{\"email\":\"supplier.acme@example.com\",\"password\":\"supplier123\"}'",
+      "expected_status": 200
+    },
+    "login_admin": {
+      "command": "curl -X POST https://123create-construction-app-with-a.launchpulse.ai/api/auth/login -H 'Content-Type: application/json' -d '{\"email\":\"admin.super@example.com\",\"password\":\"admin123\"}'",
+      "expected_status": 200
+    },
+    "register_new_customer": {
+      "command": "curl -X POST https://123create-construction-app-with-a.launchpulse.ai/api/auth/register/customer -H 'Content-Type: application/json' -d '{\"email\":\"testcustomer@test.com\",\"password\":\"Test123!@#\",\"first_name\":\"Test\",\"last_name\":\"Customer\",\"phone_number\":\"+1-555-0000\",\"account_type\":\"retail\"}'",
+      "expected_status": 201
+    }
+  },
+  "authentication_notes": {
+    "token_storage": "Store JWT token in localStorage or sessionStorage",
+    "token_header": "Include token in Authorization header as 'Bearer <token>'",
+    "token_expiry": "7 days",
+    "protected_routes": "Most routes require authentication except public catalog and landing pages",
+    "role_based_access": "Routes are protected by role (customer, supplier, admin)"
+  },
+  "database_seed_info": {
+    "location": "backend/db.sql",
+    "seed_data_lines": "722-735 (users), 762-767 (customers), 770-775 (suppliers), 778-781 (admins)",
+    "password_hashing": "Plaintext in seed data for testing purposes",
+    "orders_with_data": "5 orders from customers, in various states (delivered, in_transit, processing)",
+    "products_available": "10 products across multiple categories",
+    "reviews_available": "3 reviews from customers"
+  }
+}
