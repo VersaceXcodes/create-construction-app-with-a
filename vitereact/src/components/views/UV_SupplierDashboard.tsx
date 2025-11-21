@@ -107,10 +107,17 @@ const safeToFixed = (value: any, decimals: number = 2): string => {
 const API_BASE = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api`;
 
 const fetchSupplierProfile = async (token: string): Promise<SupplierProfile> => {
-  const response = await axios.get(`${API_BASE}/suppliers/me`, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
-  return response.data;
+  try {
+    console.log('[SupplierDashboard] Fetching supplier profile...');
+    const response = await axios.get(`${API_BASE}/suppliers/me`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    console.log('[SupplierDashboard] Supplier profile loaded successfully:', response.data);
+    return response.data;
+  } catch (error: any) {
+    console.error('[SupplierDashboard] Failed to fetch supplier profile:', error.response?.data || error.message);
+    throw error;
+  }
 };
 
 const fetchPendingOrders = async (token: string, supplierId: string): Promise<PendingOrder[]> => {
@@ -332,14 +339,26 @@ const UV_SupplierDashboard: React.FC = () => {
             Supplier Profile Not Found
           </h1>
           <p className="text-gray-600 mb-6">
-            Your supplier profile could not be loaded. Please contact support for assistance.
+            Your supplier profile could not be loaded. This may be because your supplier application is still pending approval, or there was an error during account setup. Please contact support for assistance.
           </p>
-          <Link
-            to="/supplier/settings"
-            className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-          >
-            Go to Settings
-          </Link>
+          <div className="space-y-3">
+            <button
+              onClick={() => window.location.reload()}
+              className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+            >
+              Refresh Page
+            </button>
+            <Link
+              to="/"
+              onClick={() => {
+                // Force logout and redirect
+                useAppStore.getState().logout_user();
+              }}
+              className="block w-full bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors"
+            >
+              Return to Home
+            </Link>
+          </div>
         </div>
       </div>
     );

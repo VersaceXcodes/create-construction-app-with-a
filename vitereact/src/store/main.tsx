@@ -396,6 +396,14 @@ export const useAppStore = create<AppStore>()(
               is_loading: false,
             },
           });
+          
+          // CRITICAL: Clear localStorage to prevent persisted session from sticking
+          try {
+            localStorage.removeItem('app-storage');
+            sessionStorage.clear();
+          } catch (storageError) {
+            console.error('Error clearing storage:', storageError);
+          }
         }
       },
 

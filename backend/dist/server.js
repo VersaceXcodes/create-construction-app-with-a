@@ -229,6 +229,12 @@ app.post('/api/auth/login', async (req, res) => {
                 roleData.customer = customerResult.rows[0];
                 roleId = customerResult.rows[0].customer_id;
             }
+            else {
+                return res.status(404).json({
+                    error: 'CustomerProfileNotFound',
+                    message: 'Customer profile not found. Please contact support.'
+                });
+            }
         }
         else if (user.user_type === 'supplier') {
             const supplierResult = await pool.query('SELECT * FROM suppliers WHERE user_id = $1', [user.user_id]);
@@ -236,12 +242,24 @@ app.post('/api/auth/login', async (req, res) => {
                 roleData.supplier = supplierResult.rows[0];
                 roleId = supplierResult.rows[0].supplier_id;
             }
+            else {
+                return res.status(404).json({
+                    error: 'SupplierProfileNotFound',
+                    message: 'Supplier profile not found. Your application may still be pending approval.'
+                });
+            }
         }
         else if (user.user_type === 'admin') {
             const adminResult = await pool.query('SELECT * FROM admins WHERE user_id = $1', [user.user_id]);
             if (adminResult.rows.length > 0) {
                 roleData.admin = adminResult.rows[0];
                 roleId = adminResult.rows[0].admin_id;
+            }
+            else {
+                return res.status(404).json({
+                    error: 'AdminProfileNotFound',
+                    message: 'Admin profile not found. Please contact support.'
+                });
             }
         }
         const tokenPayload = { user_id: user.user_id, user_type: user.user_type };
@@ -1042,11 +1060,12 @@ app.get('/api/suppliers', async (req, res) => {
         res.status(500).json({ error: 'InternalServerError', message: error.message });
     }
 });
-app.get('/api/suppliers/:supplier_id', async (req, res) => {
+// IMPORTANT: /me route must come BEFORE /:supplier_id to prevent "me" from being treated as a supplier_id
+app.get('/api/suppliers/me', authenticateToken, requireSupplier, async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM suppliers WHERE supplier_id = $1', [req.params.supplier_id]);
+        const result = await pool.query('SELECT * FROM suppliers WHERE user_id = $1', [req.user.user_id]);
         if (result.rows.length === 0) {
-            return res.status(404).json({ error: 'SupplierNotFound', message: 'Supplier not found' });
+            return res.status(404).json({ error: 'SupplierNotFound', message: 'Supplier profile not found' });
         }
         res.json(result.rows[0]);
     }
@@ -1054,11 +1073,11 @@ app.get('/api/suppliers/:supplier_id', async (req, res) => {
         res.status(500).json({ error: 'InternalServerError', message: error.message });
     }
 });
-app.get('/api/suppliers/me', authenticateToken, requireSupplier, async (req, res) => {
+app.get('/api/suppliers/:supplier_id', async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM suppliers WHERE user_id = $1', [req.user.user_id]);
+        const result = await pool.query('SELECT * FROM suppliers WHERE supplier_id = $1', [req.params.supplier_id]);
         if (result.rows.length === 0) {
-            return res.status(404).json({ error: 'SupplierNotFound', message: 'Supplier profile not found' });
+            return res.status(404).json({ error: 'SupplierNotFound', message: 'Supplier not found' });
         }
         res.json(result.rows[0]);
     }
@@ -1123,37 +1142,7 @@ app.patch('/api/suppliers/me', authenticateToken, requireSupplier, async (req, r
         res.status(500).json({ error: 'InternalServerError', message: error.message });
     }
 });
-app.get('/api/suppliers/:supplier_id/products', async (req, res) => {
-    try {
-        const { status, category, limit = 50, offset = 0 } = req.query;
-        let query = 'SELECT * FROM products WHERE supplier_id = $1';
-        const params = [req.params.supplier_id];
-        let paramCount = 2;
-        if (status) {
-            query += ` AND status = $${paramCount}`;
-            params.push(asString(status));
-            paramCount++;
-        }
-        if (category) {
-            query += ` AND category_id = $${paramCount}`;
-            params.push(asString(category));
-            paramCount++;
-        }
-        query += ` ORDER BY creation_date DESC LIMIT $${paramCount} OFFSET $${paramCount + 1}`;
-        params.push(String(limit));
-        params.push(String(offset));
-        const result = await pool.query(query, params);
-        const countQuery = query.substring(0, query.indexOf('ORDER BY')).replace(/SELECT \* FROM/, 'SELECT COUNT(*) as total FROM');
-        const countResult = await pool.query(countQuery, params.slice(0, -2));
-        res.json({
-            products: result.rows,
-            total: parseInt(countResult.rows[0].total)
-        });
-    }
-    catch (error) {
-        res.status(500).json({ error: 'InternalServerError', message: error.message });
-    }
-});
+// IMPORTANT: /me/products route must come BEFORE /:supplier_id/products
 app.get('/api/suppliers/me/products', authenticateToken, requireSupplier, async (req, res) => {
     try {
         const { status_filter, category_filter, search_query, sort_by = 'date_added', limit = 50, offset = 0 } = req.query;
@@ -1220,6 +1209,37 @@ app.post('/api/suppliers/me/products', authenticateToken, requireSupplier, async
             true, 'all', now, now
         ]);
         res.status(201).json(result.rows[0]);
+    }
+    catch (error) {
+        res.status(500).json({ error: 'InternalServerError', message: error.message });
+    }
+});
+app.get('/api/suppliers/:supplier_id/products', async (req, res) => {
+    try {
+        const { status, category, limit = 50, offset = 0 } = req.query;
+        let query = 'SELECT * FROM products WHERE supplier_id = $1';
+        const params = [req.params.supplier_id];
+        let paramCount = 2;
+        if (status) {
+            query += ` AND status = $${paramCount}`;
+            params.push(asString(status));
+            paramCount++;
+        }
+        if (category) {
+            query += ` AND category_id = $${paramCount}`;
+            params.push(asString(category));
+            paramCount++;
+        }
+        query += ` ORDER BY creation_date DESC LIMIT $${paramCount} OFFSET $${paramCount + 1}`;
+        params.push(String(limit));
+        params.push(String(offset));
+        const result = await pool.query(query, params);
+        const countQuery = query.substring(0, query.indexOf('ORDER BY')).replace(/SELECT \* FROM/, 'SELECT COUNT(*) as total FROM');
+        const countResult = await pool.query(countQuery, params.slice(0, -2));
+        res.json({
+            products: result.rows,
+            total: parseInt(countResult.rows[0].total)
+        });
     }
     catch (error) {
         res.status(500).json({ error: 'InternalServerError', message: error.message });
