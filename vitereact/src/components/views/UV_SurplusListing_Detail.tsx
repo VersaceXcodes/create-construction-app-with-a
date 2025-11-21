@@ -1,20 +1,20 @@
 import React from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { 
-  MapPin, 
-  Truck, 
-  MessageCircle, 
-  Flag, 
-  Clock, 
-  Eye, 
-  Share2, 
-  ChevronLeft, 
-  ChevronRight, 
-  X,
-  AlertCircle,
-  CheckCircle,
-  DollarSign
-} from 'lucide-react';
+// import { useParams, useNavigate } from 'react-router-dom';
+// import { 
+//   MapPin, 
+//   Truck, 
+//   MessageCircle, 
+//   Flag, 
+//   Clock, 
+//   Eye, 
+//   Share2, 
+//   ChevronLeft, 
+//   ChevronRight, 
+//   X,
+//   AlertCircle,
+//   CheckCircle,
+//   DollarSign
+// } from 'lucide-react';
 
 // ============================================================================
 // TYPE DEFINITIONS (from Zod schemas)
@@ -72,44 +72,44 @@ interface SimilarListing {
 // API FUNCTIONS
 // ============================================================================
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+// const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
 
 // Fetch surplus listing details
-const fetchSurplusListing = async (_listing_id: string, _auth_token: string | null): Promise<SurplusListing> => {
-  // Mock implementation for MVP - to be replaced with actual API call
-  throw new Error('Not implemented');
-};
+// const fetchSurplusListing = async (_listing_id: string, _auth_token: string | null): Promise<SurplusListing> => {
+//   // Mock implementation for MVP - to be replaced with actual API call
+//   throw new Error('Not implemented');
+// };
 
 // Fetch seller profile
-const fetchSellerProfile = async (_seller_id: string): Promise<SellerProfile> => {
-  // Mock implementation for MVP - to be replaced with actual API call
-  throw new Error('Not implemented');
-};
+// const fetchSellerProfile = async (_seller_id: string): Promise<SellerProfile> => {
+//   // Mock implementation for MVP - to be replaced with actual API call
+//   throw new Error('Not implemented');
+// };
 
 // Fetch category info
-const fetchCategory = async (_category_id: string): Promise<CategoryInfo> => {
-  // Mock implementation for MVP - to be replaced with actual API call
-  throw new Error('Not implemented');
-};
+// const fetchCategory = async (_category_id: string): Promise<CategoryInfo> => {
+//   // Mock implementation for MVP - to be replaced with actual API call
+//   throw new Error('Not implemented');
+// };
 
 // Fetch similar listings
-const fetchSimilarListings = async (_category_id: string, _current_listing_id: string): Promise<SimilarListing[]> => {
-  // Mock implementation for MVP - to be replaced with actual API call
-  throw new Error('Not implemented');
-  
-  // Filter out current listing and map to SimilarListing structure
-  return response.data.listings
-    .filter((l: any) => l.listing_id !== current_listing_id)
-    .slice(0, 4)
-    .map((l: any) => ({
-      listing_id: l.listing_id,
-      product_name: l.product_name,
-      asking_price: l.asking_price,
-      condition: l.condition,
-      primary_photo_url: l.photos?.[0] || null,
-      seller_name: l.seller_name || 'Unknown Seller'
-    }));
-};
+// const fetchSimilarListings = async (_category_id: string, _current_listing_id: string): Promise<SimilarListing[]> => {
+//   // Mock implementation for MVP - to be replaced with actual API call
+//   throw new Error('Not implemented');
+//   
+//   // Filter out current listing and map to SimilarListing structure
+//   // return response.data.listings
+//   //   .filter((l: any) => l.listing_id !== current_listing_id)
+//   //   .slice(0, 4)
+//   //   .map((l: any) => ({
+//   //     listing_id: l.listing_id,
+//   //     product_name: l.product_name,
+//   //     asking_price: l.asking_price,
+//   //     condition: l.condition,
+//   //     primary_photo_url: l.photos?.[0] || null,
+//   //     seller_name: l.seller_name || 'Unknown Seller'
+//   //   }));
+// };
 
 // Placeholder component since the file was incomplete
 const UV_SurplusListing_Detail: React.FC = () => {

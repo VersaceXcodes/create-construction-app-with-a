@@ -297,17 +297,17 @@ export default function UV_OrderDetail_Supplier() {
     updateStatusMutation.mutate('shipped');
   };
 
-  const handleUpdateTracking = () => {
-    if (!trackingNumber) {
-      alert('Please enter a tracking number');
-      return;
-    }
-    
-    updateDeliveryMutation.mutate({
-      tracking_number: trackingNumber,
-      carrier: carrier || 'Standard Carrier'
-    });
-  };
+  // const handleUpdateTracking = () => {
+  //   if (!trackingNumber) {
+  //     alert('Please enter a tracking number');
+  //     return;
+  //   }
+  //   
+  //   updateDeliveryMutation.mutate({
+  //     tracking_number: trackingNumber,
+  //     carrier: carrier || 'Standard Carrier'
+  //   });
+  // };
 
   const handleContactCustomer = () => {
     if (customer_info) {

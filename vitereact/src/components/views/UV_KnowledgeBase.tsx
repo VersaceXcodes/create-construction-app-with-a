@@ -484,10 +484,10 @@ export default function UV_KnowledgeBase() {
     handleArticleClick(articleId);
   };
 
-  const handleBackToSearch = () => {
-    setSelectedArticleId(null);
-    setSearchParams({});
-  };
+  // const handleBackToSearch = () => {
+  //   setSelectedArticleId(null);
+  //   setSearchParams({});
+  // };
 
   const handleBackToHome = () => {
     setSearchInput('');

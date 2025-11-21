@@ -408,7 +408,7 @@ const UV_Checkout: React.FC = () => {
 
     try {
       // If new card, create payment method first
-      let finalPaymentMethodId = selectedPaymentMethodId;
+      let _finalPaymentMethodId = selectedPaymentMethodId;
       
       if (showNewCardForm && !usingTradeCredit) {
         const newPaymentMethod = await addPaymentMethodMutation.mutateAsync({

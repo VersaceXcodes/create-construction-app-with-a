@@ -489,7 +489,7 @@ const UV_TermsOfService: React.FC = () => {
   // Local state
   const [terms_content] = useState<TermsContent>(TERMS_CONTENT);
   const [active_section, setActiveSection] = useState<string>(searchParams.get('section') || 'introduction');
-  const _current_version = searchParams.get('version') || 'current'; // For future version support
+  // const _current_version = searchParams.get('version') || 'current'; // For future version support
   const [table_of_contents, setTableOfContents] = useState<TableOfContentsItem[]>([]);
   const [user_acceptance_status, setUserAcceptanceStatus] = useState<UserAcceptanceStatus>({
     accepted: false,

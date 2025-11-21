@@ -321,22 +321,22 @@ export default function UV_AdminDashboard() {
     return new Intl.NumberFormat('en-US').format(num);
   };
 
-  const getStatusColor = (status: string): string => {
-    switch (status) {
-      case 'operational':
-      case 'healthy':
-        return 'text-green-600 bg-green-100';
-      case 'degraded':
-      case 'warning':
-        return 'text-yellow-600 bg-yellow-100';
-      case 'down':
-      case 'error':
-      case 'critical':
-        return 'text-red-600 bg-red-100';
-      default:
-        return 'text-gray-600 bg-gray-100';
-    }
-  };
+  // const getStatusColor = (status: string): string => {
+  //   switch (status) {
+  //     case 'operational':
+  //     case 'healthy':
+  //       return 'text-green-600 bg-green-100';
+  //     case 'degraded':
+  //     case 'warning':
+  //       return 'text-yellow-600 bg-yellow-100';
+  //     case 'down':
+  //     case 'error':
+  //     case 'critical':
+  //       return 'text-red-600 bg-red-100';
+  //     default:
+  //       return 'text-gray-600 bg-gray-100';
+  //   }
+  // };
 
   const getSeverityColor = (severity: string): string => {
     switch (severity) {

@@ -120,7 +120,7 @@ const updateSupplierProfile = async (data: Partial<SupplierProfile>, authToken: 
 };
 
 // Mock team members endpoint (would need backend implementation)
-const fetchTeamMembers = async (authToken: string): Promise<TeamMember[]> => {
+const fetchTeamMembers = async (_authToken: string): Promise<TeamMember[]> => {
   // Mock data for MVP
   return [];
 };
@@ -136,16 +136,6 @@ const addTeamMember = async (_data: { email: string; role: string; permissions: 
 // // };
 
 const removeTeamMember = async (_memberId: string) => {
-  // Mock for MVP
-  return { success: true };
-};
-
-// const updateTeamMember = async (memberId: string, data: { role: string; permissions: Record<string, boolean> }) => {
-//   // Mock for MVP
-//   return { success: true };
-// };
-
-const removeTeamMember = async (memberId: string) => {
   // Mock for MVP
   return { success: true };
 };
