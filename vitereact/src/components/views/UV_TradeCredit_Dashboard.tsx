@@ -100,10 +100,10 @@ const fetchPaymentMethods = async (token: string): Promise<PaymentMethod[]> => {
 
 // Note: These endpoints would need backend implementation
 const fetchTransactionHistory = async (
-  token: string, 
-  customer_id: string,
-  date_from?: string,
-  date_to?: string
+  _token: string, 
+  _customer_id: string,
+  _date_from?: string,
+  _date_to?: string
 ): Promise<Transaction[]> => {
   // Mock data for now - backend would implement GET /api/trade-credit/transactions
   // In production, this would be:
@@ -136,8 +136,8 @@ const fetchTransactionHistory = async (
 };
 
 const submitPayment = async (
-  token: string,
-  payment_data: { customer_id: string; payment_amount: number; payment_method_id: string }
+  _token: string,
+  _payment_data: { customer_id: string; payment_amount: number; payment_method_id: string }
 ) => {
   // Backend would implement POST /api/trade-credit/payments
   // For now, return mock success
@@ -150,8 +150,8 @@ const submitPayment = async (
 };
 
 const submitCreditIncreaseRequest = async (
-  token: string,
-  request_data: CreditIncreaseRequest & { customer_id: string; current_limit: number }
+  _token: string,
+  _request_data: CreditIncreaseRequest & { customer_id: string; current_limit: number }
 ) => {
   // Backend would implement POST /api/trade-credit/increase-request
   return {
@@ -175,8 +175,8 @@ const UV_TradeCredit_Dashboard: React.FC = () => {
 
   // Local state
   const [activeTab, setActiveTab] = useState<'overview' | 'transactions' | 'payment' | 'increase'>('overview');
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [showIncreaseModal, setShowIncreaseModal] = useState(false);
+  const showPaymentModal = false; // For future implementation
+  const showIncreaseModal = false; // For future implementation
   const [dateRangeFilter, setDateRangeFilter] = useState({
     start_date: '',
     end_date: '',

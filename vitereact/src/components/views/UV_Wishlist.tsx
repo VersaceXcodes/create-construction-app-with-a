@@ -9,24 +9,24 @@ import { Heart, ShoppingCart, Trash2, Grid3x3, List, Bell, BellOff, AlertCircle 
 // TYPE DEFINITIONS
 // ============================================================================
 
-interface WishlistItem {
-  wishlist_item_id: string;
-  customer_id: string;
-  product_id: string;
-  added_date: string;
-  price_when_saved: number;
-  price_drop_alert_enabled: boolean;
-  back_in_stock_alert_enabled: boolean;
-  // Joined product data
-  product_name: string;
-  price_per_unit: number;
-  stock_quantity: number;
-  primary_image_url: string | null;
-  status: string;
-  // Joined supplier data
-  business_name: string;
-  supplier_id: string;
-}
+// interface WishlistItem {
+//   wishlist_item_id: string;
+//   customer_id: string;
+//   product_id: string;
+//   added_date: string;
+//   price_when_saved: number;
+//   price_drop_alert_enabled: boolean;
+//   back_in_stock_alert_enabled: boolean;
+//   // Joined product data
+//   product_name: string;
+//   price_per_unit: number;
+//   stock_quantity: number;
+//   primary_image_url: string | null;
+//   status: string;
+//   // Joined supplier data
+//   business_name: string;
+//   supplier_id: string;
+// }
 
 interface WishlistApiResponse {
   wishlist_item_id: string;

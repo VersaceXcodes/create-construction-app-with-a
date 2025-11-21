@@ -14,7 +14,6 @@ import {
   Clock,
   XCircle,
   FileText,
-  CreditCard,
   Building2
 } from 'lucide-react';
 
@@ -44,17 +43,17 @@ interface PayoutRecord {
   failure_reason: string | null;
 }
 
-interface TransactionRecord {
-  order_id: string;
-  order_number: string;
-  customer_name: string;
-  order_date: string;
-  gross_amount: number;
-  commission_amount: number;
-  net_amount: number;
-  payout_id: string | null;
-  transaction_type: string;
-}
+// interface TransactionRecord {
+//   order_id: string;
+//   order_number: string;
+//   customer_name: string;
+//   order_date: string;
+//   gross_amount: number;
+//   commission_amount: number;
+//   net_amount: number;
+//   payout_id: string | null;
+//   transaction_type: string;
+// }
 
 interface BankAccountSettings {
   bank_account_info: string | null;
@@ -63,14 +62,14 @@ interface BankAccountSettings {
   minimum_payout_threshold: number;
 }
 
-interface TaxDocumentation {
-  tax_year: number;
-  gross_income: number;
-  commission_paid: number;
-  net_income: number;
-  document_urls: string[];
-  generated_date: string | null;
-}
+// interface TaxDocumentation {
+//   tax_year: number;
+//   gross_income: number;
+//   commission_paid: number;
+//   net_income: number;
+//   document_urls: string[];
+//   generated_date: string | null;
+// }
 
 interface FinancialFilters {
   date_range: string;

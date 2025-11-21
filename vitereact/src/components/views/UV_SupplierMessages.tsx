@@ -8,16 +8,12 @@ import {
   Send, 
   Paperclip, 
   Search, 
-  Filter,
   Clock,
   CheckCheck,
   User,
   Package,
   ShoppingCart,
-  MoreVertical,
-  Archive,
-  Star,
-  ThumbsUp
+  MoreVertical
 } from 'lucide-react';
 
 // ============================================================================
@@ -47,19 +43,19 @@ interface Message {
   timestamp: string;
 }
 
-interface MessageTemplate {
-  template_id: string;
-  template_name: string;
-  template_text: string;
-  category: string;
-}
+// interface MessageTemplate {
+//   template_id: string;
+//   template_name: string;
+//   template_text: string;
+//   category: string;
+// }
 
-interface ResponseMetrics {
-  avg_response_time_hours: number;
-  total_conversations: number;
-  resolved_conversations: number;
-  customer_satisfaction: number;
-}
+// interface ResponseMetrics {
+//   avg_response_time_hours: number;
+//   total_conversations: number;
+//   resolved_conversations: number;
+//   customer_satisfaction: number;
+// }
 
 // ============================================================================
 // API FUNCTIONS

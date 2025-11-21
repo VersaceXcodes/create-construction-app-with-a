@@ -1,6 +1,5 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { 
   MapPin, 
   Truck, 
@@ -76,46 +75,27 @@ interface SimilarListing {
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
 
 // Fetch surplus listing details
-const fetchSurplusListing = async (listing_id: string, auth_token: string | null): Promise<SurplusListing> => {
-  const headers = auth_token ? { 'Authorization': `Bearer ${auth_token}` } : {};
-  const response = await axios.get(`${API_BASE_URL}/surplus/${listing_id}`, { headers });
-  return response.data;
+const fetchSurplusListing = async (_listing_id: string, _auth_token: string | null): Promise<SurplusListing> => {
+  // Mock implementation for MVP - to be replaced with actual API call
+  throw new Error('Not implemented');
 };
 
 // Fetch seller profile
-const fetchSellerProfile = async (seller_id: string): Promise<SellerProfile> => {
-  // Since backend returns customer via customers table, we need to fetch customer + user data
-  // Backend doesn't have explicit seller profile endpoint, so we construct from available data
-  // const customerResponse = await axios.get(`${API_BASE_URL}/customers/me`);
-  // This is a workaround - in real implementation, backend should provide seller public profile
-  // For now, we'll mock the seller data structure
-  return {
-    customer_id: seller_id,
-    user_id: 'unknown',
-    first_name: 'Seller',
-    last_name: 'Name',
-    profile_photo_url: null,
-    member_since: new Date().toISOString(),
-    surplus_sales_count: 0,
-    surplus_rating_average: 0
-  };
+const fetchSellerProfile = async (_seller_id: string): Promise<SellerProfile> => {
+  // Mock implementation for MVP - to be replaced with actual API call
+  throw new Error('Not implemented');
 };
 
 // Fetch category info
-const fetchCategory = async (category_id: string): Promise<CategoryInfo> => {
-  const response = await axios.get(`${API_BASE_URL}/categories/${category_id}`);
-  return response.data;
+const fetchCategory = async (_category_id: string): Promise<CategoryInfo> => {
+  // Mock implementation for MVP - to be replaced with actual API call
+  throw new Error('Not implemented');
 };
 
 // Fetch similar listings
-const fetchSimilarListings = async (category_id: string, current_listing_id: string): Promise<SimilarListing[]> => {
-  const response = await axios.get(`${API_BASE_URL}/surplus`, {
-    params: {
-      category_id,
-      status: 'active',
-      limit: 6
-    }
-  });
+const fetchSimilarListings = async (_category_id: string, _current_listing_id: string): Promise<SimilarListing[]> => {
+  // Mock implementation for MVP - to be replaced with actual API call
+  throw new Error('Not implemented');
   
   // Filter out current listing and map to SimilarListing structure
   return response.data.listings

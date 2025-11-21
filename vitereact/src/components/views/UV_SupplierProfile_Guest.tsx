@@ -14,7 +14,6 @@ import {
   MessageSquare,
   X,
   Search,
-  Filter,
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
@@ -62,17 +61,17 @@ interface Review {
   is_anonymous: boolean;
 }
 
-interface ReviewSummary {
-  average_rating: number;
-  total_count: number;
-  rating_distribution: {
-    5: number;
-    4: number;
-    3: number;
-    2: number;
-    1: number;
-  };
-}
+// interface ReviewSummary {
+//   average_rating: number;
+//   total_count: number;
+//   rating_distribution: {
+//     5: number;
+//     4: number;
+//     3: number;
+//     2: number;
+//     1: number;
+//   };
+// }
 
 // ============================================================================
 // API FUNCTIONS

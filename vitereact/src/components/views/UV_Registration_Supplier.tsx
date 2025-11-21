@@ -7,16 +7,21 @@ import axios from 'axios';
 // TYPE DEFINITIONS
 // ============================================================================
 
-interface _SubmissionState {
-  status: 'idle' | 'submitting' | 'success' | 'error';
-  message: string | null;
-}
-
-interface SubmissionState {
-  is_submitting: boolean;
-  submission_error: string | null;
-  application_submitted: boolean;
-  application_id: string | null;
+interface SupplierApplicationForm {
+  email: string;
+  password: string;
+  confirm_password: string;
+  business_name: string;
+  business_registration_number: string;
+  business_type: string;
+  contact_person_name: string;
+  phone_number: string;
+  business_address: string;
+  city: string;
+  state: string;
+  postal_code: string;
+  country: string;
+  business_description: string;
 }
 
 interface ValidationErrors {
@@ -345,10 +350,11 @@ const UV_Registration_Supplier: React.FC = () => {
     }));
     
     // Clear error for this field when user starts typing
-    if (validation_errors[field]) {
+    const fieldStr = field as string;
+    if (validation_errors[fieldStr]) {
       setValidationErrors(prev => {
         const updated = { ...prev };
-        delete updated[field];
+        delete updated[fieldStr];
         return updated;
       });
     }

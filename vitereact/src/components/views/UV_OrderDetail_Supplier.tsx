@@ -297,7 +297,7 @@ export default function UV_OrderDetail_Supplier() {
     updateStatusMutation.mutate('shipped');
   };
 
-  const _handleUpdateTracking = () => {
+  const handleUpdateTracking = () => {
     if (!trackingNumber) {
       alert('Please enter a tracking number');
       return;

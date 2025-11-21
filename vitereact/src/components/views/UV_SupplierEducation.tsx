@@ -19,8 +19,6 @@ import {
   MessageSquare,
   ThumbsUp,
   AlertCircle,
-  Download,
-  ExternalLink,
   Star
 } from 'lucide-react';
 
@@ -83,13 +81,13 @@ interface PlatformUpdate {
   acknowledged: boolean;
 }
 
-interface ProgressTracking {
-  resource_id: string;
-  completion_status: 'not_started' | 'in_progress' | 'completed';
-  completed_date: string | null;
-  progress_percentage: number;
-  quiz_score: number | null;
-}
+// interface ProgressTracking {
+//   resource_id: string;
+//   completion_status: 'not_started' | 'in_progress' | 'completed';
+//   completed_date: string | null;
+//   progress_percentage: number;
+//   quiz_score: number | null;
+// }
 
 // ============================================================================
 // API FUNCTIONS
@@ -203,7 +201,7 @@ const UV_SupplierEducation: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'resources' | 'live' | 'recorded' | 'community' | 'updates'>('resources');
   const [searchQuery, setSearchQuery] = useState(urlSearchQuery || '');
   const [resourceTypeFilter, setResourceTypeFilter] = useState<string>(urlResourceType || 'all');
-  const [selectedResource, setSelectedResource] = useState<string | null>(null);
+  const selectedResource = null; // Placeholder for future implementation
   
   const queryClient = useQueryClient();
   

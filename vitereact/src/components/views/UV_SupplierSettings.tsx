@@ -13,7 +13,6 @@ import {
   
   Plus, 
   Trash2, 
-  Edit2,
   Check,
   X,
   AlertCircle,
@@ -86,14 +85,14 @@ interface IntegrationSettings {
   webhook_url: string | null;
 }
 
-interface SubscriptionDetails {
-  plan: 'basic' | 'standard' | 'premium';
-  billing_cycle: 'monthly' | 'annual';
-  next_billing_date: string;
-  amount: number;
-  features: string[];
-  usage_limits: Record<string, any>;
-}
+// interface SubscriptionDetails {
+//   plan: 'basic' | 'standard' | 'premium';
+//   billing_cycle: 'monthly' | 'annual';
+//   next_billing_date: string;
+//   amount: number;
+//   features: string[];
+//   usage_limits: Record<string, any>;
+// }
 
 // ============================================================================
 // API FUNCTIONS
@@ -126,9 +125,19 @@ const fetchTeamMembers = async (authToken: string): Promise<TeamMember[]> => {
   return [];
 };
 
-const addTeamMember = async (data: { email: string; role: string; permissions: Record<string, boolean> }) => {
+const addTeamMember = async (_data: { email: string; role: string; permissions: Record<string, boolean> }) => {
   // Mock for MVP
   return { success: true, member_id: `member_${Date.now()}` };
+};
+
+// const updateTeamMember = async (memberId: string, data: { role: string; permissions: Record<string, boolean> }) => {
+// //   // Mock for MVP
+// //   return { success: true };
+// // };
+
+const removeTeamMember = async (_memberId: string) => {
+  // Mock for MVP
+  return { success: true };
 };
 
 // const updateTeamMember = async (memberId: string, data: { role: string; permissions: Record<string, boolean> }) => {
@@ -151,8 +160,8 @@ const UV_SupplierSettings: React.FC = () => {
   // ============================================================================
   
   const authToken = useAppStore(state => state.authentication_state.auth_token);
-  const currentUser = useAppStore(state => state.authentication_state.current_user);
-  const supplierProfileGlobal = useAppStore(state => state.authentication_state.supplier_profile);
+  // const currentUser = useAppStore(state => state.authentication_state.current_user);
+  // const supplierProfileGlobal = useAppStore(state => state.authentication_state.supplier_profile);
   
   // ============================================================================
   // URL PARAMS & NAVIGATION

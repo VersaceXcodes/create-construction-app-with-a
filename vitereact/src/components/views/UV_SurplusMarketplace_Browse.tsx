@@ -9,10 +9,7 @@ import {
   MapPin, 
   Package, 
   TrendingDown,
-  X,
-  ChevronDown,
-  Filter,
-  CheckCircle2
+  X
 } from 'lucide-react';
 
 // ============================================================================

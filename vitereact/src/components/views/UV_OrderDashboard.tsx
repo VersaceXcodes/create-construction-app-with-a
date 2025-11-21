@@ -27,10 +27,10 @@ interface OrdersResponse {
   total: number;
 }
 
-interface _SupplierOption {
-  supplier_id: string;
-  business_name: string;
-}
+// interface SupplierOption {
+//   supplier_id: string;
+//   business_name: string;
+// }
 
 // ============================================================================
 // CONSTANTS

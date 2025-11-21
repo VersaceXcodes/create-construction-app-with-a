@@ -16,7 +16,6 @@ import {
   AlertCircle,
   RefreshCw,
   BarChart3,
-  PieChart,
   LineChart
 } from 'lucide-react';
 

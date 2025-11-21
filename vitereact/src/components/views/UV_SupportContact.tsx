@@ -685,7 +685,7 @@ const UV_SupportContact: React.FC = () => {
                     {/* Uploaded Attachments */}
                     {supportForm.attachments.length > 0 && (
                       <div className="space-y-2">
-                        {supportForm.attachments.map((url, index) => (
+                        {supportForm.attachments.map((_url, index) => (
                           <div
                             key={index}
                             className="flex items-center justify-between bg-green-50 rounded-lg p-3 border border-green-200"

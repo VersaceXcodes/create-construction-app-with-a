@@ -143,7 +143,7 @@ const acceptOrder = async (orderId: string, token: string): Promise<void> => {
 // ============================================================================
 
 const UV_SupplierDashboard: React.FC = () => {
-  const [searchParams] = useSearchParams();
+  const searchParams = useSearchParams()[0];
   const queryClient = useQueryClient();
   
   // CRITICAL: Individual selectors to avoid infinite loops
