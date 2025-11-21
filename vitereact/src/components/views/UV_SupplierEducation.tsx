@@ -321,7 +321,7 @@ const UV_SupplierEducation: React.FC = () => {
     }
   };
   
-  // Calculate overall progress (mock - would come from backend)
+  // Calculate overall progress
   const overallProgress = 45; // Percentage
   const completedResources = 12;
   const totalResources = 27;

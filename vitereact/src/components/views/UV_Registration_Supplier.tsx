@@ -162,7 +162,7 @@ const UV_Registration_Supplier: React.FC = () => {
   
   const mutation = useMutation({
     mutationFn: submitSupplierApplication,
-    onSuccess: (_data) => {
+    onSuccess: () => {
       // Start redirect countdown
       setRedirectCountdown(5);
     },
@@ -236,7 +236,7 @@ const UV_Registration_Supplier: React.FC = () => {
   
   const validatePhoneNumber = (phone: string): string | null => {
     if (!phone) return 'Phone number is required';
-    const phoneRegex = /^[\d\s\-\(\)\+]+$/;
+    const phoneRegex = /^[\d\s\-()+]+$/;
     if (!phoneRegex.test(phone)) return 'Please enter a valid phone number';
     if (phone.replace(/\D/g, '').length < 10) return 'Phone number must be at least 10 digits';
     return null;

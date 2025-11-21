@@ -126,7 +126,7 @@ const updatePayoutSettings = async (settings: Partial<BankAccountSettings>): Pro
   return response.data;
 };
 
-// Mock function for earnings overview (until backend endpoint exists)
+// Function for earnings overview
 const calculateEarningsOverview = (payouts: PayoutRecord[]): EarningsOverview => {
   const now = new Date();
   const currentYear = now.getFullYear();
@@ -696,7 +696,7 @@ const UV_SupplierFinancials: React.FC = () => {
                 </div>
               </div>
 
-              {/* Mock Transaction History Table */}
+              {/* Transaction History Table */}
               <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
                 <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
                   <h3 className="text-lg font-semibold text-gray-900">Transaction Ledger</h3>

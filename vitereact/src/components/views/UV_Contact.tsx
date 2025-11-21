@@ -367,7 +367,7 @@ const UV_Contact: React.FC = () => {
         }
         return null;
         
-      case 'email':
+      case 'email': {
         if (!value || value.trim().length === 0) {
           return 'Email is required';
         }
@@ -376,6 +376,7 @@ const UV_Contact: React.FC = () => {
           return 'Please enter a valid email address';
         }
         return null;
+      }
         
       case 'subject': {
         if (!value || value.trim().length === 0) {

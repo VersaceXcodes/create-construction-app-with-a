@@ -344,6 +344,7 @@ const UV_Checkout: React.FC = () => {
   const handleAddNewAddress = async () => {
     // Clear previous errors
     setValidationErrors(prev => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { address: _address, ...rest } = prev;
       return rest;
     });
@@ -991,6 +992,7 @@ const UV_Checkout: React.FC = () => {
                               const formatted = formatCardNumber(e.target.value);
                               setNewCardForm(prev => ({ ...prev, card_number: formatted }));
                               setValidationErrors(prev => {
+                                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                                 const { card_number: _card_number, ...rest } = prev;
                                 return rest;
                               });
@@ -1190,6 +1192,7 @@ const UV_Checkout: React.FC = () => {
                       onChange={(e) => {
                         setTermsAccepted(e.target.checked);
                         setValidationErrors(prev => {
+                          // eslint-disable-next-line @typescript-eslint/no-unused-vars
                           const { terms: _terms, ...rest } = prev;
                           return rest;
                         });

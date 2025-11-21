@@ -64,7 +64,7 @@ const checkExistingApplication = async (authToken: string): Promise<ExistingAppl
       }
     );
     return response.data.existing_application || null;
-  } catch (error) {
+  } catch {
     // No existing application or error - return null
     return null;
   }
@@ -104,7 +104,6 @@ const uploadDocument = async (
 //   _applicationData: ApplicationFormData,
 //   _authToken: string
 // ): Promise<{ is_valid: boolean; errors: Record<string, string>; estimated_timeline: string }> => {
-//   // Mock implementation for MVP - to be replaced with actual API call
 //   return {
 //     is_valid: true,
 //     errors: {},
@@ -162,7 +161,7 @@ const UV_TradeCredit_Application: React.FC = () => {
 
   // Local State
   const [current_application_step, setCurrentApplicationStep] = useState(1);
-  const [_existingApplicationId, setExistingApplicationId] = useState<string | null>(null); // For future implementation
+  const [, setExistingApplicationId] = useState<string | null>(null); // For future implementation
   const [credit_check_consent, setCreditCheckConsent] = useState(false);
   const [submission_error, setSubmissionError] = useState<string | null>(null);
 
@@ -253,7 +252,7 @@ const UV_TradeCredit_Application: React.FC = () => {
       customerProfile?.customer_id || '',
       authToken || ''
     ),
-    onSuccess: (_data) => {
+    onSuccess: () => {
       navigate('/trade-credit');
     },
     onError: (error: any) => {

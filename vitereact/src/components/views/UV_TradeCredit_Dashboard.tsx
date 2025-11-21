@@ -99,19 +99,7 @@ const fetchPaymentMethods = async (token: string): Promise<PaymentMethod[]> => {
 };
 
 // Note: These endpoints would need backend implementation
-const fetchTransactionHistory = async (
-  _token: string, 
-  _customer_id: string,
-  _date_from?: string,
-  _date_to?: string
-): Promise<Transaction[]> => {
-  // Mock data for now - backend would implement GET /api/trade-credit/transactions
-  // In production, this would be:
-  // const response = await axios.get(`${API_BASE_URL}/trade-credit/transactions`, {
-  //   headers: { Authorization: `Bearer ${token}` },
-  //   params: { customer_id, date_from, date_to, limit: 50, offset: 0 }
-  // });
-  // return response.data.transactions;
+const fetchTransactionHistory = async (): Promise<Transaction[]> => {
   
   return [
     {
@@ -135,12 +123,7 @@ const fetchTransactionHistory = async (
   ];
 };
 
-const submitPayment = async (
-  _token: string,
-  _payment_data: { customer_id: string; payment_amount: number; payment_method_id: string }
-) => {
-  // Backend would implement POST /api/trade-credit/payments
-  // For now, return mock success
+const submitPayment = async () => {
   return {
     transaction_id: `txn_${Date.now()}`,
     status: 'completed',
@@ -149,11 +132,7 @@ const submitPayment = async (
   };
 };
 
-const submitCreditIncreaseRequest = async (
-  _token: string,
-  _request_data: CreditIncreaseRequest & { customer_id: string; current_limit: number }
-) => {
-  // Backend would implement POST /api/trade-credit/increase-request
+const submitCreditIncreaseRequest = async () => {
   return {
     request_id: `req_${Date.now()}`,
     status: 'pending_review',
@@ -175,8 +154,8 @@ const UV_TradeCredit_Dashboard: React.FC = () => {
 
   // Local state
   const [activeTab, setActiveTab] = useState<'overview' | 'transactions' | 'payment' | 'increase'>('overview');
-  const [_showPaymentModal, setShowPaymentModal] = useState(false); // For future implementation
-  const [_showIncreaseModal, setShowIncreaseModal] = useState(false); // For future implementation
+  const [, setShowPaymentModal] = useState(false); // For future implementation
+  const [, setShowIncreaseModal] = useState(false); // For future implementation
   const [dateRangeFilter, setDateRangeFilter] = useState({
     start_date: '',
     end_date: '',

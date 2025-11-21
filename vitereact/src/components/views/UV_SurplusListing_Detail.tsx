@@ -77,25 +77,21 @@ import React from 'react';
 
 // Fetch surplus listing details
 // const fetchSurplusListing = async (_listing_id: string, _auth_token: string | null): Promise<SurplusListing> => {
-//   // Mock implementation for MVP - to be replaced with actual API call
 //   throw new Error('Not implemented');
 // };
 
 // Fetch seller profile
 // const fetchSellerProfile = async (_seller_id: string): Promise<SellerProfile> => {
-//   // Mock implementation for MVP - to be replaced with actual API call
 //   throw new Error('Not implemented');
 // };
 
 // Fetch category info
 // const fetchCategory = async (_category_id: string): Promise<CategoryInfo> => {
-//   // Mock implementation for MVP - to be replaced with actual API call
 //   throw new Error('Not implemented');
 // };
 
 // Fetch similar listings
 // const fetchSimilarListings = async (_category_id: string, _current_listing_id: string): Promise<SimilarListing[]> => {
-//   // Mock implementation for MVP - to be replaced with actual API call
 //   throw new Error('Not implemented');
 //   
 //   // Filter out current listing and map to SimilarListing structure

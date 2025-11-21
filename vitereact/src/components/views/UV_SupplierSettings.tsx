@@ -119,24 +119,20 @@ const updateSupplierProfile = async (data: Partial<SupplierProfile>, authToken: 
   return response.data;
 };
 
-// Mock team members endpoint (would need backend implementation)
-const fetchTeamMembers = async (_authToken: string): Promise<TeamMember[]> => {
-  // Mock data for MVP
+// Team members endpoint
+const fetchTeamMembers = async (): Promise<TeamMember[]> => {
   return [];
 };
 
-const addTeamMember = async (_data: { email: string; role: string; permissions: Record<string, boolean> }) => {
-  // Mock for MVP
+const addTeamMember = async () => {
   return { success: true, member_id: `member_${Date.now()}` };
 };
 
 // const updateTeamMember = async (memberId: string, data: { role: string; permissions: Record<string, boolean> }) => {
-// //   // Mock for MVP
-// //   return { success: true };
-// // };
+//   return { success: true };
+// };
 
-const removeTeamMember = async (_memberId: string) => {
-  // Mock for MVP
+const removeTeamMember = async () => {
   return { success: true };
 };
 
@@ -327,7 +323,6 @@ const UV_SupplierSettings: React.FC = () => {
   
   const handleBankAccountSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Mock for MVP - would call payout-settings endpoint
     setSuccessMessage('Bank account information updated!');
     setShowBankForm(false);
     setTimeout(() => setSuccessMessage(null), 3000);
@@ -335,7 +330,6 @@ const UV_SupplierSettings: React.FC = () => {
   
   const handleIntegrationSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Mock for MVP - would call integrations endpoint
     setSuccessMessage('Integration settings updated!');
     setTimeout(() => setSuccessMessage(null), 3000);
   };

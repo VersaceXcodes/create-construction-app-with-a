@@ -541,7 +541,7 @@ export const useAppStore = create<AppStore>()(
             get().fetch_cart();
           }
           get().fetch_notifications();
-        } catch (error) {
+        } catch {
           delete axios.defaults.headers.common['Authorization'];
           set({
             authentication_state: {

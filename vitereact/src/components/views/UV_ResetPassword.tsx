@@ -36,7 +36,7 @@ const calculatePasswordStrength = (password: string): number => {
   const hasUpperCase = /[A-Z]/.test(password);
   const hasLowerCase = /[a-z]/.test(password);
   const hasNumbers = /\d/.test(password);
-  const hasSpecialChars = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+  const hasSpecialChars = /[!@#$%^&*()_+=[\]{};':"\\|,.<>/?-]/.test(password);
   
   if ((hasUpperCase || hasLowerCase) && hasNumbers) {
     strength = 3;
@@ -94,7 +94,7 @@ const checkPasswordRequirements = (password: string): PasswordRequirement[] => {
     },
     {
       label: 'Contains special character (!@#$%^&*)',
-      met: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password),
+      met: /[!@#$%^&*()_+=[\]{};':"\\|,.<>/?-]/.test(password),
     },
   ];
 };
@@ -139,7 +139,7 @@ const UV_ResetPassword: React.FC = () => {
       );
       return response.data;
     },
-    onSuccess: (_data) => {
+    onSuccess: () => {
       setSuccess(true);
       setErrorMessage(null);
       

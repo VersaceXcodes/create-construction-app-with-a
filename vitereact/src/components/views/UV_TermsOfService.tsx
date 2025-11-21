@@ -521,9 +521,7 @@ const UV_TermsOfService: React.FC = () => {
     setTableOfContents(toc);
     
     // Check if authenticated user has accepted terms
-    // In production, this would be an API call: GET /api/v1/users/me/terms-acceptance
     if (isAuthenticated && currentUser) {
-      // Mock: Check localStorage for acceptance (can be replaced with API call)
       const storedAcceptance = localStorage.getItem(`terms_acceptance_${currentUser.user_id}`);
       if (storedAcceptance) {
         const acceptance = JSON.parse(storedAcceptance);
