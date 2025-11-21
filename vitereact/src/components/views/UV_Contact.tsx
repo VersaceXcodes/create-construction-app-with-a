@@ -76,7 +76,7 @@ interface ChatAvailability {
 // ============================================================================
 
 const fetchContactInformation = async (): Promise<ContactMethods> => {
-  // Since endpoint doesn't exist in backend, using mock data
+  // TODO: Implement backend endpoint
   return {
     support_email: 'support@buildeasy.com',
     support_phone: '1-800-BUILD-EZ',
@@ -100,7 +100,7 @@ const fetchContactInformation = async (): Promise<ContactMethods> => {
 };
 
 const fetchInquiryCategories = async (): Promise<InquiryCategory[]> => {
-  // Mock data - backend endpoint doesn't exist
+  // TODO: Implement backend endpoint
   return [
     {
       category_id: 'general',
@@ -155,7 +155,7 @@ const fetchInquiryCategories = async (): Promise<InquiryCategory[]> => {
 };
 
 const checkChatAvailability = async (): Promise<ChatAvailability> => {
-  // Mock data - endpoint doesn't exist
+  // TODO: Implement backend endpoint
   const currentHour = new Date().getHours();
   const isBusinessHours = currentHour >= 8 && currentHour < 20;
   
@@ -196,8 +196,9 @@ const submitContactForm = async (formData: ContactFormData, authToken?: string |
   return response.data;
 };
 
-const uploadAttachment = async (file: File, _authToken?: string | null): Promise<{ attachment_url: string; file_name: string; file_size: number }> => {
-  // Mock implementation since endpoint doesn't exist
+const uploadAttachment = async (file: File, authToken?: string | null): Promise<{ attachment_url: string; file_name: string; file_size: number }> => {
+  // TODO: Implement backend endpoint
+  void authToken; // Will be used when endpoint is implemented
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve({
@@ -376,7 +377,7 @@ const UV_Contact: React.FC = () => {
         }
         return null;
         
-      case 'subject':
+      case 'subject': {
         if (!value || value.trim().length === 0) {
           return 'Subject is required';
         }
@@ -384,6 +385,7 @@ const UV_Contact: React.FC = () => {
           return 'Subject must be at least 5 characters';
         }
         return null;
+      }
         
       case 'message':
         if (!value || value.trim().length === 0) {

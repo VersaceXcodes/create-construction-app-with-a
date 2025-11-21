@@ -92,14 +92,13 @@ const GV_TopNav_Admin: React.FC = () => {
   });
 
   // ============================================================================
-  // SYSTEM HEALTH (MOCK - Endpoint not implemented)
+  // SYSTEM HEALTH
   // ============================================================================
 
   const { data: systemHealth } = useQuery<SystemHealth>({
     queryKey: ['system-health'],
     queryFn: async () => {
-      // Mock implementation since endpoint doesn't exist
-      // In production, would call GET /admin/system/health
+      // TODO: Call GET /admin/system/health when implemented
       return {
         status: 'operational' as const,
         uptime_percentage: 99.9,

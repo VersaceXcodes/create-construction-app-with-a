@@ -194,7 +194,7 @@ const fetchOrderAnalytics = async (
   return {
     total_orders: totalOrders,
     completion_rate: totalOrders > 0 ? ((totalOrders - activeOrders) / totalOrders) * 100 : 0,
-    avg_fulfillment_time: 48, // Mock value - would come from backend
+    avg_fulfillment_time: 48, // Placeholder - will come from backend
     issue_rate: totalOrders > 0 ? (pendingDisputes / totalOrders) * 100 : 0
   };
 };

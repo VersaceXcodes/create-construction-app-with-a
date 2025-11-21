@@ -117,7 +117,7 @@ const fetchAdminUsers = async (token: string, roleFilter?: string): Promise<Admi
   };
 };
 
-// Mock role definitions (would be backend endpoint in production)
+// Role definitions (TODO: Backend endpoint)
 const fetchRoleDefinitions = async (): Promise<RoleDefinition[]> => {
   return [
     {
@@ -147,18 +147,19 @@ const fetchRoleDefinitions = async (): Promise<RoleDefinition[]> => {
   ];
 };
 
-// Mock activity logs (would be backend endpoint)
+// Activity logs (TODO: Backend endpoint)
 const fetchActivityLogs = async (
-  _token: string,
-  _filters: {
+  token: string,
+  filters: {
     admin_user_id?: string;
     action_type?: string;
     date_from?: string;
     date_to?: string;
   }
 ): Promise<ActivityLogEntry[]> => {
-  // In production, this would be an actual API call
-  // For now, return mock data that follows the pattern
+  // TODO: Implement actual API call
+  void token;
+  void filters;
   return [
     {
       log_id: '1',

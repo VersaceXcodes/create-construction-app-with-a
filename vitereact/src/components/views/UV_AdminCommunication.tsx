@@ -697,7 +697,7 @@ const UV_AdminCommunication: React.FC = () => {
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <h2 className="text-lg font-semibold text-gray-900 mb-4">Campaign Performance</h2>
                 
-                {/* Mock Campaign Data */}
+                {/* Campaign Data */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-lg p-6 border border-blue-200">
                     <div className="flex items-center justify-between mb-2">

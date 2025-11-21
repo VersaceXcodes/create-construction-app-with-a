@@ -38,7 +38,7 @@ interface ProductsResponse {
   offset: number;
 }
 
-interface CategoriesResponse extends Array<Category> {}
+type CategoriesResponse = Category[];
 
 // ============================================================================
 // API FUNCTIONS

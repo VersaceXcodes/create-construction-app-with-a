@@ -239,11 +239,12 @@ export default function UV_AdminFinancials() {
       case 'current_month':
         start.setDate(1);
         break;
-      case 'quarter':
+      case 'quarter': {
         const quarter = Math.floor(now.getMonth() / 3);
         start.setMonth(quarter * 3);
         start.setDate(1);
         break;
+      }
       case 'year':
         start.setMonth(0);
         start.setDate(1);

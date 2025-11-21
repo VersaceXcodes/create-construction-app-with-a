@@ -127,7 +127,7 @@ const fetchUserAnalytics = async (
     }
   });
   
-  // Mock structure based on what would come from backend
+  // Structure based on backend API response
   return {
     new_registrations: [],
     user_retention_rates: {

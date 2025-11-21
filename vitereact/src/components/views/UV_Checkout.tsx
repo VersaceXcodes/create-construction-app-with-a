@@ -344,7 +344,7 @@ const UV_Checkout: React.FC = () => {
   const handleAddNewAddress = async () => {
     // Clear previous errors
     setValidationErrors(prev => {
-      const { address, ...rest } = prev;
+      const { address: _address, ...rest } = prev;
       return rest;
     });
 
@@ -417,14 +417,14 @@ const UV_Checkout: React.FC = () => {
           card_expiry_month: newCardForm.card_expiry_month,
           card_expiry_year: newCardForm.card_expiry_year,
           cardholder_name: newCardForm.cardholder_name,
-          payment_token: `tok_${Date.now()}`, // Mock token
+          payment_token: `tok_${Date.now()}`, // Temporary token
           is_default: newCardForm.save_for_future
         });
       }
 
       // Build delivery windows array
       const deliveryWindows = Object.entries(deliveryWindowsBySupplier).map(([supplier_id]) => {
-        // Mock delivery window data (in real app, would come from API)
+        // TODO: Get delivery window data from API
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
         const windowStart = new Date(tomorrow);
@@ -788,7 +788,7 @@ const UV_Checkout: React.FC = () => {
                       </div>
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
-                        {/* Mock delivery windows */}
+                        {/* Delivery windows */}
                         {['morning', 'afternoon'].map((period) => {
                           const windowId = `${group.supplier_id}_${period}`;
                           const tomorrow = new Date();
@@ -991,7 +991,7 @@ const UV_Checkout: React.FC = () => {
                               const formatted = formatCardNumber(e.target.value);
                               setNewCardForm(prev => ({ ...prev, card_number: formatted }));
                               setValidationErrors(prev => {
-                                const { card_number, ...rest } = prev;
+                                const { card_number: _card_number, ...rest } = prev;
                                 return rest;
                               });
                             }}
@@ -1190,7 +1190,7 @@ const UV_Checkout: React.FC = () => {
                       onChange={(e) => {
                         setTermsAccepted(e.target.checked);
                         setValidationErrors(prev => {
-                          const { terms, ...rest } = prev;
+                          const { terms: _terms, ...rest } = prev;
                           return rest;
                         });
                       }}

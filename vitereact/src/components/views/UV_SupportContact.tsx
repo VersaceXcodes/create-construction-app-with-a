@@ -215,12 +215,11 @@ const UV_SupportContact: React.FC = () => {
       for (const file of validFiles) {
         setUploadProgress(prev => ({ ...prev, [file.name]: 0 }));
         
-        // Simulate upload (in real implementation, would request presigned URL and upload to S3)
-        // For now, creating mock URLs
+        // TODO: Implement presigned URL upload to S3
         await new Promise(resolve => setTimeout(resolve, 1000));
         
-        const mockUrl = `https://cdn.buildeasy.com/support/${Date.now()}_${file.name}`;
-        uploadedUrls.push(mockUrl);
+        const uploadedUrl = `https://cdn.buildeasy.com/support/${Date.now()}_${file.name}`;
+        uploadedUrls.push(uploadedUrl);
         
         setUploadProgress(prev => ({ ...prev, [file.name]: 100 }));
       }

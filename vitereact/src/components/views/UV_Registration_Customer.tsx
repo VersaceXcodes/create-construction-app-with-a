@@ -130,8 +130,8 @@ const validatePhoneNumber = (phone: string): boolean => {
 
 const UV_Registration_Customer: React.FC = () => {
   const navigate = useNavigate();
-  const [_searchParams] = useSearchParams();
-  // const return_url = _searchParams.get('return_url');
+  const [searchParams] = useSearchParams();
+  void searchParams; // Reserved for future use (e.g., return_url)
   
   // CRITICAL: Individual Zustand selectors
   const isAuthenticated = useAppStore(state => state.authentication_state.authentication_status.is_authenticated);
@@ -178,7 +178,7 @@ const UV_Registration_Customer: React.FC = () => {
       );
       return response.data;
     },
-    onSuccess: async (_data) => {
+    onSuccess: async () => {
       // Call Zustand action to update auth state
       await registerCustomer({
         email: formData.email,
@@ -356,7 +356,9 @@ const UV_Registration_Customer: React.FC = () => {
   // ============================================================================
   
   const passwordStrengthInfo = getPasswordStrengthLabel(passwordStrength);
-  // const isFormValid = 
+  
+  // Form validation check (currently unused but reserved for future validation)
+  void (
     formData.email &&
     formData.password &&
     formData.confirm_password &&
@@ -364,7 +366,8 @@ const UV_Registration_Customer: React.FC = () => {
     formData.last_name &&
     formData.phone_number &&
     termsAccepted &&
-    Object.keys(validationErrors).length === 0;
+    Object.keys(validationErrors).length === 0
+  );
   
   return (
     <>

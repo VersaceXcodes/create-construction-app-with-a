@@ -247,7 +247,7 @@ const UV_ProductEdit_Supplier: React.FC = () => {
   // Update product mutation
   const update_mutation = useMutation({
     mutationFn: (payload: UpdateProductPayload) => updateProduct(product_id!, payload, auth_token!),
-    onSuccess: (_updated_product) => {
+    onSuccess: () => {
       // Invalidate queries
       queryClient.invalidateQueries({ queryKey: ['product', product_id] });
       queryClient.invalidateQueries({ queryKey: ['supplier-products'] });

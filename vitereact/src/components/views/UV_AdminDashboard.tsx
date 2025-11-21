@@ -112,9 +112,9 @@ const fetchPlatformMetrics = async (authToken: string, dateRange: string): Promi
   return response.data;
 };
 
-const fetchSystemHealth = async (_authToken: string): Promise<SystemHealth> => {
-  // Mock implementation since endpoint doesn't exist in backend yet
-  // In production, this would call: GET /api/admin/system/health
+const fetchSystemHealth = async (authToken: string): Promise<SystemHealth> => {
+  // TODO: Implement GET /api/admin/system/health
+  void authToken; // Will be used when endpoint is implemented
   return {
     api_status: 'operational',
     database_status: 'operational',
@@ -127,21 +127,21 @@ const fetchSystemHealth = async (_authToken: string): Promise<SystemHealth> => {
   };
 };
 
-const fetchRecentActivity = async (_authToken: string): Promise<ActivityItem[]> => {
-  // Mock implementation since endpoint doesn't exist in backend yet
-  // In production, this would call: GET /api/admin/activity/recent?limit=20
+const fetchRecentActivity = async (authToken: string): Promise<ActivityItem[]> => {
+  // TODO: Implement GET /api/admin/activity/recent?limit=20
+  void authToken; // Will be used when endpoint is implemented
   return [];
 };
 
-const fetchActiveAlerts = async (_authToken: string): Promise<Alert[]> => {
-  // Mock implementation since endpoint doesn't exist in backend yet
-  // In production, this would call: GET /api/admin/alerts/active
+const fetchActiveAlerts = async (authToken: string): Promise<Alert[]> => {
+  // TODO: Implement GET /api/admin/alerts/active
+  void authToken; // Will be used when endpoint is implemented
   return [];
 };
 
-const fetchGrowthMetrics = async (_authToken: string, period: string): Promise<GrowthMetrics> => {
-  // Mock implementation since endpoint doesn't exist in backend yet
-  // In production, this would call: GET /api/admin/analytics/growth?period={period}
+const fetchGrowthMetrics = async (authToken: string, period: string): Promise<GrowthMetrics> => {
+  // TODO: Implement GET /api/admin/analytics/growth?period={period}
+  void authToken; // Will be used when endpoint is implemented
   return {
     period,
     user_growth: [],
@@ -151,8 +151,7 @@ const fetchGrowthMetrics = async (_authToken: string, period: string): Promise<G
 };
 
 const dismissAlert = async (authToken: string, alertId: string): Promise<void> => {
-  // Mock implementation since endpoint doesn't exist in backend yet
-  // In production, this would call: PATCH /api/admin/alerts/{alert_id}
+  // TODO: Implement PATCH /api/admin/alerts/{alert_id}
   await axios.patch(
     `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api/admin/alerts/${alertId}`,
     { status: 'dismissed' },

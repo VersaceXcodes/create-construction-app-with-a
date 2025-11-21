@@ -101,7 +101,7 @@ const fetchPendingOrdersCount = async (token: string): Promise<number> => {
     );
     // Return 0 as placeholder since endpoint doesn't exist
     return 0;
-  } catch (error) {
+  } catch {
     return 0;
   }
 };

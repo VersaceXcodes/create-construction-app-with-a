@@ -256,7 +256,7 @@ const UV_AdminUserManagement_Customers: React.FC = () => {
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [searchInput]);
+  }, [searchInput, searchFilters.query]);
 
   // ============================================================================
   // REACT QUERY: FETCH CUSTOMERS LIST
@@ -371,7 +371,7 @@ const UV_AdminUserManagement_Customers: React.FC = () => {
   };
 
   const handleExport = async () => {
-    // Mock export - in production would call POST /admin/exports/customers
+    // TODO: Implement POST /admin/exports/customers
     const csvContent = [
       ['Email', 'Name', 'Account Type', 'Status', 'Total Orders', 'Total Spent', 'Registration Date'].join(','),
       ...customers.map(c => [
@@ -1146,7 +1146,7 @@ const UV_AdminUserManagement_Customers: React.FC = () => {
                       </Link>
                       <button
                         onClick={() => {
-                          // Mock impersonate - would call POST /admin/users/{user_id}/impersonate
+                          // TODO: Implement POST /admin/users/{user_id}/impersonate
                           alert('Impersonation feature - would open customer session');
                         }}
                         className="inline-flex items-center justify-center px-4 py-2 border border-blue-300 rounded-lg text-sm font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 transition-colors"
@@ -1156,7 +1156,7 @@ const UV_AdminUserManagement_Customers: React.FC = () => {
                       </button>
                       <button
                         onClick={() => {
-                          // Mock message - would open message form
+                          // TODO: Implement message form
                           alert('Send message feature');
                         }}
                         className="inline-flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors"

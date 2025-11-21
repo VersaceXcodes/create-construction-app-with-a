@@ -321,8 +321,8 @@ const UV_ProductBulkUpload_Supplier: React.FC = () => {
           {/* Progress Steps */}
           <div className="mb-8">
             <div className="flex items-center justify-center space-x-4">
-              <div className={`flex items-center ${false ? 'text-blue-600' : currentStep !== 'upload' ? 'text-green-600' : 'text-gray-400'}`}>
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${currentStep === 'upload' ? 'bg-blue-100' : true ? 'bg-green-100' : 'bg-gray-100'}`}>
+              <div className={`flex items-center ${currentStep !== 'upload' ? 'text-green-600' : 'text-gray-400'}`}>
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${currentStep === 'upload' ? 'bg-blue-100' : 'bg-green-100'}`}>
                   {currentStep !== 'upload' ? <CheckCircle className="w-5 h-5" /> : '1'}
                 </div>
                 <span className="ml-2 font-medium">Upload CSV</span>

@@ -76,8 +76,9 @@ const fetchOrders = async (
   sort_by: string,
   sort_order: string,
   page: number,
-  _search_query: string
+  search_query: string
 ): Promise<OrdersResponse> => {
+  void search_query; // Reserved for future search functionality
   const limit = ORDERS_PER_PAGE;
   const offset = (page - 1) * limit;
 

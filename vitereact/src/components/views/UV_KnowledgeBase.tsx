@@ -426,7 +426,7 @@ export default function UV_KnowledgeBase() {
       }
       return submitHelpfulVote(articleId, wasHelpful, authToken);
     },
-    onSuccess: (_data) => {
+    onSuccess: () => {
       // Optimistically update article
       if (currentArticle) {
         // Query will auto-refetch, but we can show immediate feedback

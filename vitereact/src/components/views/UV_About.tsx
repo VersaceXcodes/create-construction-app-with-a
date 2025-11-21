@@ -177,7 +177,7 @@ const UV_About: React.FC = () => {
       setActiveSection(sectionParam);
       scrollToSection(sectionParam);
     }
-  }, [sectionParam]);
+  }, [sectionParam, active_section]);
 
   // Track page view on mount (placeholder for future analytics)
   useEffect(() => {

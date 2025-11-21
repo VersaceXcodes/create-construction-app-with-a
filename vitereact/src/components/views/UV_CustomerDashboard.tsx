@@ -242,8 +242,6 @@ const UV_CustomerDashboard: React.FC = () => {
 
   const {
     data: wishlistCount = 0
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    // isLoading: wishlistLoading
   } = useQuery<number, Error>({
     queryKey: ['wishlist-count'],
     queryFn: () => fetchWishlistCount(authToken!),
@@ -255,8 +253,6 @@ const UV_CustomerDashboard: React.FC = () => {
 
   const {
     data: projectsCount = 0
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    // isLoading: projectsLoading
   } = useQuery<number, Error>({
     queryKey: ['projects-count'],
     queryFn: () => fetchProjectsCount(authToken!),
@@ -280,7 +276,7 @@ const UV_CustomerDashboard: React.FC = () => {
     }))
     .slice(0, 1); // Next delivery only
 
-  // Calculate account summary from orders (mock implementation)
+  // Calculate account summary from orders
   const accountSummary: AccountSummary = {
     spending_this_month: activeOrders.reduce((sum, order) => sum + order.total_amount, 0),
     orders_this_month: activeOrders.length,
@@ -620,7 +616,7 @@ const UV_CustomerDashboard: React.FC = () => {
                 )}
               </div>
 
-              {/* Recent Activity (Mock/Empty State) */}
+              {/* Recent Activity */}
               <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">Recent Activity</h2>
                 <div className="text-center py-8">

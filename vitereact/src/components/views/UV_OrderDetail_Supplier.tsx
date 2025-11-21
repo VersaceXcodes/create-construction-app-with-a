@@ -103,9 +103,10 @@ export default function UV_OrderDetail_Supplier() {
   
   // CRITICAL: Individual selectors (no object destructuring)
   const authToken = useAppStore(state => state.authentication_state.auth_token);
-  const currentUser = useAppStore(state => state.authentication_state.current_user);
+  const appStoreState = useAppStore(state => state);
+  const currentUser = appStoreState.authentication_state.current_user;
   const supplierId = currentUser?.user_type === 'supplier' 
-    ? useAppStore(state => state.authentication_state.current_user?.user_id) 
+    ? currentUser.user_id 
     : null;
 
   // Local state for forms

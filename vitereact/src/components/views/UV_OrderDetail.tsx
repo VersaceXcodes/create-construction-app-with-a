@@ -206,18 +206,6 @@ const UV_OrderDetail: React.FC = () => {
   const [gpsLocation, setGpsLocation] = useState<{ latitude: number; longitude: number } | null>(null);
   const [etaMinutes, setEtaMinutes] = useState<number | null>(null);
   
-  // Redirect if no order_id
-  if (!order_id) {
-    navigate('/orders');
-    return null;
-  }
-  
-  // Redirect if not authenticated
-  if (!authToken) {
-    navigate('/login');
-    return null;
-  }
-  
   // ============================================================================
   // DATA FETCHING
   // ============================================================================
@@ -225,11 +213,10 @@ const UV_OrderDetail: React.FC = () => {
   const { 
     data: orderDetails, 
     isLoading, 
-    error,
-    refetch: _refetch
+    error
   } = useQuery({
     queryKey: ['order', order_id],
-    queryFn: () => fetchOrderDetails(order_id, authToken),
+    queryFn: () => fetchOrderDetails(order_id || '', authToken),
     enabled: !!order_id && !!authToken,
     staleTime: 30000, // 30 seconds
     retry: 1
@@ -240,7 +227,7 @@ const UV_OrderDetail: React.FC = () => {
   // ============================================================================
   
   const cancelMutation = useMutation({
-    mutationFn: (reason: string) => cancelOrder(order_id, reason, authToken),
+    mutationFn: (reason: string) => cancelOrder(order_id || '', reason, authToken),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['order', order_id] });
       setShowCancelModal(false);
@@ -260,7 +247,7 @@ const UV_OrderDetail: React.FC = () => {
   });
   
   const reorderMutation = useMutation({
-    mutationFn: () => reorderItems(order_id, authToken),
+    mutationFn: () => reorderItems(order_id || '', authToken),
     onSuccess: () => {
       fetchCart(); // Update cart state
       navigate('/cart');
@@ -321,6 +308,18 @@ const UV_OrderDetail: React.FC = () => {
   // ============================================================================
   // DERIVED STATE & HELPERS
   // ============================================================================
+  
+  // Redirect if no order_id
+  if (!order_id) {
+    navigate('/orders');
+    return null;
+  }
+  
+  // Redirect if not authenticated
+  if (!authToken) {
+    navigate('/login');
+    return null;
+  }
   
   if (!orderDetails) {
     return null; // Loading or error state will handle
