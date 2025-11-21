@@ -78,14 +78,14 @@ interface AdminFormData {
 // API FUNCTIONS
 // ============================================================================
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 
 // Fetch admin users (adapted from existing /api/admin/users endpoint)
 const fetchAdminUsers = async (token: string, roleFilter?: string): Promise<AdminUsersList> => {
   const params: any = { user_type: 'admin' };
   if (roleFilter) params.role_filter = roleFilter;
   
-  const { data } = await axios.get(`${API_BASE}/admin/users`, {
+  const { data } = await axios.get(`${API_BASE}/api/admin/users`, {
     params,
     headers: { Authorization: `Bearer ${token}` }
   });
@@ -189,7 +189,7 @@ const createAdminUser = async (token: string, formData: AdminFormData) => {
     status: formData.is_active ? 'active' : 'inactive'
   };
   
-  const { data } = await axios.post(`${API_BASE}/admin/users`, payload, {
+  const { data } = await axios.post(`${API_BASE}/api/admin/users`, payload, {
     headers: { Authorization: `Bearer ${token}` }
   });
   
@@ -202,7 +202,7 @@ const updateAdminPermissions = async (
   userId: string,
   updates: { role?: string; permissions?: Record<string, any>; status?: string }
 ) => {
-  const { data } = await axios.patch(`${API_BASE}/admin/users/${userId}`, updates, {
+  const { data } = await axios.patch(`${API_BASE}/api/admin/users/${userId}`, updates, {
     headers: { Authorization: `Bearer ${token}` }
   });
   

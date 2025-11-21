@@ -158,7 +158,7 @@ const UV_SurplusMarketplace_Browse: React.FC = () => {
   
   const limit = 24;
   
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
   
   // ============================================================================
   // URL SYNC - Initialize from URL params on mount

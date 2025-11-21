@@ -96,14 +96,14 @@ interface DashboardMetrics {
 const API_BASE = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api`;
 
 const fetchSupplierProfile = async (token: string): Promise<SupplierProfile> => {
-  const response = await axios.get(`${API_BASE}/suppliers/me`, {
+  const response = await axios.get(`${API_BASE}/api/suppliers/me`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   return response.data;
 };
 
 const fetchPendingOrders = async (token: string, supplierId: string): Promise<PendingOrder[]> => {
-  const response = await axios.get(`${API_BASE}/orders`, {
+  const response = await axios.get(`${API_BASE}/api/orders`, {
     params: {
       status_filter: 'pending',
       limit: 10
@@ -119,7 +119,7 @@ const fetchPendingOrders = async (token: string, supplierId: string): Promise<Pe
 };
 
 const fetchLowStockProducts = async (token: string): Promise<Product[]> => {
-  const response = await axios.get(`${API_BASE}/suppliers/me/products`, {
+  const response = await axios.get(`${API_BASE}/api/suppliers/me/products`, {
     params: {
       status_filter: 'active'
     },
@@ -132,7 +132,7 @@ const fetchLowStockProducts = async (token: string): Promise<Product[]> => {
 
 const acceptOrder = async (orderId: string, token: string): Promise<void> => {
   await axios.patch(
-    `${API_BASE}/orders/${orderId}`,
+    `${API_BASE}/api/orders/${orderId}`,
     { status: 'processing' },
     { headers: { Authorization: `Bearer ${token}` } }
   );

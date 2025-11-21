@@ -53,7 +53,7 @@ interface ComparisonAttribute {
 // ============================================================================
 
 const fetchComparisonProducts = async (productIds: string[], token: string | null): Promise<Product[]> => {
-  const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+  const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
   
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
@@ -63,7 +63,7 @@ const fetchComparisonProducts = async (productIds: string[], token: string | nul
     headers['Authorization'] = `Bearer ${token}`;
   }
   
-  const response = await axios.get(`${API_BASE}/products/compare`, {
+  const response = await axios.get(`${API_BASE}/api/products/compare`, {
     params: { product_ids: productIds.join(',') },
     headers
   });
@@ -72,10 +72,10 @@ const fetchComparisonProducts = async (productIds: string[], token: string | nul
 };
 
 const addProductToCart = async (productId: string, token: string): Promise<any> => {
-  const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+  const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
   
   const response = await axios.post(
-    `${API_BASE}/cart/items`,
+    `${API_BASE}/api/cart/items`,
     { product_id: productId, quantity: 1 },
     { headers: { 'Authorization': `Bearer ${token}` } }
   );

@@ -70,8 +70,8 @@ interface SuppliersResponse {
 // ============================================================================
 
 const fetchFeaturedProducts = async (): Promise<Product[]> => {
-  const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
-  const response = await axios.get<ProductsResponse>(`${API_BASE}/products`, {
+  const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+  const response = await axios.get<ProductsResponse>(`${API_BASE}/api/products`, {
     params: {
       is_featured: 'true',
       status: 'active',
@@ -84,8 +84,8 @@ const fetchFeaturedProducts = async (): Promise<Product[]> => {
 };
 
 const fetchFeaturedCategories = async (): Promise<Category[]> => {
-  const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
-  const response = await axios.get<Category[]>(`${API_BASE}/categories`, {
+  const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+  const response = await axios.get<Category[]>(`${API_BASE}/api/categories`, {
     params: {
       is_active: 'true',
       limit: 100,
@@ -97,8 +97,8 @@ const fetchFeaturedCategories = async (): Promise<Category[]> => {
 };
 
 const fetchFeaturedSuppliers = async (): Promise<SuppliersResponse> => {
-  const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
-  const response = await axios.get<SuppliersResponse>(`${API_BASE}/suppliers`, {
+  const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+  const response = await axios.get<SuppliersResponse>(`${API_BASE}/api/suppliers`, {
     params: {
       verification_status: 'verified',
       status: 'active',

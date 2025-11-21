@@ -73,7 +73,7 @@ import React from 'react';
 // API FUNCTIONS
 // ============================================================================
 
-// const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+// const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 
 // Fetch surplus listing details
 // const fetchSurplusListing = async (_listing_id: string, _auth_token: string | null): Promise<SurplusListing> => {
