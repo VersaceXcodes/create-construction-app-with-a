@@ -27,7 +27,7 @@ interface OrdersResponse {
   total: number;
 }
 
-interface SupplierOption { // eslint-disable-line @typescript-eslint/no-unused-vars
+interface _SupplierOption {
   supplier_id: string;
   business_name: string;
 }
@@ -76,7 +76,7 @@ const fetchOrders = async (
   sort_by: string,
   sort_order: string,
   page: number,
-  search_query: string // eslint-disable-line @typescript-eslint/no-unused-vars
+  _search_query: string
 ): Promise<OrdersResponse> => {
   const limit = ORDERS_PER_PAGE;
   const offset = (page - 1) * limit;

@@ -389,8 +389,7 @@ export default function UV_AdminFinancials() {
     });
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const formatDateTime = (dateString: string) => {
+  const _formatDateTime = (dateString: string) => {
     return new Date(dateString).toLocaleString('en-US', {
       month: 'short',
       day: 'numeric',

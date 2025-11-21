@@ -321,8 +321,7 @@ export default function UV_AdminDashboard() {
     return new Intl.NumberFormat('en-US').format(num);
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const getStatusColor = (status: string): string => {
+  const _getStatusColor = (status: string): string => {
     switch (status) {
       case 'operational':
       case 'healthy':

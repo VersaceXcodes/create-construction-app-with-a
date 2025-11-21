@@ -58,10 +58,6 @@ interface StockWarning {
   warning_type: 'stock_reduced' | 'out_of_stock' | 'price_changed';
   message: string;
 }
-  primary_image_url: string | null;
-  stock_quantity: number;
-  supplier_id: string;
-}
 
 // ============================================================================
 // HELPER FUNCTIONS

@@ -139,7 +139,7 @@ const UV_ResetPassword: React.FC = () => {
       );
       return response.data;
     },
-    onSuccess: (data) => {
+    onSuccess: (_data) => {
       setSuccess(true);
       setErrorMessage(null);
       

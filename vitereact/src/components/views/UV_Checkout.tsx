@@ -408,8 +408,7 @@ const UV_Checkout: React.FC = () => {
 
     try {
       // If new card, create payment method first
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      let finalPaymentMethodId = selectedPaymentMethodId;
+      let _finalPaymentMethodId = selectedPaymentMethodId;
       
       if (showNewCardForm && !usingTradeCredit) {
         const newPaymentMethod = await addPaymentMethodMutation.mutateAsync({

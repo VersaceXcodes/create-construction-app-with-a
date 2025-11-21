@@ -200,7 +200,7 @@ const UV_ProductDetail_Customer: React.FC = () => {
     verified_only: false,
   });
   const [reviewSortBy, setReviewSortBy] = useState('review_date');
-  const [showReviewForm, setShowReviewForm] = useState(false); // eslint-disable-line @typescript-eslint/no-unused-vars
+  const [_showReviewForm, _setShowReviewForm] = useState(false);
   const [reviewFormData, setReviewFormData] = useState({
     rating_overall: 0,
     rating_product: 0,
@@ -219,7 +219,7 @@ const UV_ProductDetail_Customer: React.FC = () => {
     last_updated: null,
     websocket_connected: false,
   });
-  const [wsSocket, setWsSocket] = useState<any | null>(null); // eslint-disable-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
+  const [_wsSocket, _setWsSocket] = useState<any | null>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
 
   // Fetch product data
   const { data: product, isLoading: productLoading, error: productError } = useQuery({
@@ -230,7 +230,7 @@ const UV_ProductDetail_Customer: React.FC = () => {
   });
 
   // Fetch supplier data
-  const { data: supplier, isLoading: supplierLoading } = useQuery({ // eslint-disable-line @typescript-eslint/no-unused-vars
+  const { data: supplier, isLoading: _supplierLoading } = useQuery({
     queryKey: ['supplier', product?.supplier_id],
     queryFn: () => fetchSupplier(product!.supplier_id, authToken),
     enabled: !!product?.supplier_id,
@@ -300,7 +300,7 @@ const UV_ProductDetail_Customer: React.FC = () => {
   });
 
   // Submit review mutation
-  const submitReviewMutation = useMutation({ // eslint-disable-line @typescript-eslint/no-unused-vars
+  const _submitReviewMutation = useMutation({
     mutationFn: async (reviewData: any) => {
       const response = await axios.post(
         `${API_BASE_URL}/reviews`,
