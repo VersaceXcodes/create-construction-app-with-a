@@ -98,7 +98,10 @@ const UV_ProductComparison: React.FC = () => {
   const fetchCart = useAppStore(state => state.fetch_cart);
   
   // Parse product IDs from URL
-  const urlProductIds = searchParams.get('product_ids')?.split(',').filter(id => id.trim()) || [];
+  const urlProductIds = useMemo(() => 
+    searchParams.get('product_ids')?.split(',').filter(id => id.trim()) || [], 
+    [searchParams]
+  );
   
   // Local state
   const [showDifferencesOnly, setShowDifferencesOnly] = useState(false);

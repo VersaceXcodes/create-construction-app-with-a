@@ -133,6 +133,7 @@ interface SignUpGateModalProps {
   feature: 'contact' | 'reviews';
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 const SignUpGateModal: React.FC<SignUpGateModalProps> = ({ isOpen, onClose, feature }) => {
   const navigate = useNavigate();
 

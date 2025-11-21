@@ -1,4 +1,4 @@
-import  { useState, useEffect, useCallback } from 'react';
+import  { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
@@ -228,7 +228,7 @@ export default function UV_ProductManagement_Supplier() {
   // DERIVED STATE
   // ============================================================================
   
-  const products = data?.products || [];
+  const products = useMemo(() => data?.products || [], [data]);
   const pagination = data?.pagination || {
     current_page: 1,
     total_pages: 1,

@@ -257,8 +257,6 @@ const UV_AdminTeamManagement: React.FC = () => {
     data: adminUsersData,
     isLoading: isLoadingUsers,
     error: usersError
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    // refetch: refetchUsers
   } = useQuery({
     queryKey: ['admin-users', roleFilter],
     queryFn: () => fetchAdminUsers(authToken!, roleFilter),

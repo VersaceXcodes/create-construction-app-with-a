@@ -536,7 +536,7 @@ const UV_TermsOfService: React.FC = () => {
     if (sectionParam && sectionParam !== active_section) {
       setActiveSection(sectionParam);
     }
-  }, [searchParams]);
+  }, [searchParams, active_section]);
   
   // Scroll to active section on mount or section change
   useEffect(() => {

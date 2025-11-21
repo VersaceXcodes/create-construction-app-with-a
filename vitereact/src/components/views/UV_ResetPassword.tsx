@@ -192,7 +192,7 @@ const UV_ResetPassword: React.FC = () => {
     if (error_message) {
       setErrorMessage(null);
     }
-  }, [new_password]);
+  }, [new_password, error_message]);
   
   // ============================================================================
   // PASSWORD MATCH VALIDATION

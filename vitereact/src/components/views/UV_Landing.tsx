@@ -139,8 +139,6 @@ const UV_Landing: React.FC = () => {
   const { 
     data: products = [], 
     isLoading: productsLoading
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    // error: productsError
   } = useQuery({
     queryKey: ['featured-products'],
     queryFn: fetchFeaturedProducts,
@@ -150,8 +148,6 @@ const UV_Landing: React.FC = () => {
   const { 
     data: categories = [], 
     isLoading: categoriesLoading
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    // error: categoriesError
   } = useQuery({
     queryKey: ['featured-categories'],
     queryFn: fetchFeaturedCategories,
@@ -161,8 +157,6 @@ const UV_Landing: React.FC = () => {
   const { 
     data: suppliersData, 
     isLoading: suppliersLoading
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    // error: suppliersError
   } = useQuery({
     queryKey: ['featured-suppliers'],
     queryFn: fetchFeaturedSuppliers,

@@ -155,7 +155,7 @@ const UV_AdminProductModeration: React.FC = () => {
     enabled: !!authToken && activeTab === 'all'
   });
   
-  const productsList = productsData?.products || [];
+  const productsList = useMemo(() => productsData?.products || [], [productsData]);
   const totalCount = productsData?.total || 0;
   const totalPages = Math.ceil(totalCount / pagination.limit);
   
@@ -172,7 +172,7 @@ const UV_AdminProductModeration: React.FC = () => {
     enabled: !!authToken && activeTab === 'flagged'
   });
   
-  const flaggedProducts = flaggedData || [];
+  const flaggedProducts = useMemo(() => flaggedData || [], [flaggedData]);
   
   // Moderation queue stats (derived)
   const moderationQueue: ModerationQueue = useMemo(() => ({
