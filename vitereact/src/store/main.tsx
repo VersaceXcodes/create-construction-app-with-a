@@ -308,7 +308,7 @@ export const useAppStore = create<AppStore>()(
         });
 
         try {
-          const response = await axios.post('/api/auth/login', { email, password });
+          const response = await axios.post('/auth/login', { email, password });
           const { token, user, customer, supplier, admin } = response.data;
 
           // Set token in axios defaults
@@ -357,7 +357,7 @@ export const useAppStore = create<AppStore>()(
         
         try {
           if (token) {
-            await axios.post('/api/auth/logout');
+            await axios.post('/auth/logout');
           }
         } catch (error) {
           console.error('Logout error:', error);
@@ -412,7 +412,7 @@ export const useAppStore = create<AppStore>()(
         });
 
         try {
-          const response = await axios.post('/api/auth/register/customer', data);
+          const response = await axios.post('/auth/register/customer', data);
           const { token, user, customer } = response.data;
 
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -464,7 +464,7 @@ export const useAppStore = create<AppStore>()(
         });
 
         try {
-          await axios.post('/api/auth/register/supplier', data);
+          await axios.post('/auth/register/supplier', data);
           
           set({
             authentication_state: {
@@ -522,7 +522,7 @@ export const useAppStore = create<AppStore>()(
 
         try {
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-          const response = await axios.get('/api/users/me');
+          const response = await axios.get('/users/me');
           
           set({
             authentication_state: {
@@ -589,7 +589,7 @@ export const useAppStore = create<AppStore>()(
         });
 
         try {
-          const response = await axios.get('/api/cart');
+          const response = await axios.get('/cart');
           const { items = [], subtotal = 0 } = response.data;
 
           set({
@@ -614,7 +614,7 @@ export const useAppStore = create<AppStore>()(
 
       add_to_cart: async (product_id: string, quantity: number) => {
         try {
-          await axios.post('/api/cart/items', { product_id, quantity });
+          await axios.post('/cart/items', { product_id, quantity });
           await get().fetch_cart();
         } catch (error) {
           console.error('Add to cart error:', error);
@@ -644,7 +644,7 @@ export const useAppStore = create<AppStore>()(
 
       clear_cart: async () => {
         try {
-          await axios.delete('/api/cart');
+          await axios.delete('/cart');
           set({
             cart_state: {
               items: [],
@@ -679,7 +679,7 @@ export const useAppStore = create<AppStore>()(
         });
 
         try {
-          const response = await axios.get('/api/notifications', {
+          const response = await axios.get('/notifications', {
             params: { limit: 20, offset: 0 },
           });
           const { notifications = [], unread_count = 0 } = response.data;
@@ -713,7 +713,7 @@ export const useAppStore = create<AppStore>()(
 
       mark_all_notifications_read: async () => {
         try {
-          await axios.post('/api/notifications/read-all');
+          await axios.post('/notifications/read-all');
           await get().fetch_notifications();
         } catch (error) {
           console.error('Mark all notifications read error:', error);

@@ -216,7 +216,7 @@ const UV_OrderDetail: React.FC = () => {
     error
   } = useQuery({
     queryKey: ['order', order_id],
-    queryFn: () => fetchOrderDetails(order_id || '', authToken),
+    queryFn: () => fetchOrderDetails(order_id || '', authToken || ''),
     enabled: !!order_id && !!authToken,
     staleTime: 30000, // 30 seconds
     retry: 1
@@ -227,7 +227,7 @@ const UV_OrderDetail: React.FC = () => {
   // ============================================================================
   
   const cancelMutation = useMutation({
-    mutationFn: (reason: string) => cancelOrder(order_id || '', reason, authToken),
+    mutationFn: (reason: string) => cancelOrder(order_id || '', reason, authToken || ''),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['order', order_id] });
       setShowCancelModal(false);
@@ -237,7 +237,7 @@ const UV_OrderDetail: React.FC = () => {
   
   const rescheduleMutation = useMutation({
     mutationFn: ({ delivery_id, start, end }: { delivery_id: string; start: string; end: string }) => 
-      rescheduleDelivery(delivery_id, start, end, authToken),
+      rescheduleDelivery(delivery_id, start, end, authToken || ''),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['order', order_id] });
       setShowRescheduleModal(false);
@@ -247,7 +247,7 @@ const UV_OrderDetail: React.FC = () => {
   });
   
   const reorderMutation = useMutation({
-    mutationFn: () => reorderItems(order_id || '', authToken),
+    mutationFn: () => reorderItems(order_id || '', authToken || ''),
     onSuccess: () => {
       fetchCart(); // Update cart state
       navigate('/cart');

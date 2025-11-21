@@ -10,7 +10,7 @@ import { useAppStore } from '@/store/main';
 /**
  * E2E Authentication Tests
  * Tests the complete authentication flow: register -> logout -> login
- * against the REAL backend API (no mocks).
+ * against the actual backend API.
  * 
  * Backend must be running at http://localhost:3000
  */
@@ -116,7 +116,7 @@ describe('Authentication E2E (Real API)', () => {
     
     // Find form elements using flexible selectors
     const emailInput = await screen.findByLabelText(/email address/i);
-    const passwordInput = await screen.findByLabelText(/password/i);
+    const passwordInput = await screen.findByLabelText(/^password$/i);
     const submitButton = await screen.findByRole('button', { name: /sign in/i });
     
     // Ensure inputs are enabled before typing
@@ -167,7 +167,7 @@ describe('Authentication E2E (Real API)', () => {
     
     // Find form elements
     const emailInput = await screen.findByLabelText(/email address/i);
-    const passwordInput = await screen.findByLabelText(/password/i);
+    const passwordInput = await screen.findByLabelText(/^password$/i);
     const submitButton = await screen.findByRole('button', { name: /sign in/i });
     
     // Fill in invalid credentials
@@ -205,7 +205,7 @@ describe('Authentication E2E (Real API)', () => {
     render(<UV_Login />, { wrapper: Wrapper });
     
     const emailInput = await screen.findByLabelText(/email address/i);
-    const passwordInput = await screen.findByLabelText(/password/i);
+    const passwordInput = await screen.findByLabelText(/^password$/i);
     const submitButton = await screen.findByRole('button', { name: /sign in/i });
     
     // Enter invalid email

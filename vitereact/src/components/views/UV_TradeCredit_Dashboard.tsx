@@ -99,8 +99,14 @@ const fetchPaymentMethods = async (token: string): Promise<PaymentMethod[]> => {
 };
 
 // Note: These endpoints would need backend implementation
-const fetchTransactionHistory = async (): Promise<Transaction[]> => {
-  
+const fetchTransactionHistory = async (
+  token: string,
+  customer_id: string,
+  start_date: string,
+  end_date: string
+): Promise<Transaction[]> => {
+  // TODO: Implement actual API call
+  console.log('Fetching transactions:', { token, customer_id, start_date, end_date });
   return [
     {
       transaction_id: 'txn_001',
@@ -123,7 +129,12 @@ const fetchTransactionHistory = async (): Promise<Transaction[]> => {
   ];
 };
 
-const submitPayment = async () => {
+const submitPayment = async (
+  token: string,
+  payment_data: { customer_id: string; payment_amount: number; payment_method_id: string }
+) => {
+  // TODO: Implement actual API call
+  console.log('Submitting payment:', { token, payment_data });
   return {
     transaction_id: `txn_${Date.now()}`,
     status: 'completed',
@@ -132,7 +143,12 @@ const submitPayment = async () => {
   };
 };
 
-const submitCreditIncreaseRequest = async () => {
+const submitCreditIncreaseRequest = async (
+  token: string,
+  request_data: { customer_id: string; current_limit: number; requested_new_limit: number; business_justification: string; updated_financial_documents: string[] }
+) => {
+  // TODO: Implement actual API call
+  console.log('Submitting credit increase request:', { token, request_data });
   return {
     request_id: `req_${Date.now()}`,
     status: 'pending_review',

@@ -124,7 +124,9 @@ const fetchTeamMembers = async (): Promise<TeamMember[]> => {
   return [];
 };
 
-const addTeamMember = async () => {
+const addTeamMember = async (data: { email: string; role: string; permissions: Record<string, boolean> }) => {
+  // TODO: Implement actual API call
+  console.log('Adding team member:', data);
   return { success: true, member_id: `member_${Date.now()}` };
 };
 
@@ -132,7 +134,9 @@ const addTeamMember = async () => {
 //   return { success: true };
 // };
 
-const removeTeamMember = async () => {
+const removeTeamMember = async (memberId: string) => {
+  // TODO: Implement actual API call
+  console.log('Removing team member:', memberId);
   return { success: true };
 };
 
@@ -223,7 +227,7 @@ const UV_SupplierSettings: React.FC = () => {
   // ============================================================================
   
   const updateProfileMutation = useMutation({
-    mutationFn: (data: Partial<SupplierProfile>) => updateSupplierProfile(data!, authToken!),
+    mutationFn: (data: Partial<SupplierProfile>) => updateSupplierProfile(data, authToken!),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['supplier-profile'] });
       setSuccessMessage('Profile updated successfully!');
@@ -237,7 +241,7 @@ const UV_SupplierSettings: React.FC = () => {
   
   const addTeamMemberMutation = useMutation({
     mutationFn: (data: { email: string; role: string; permissions: Record<string, boolean> }) => 
-      addTeamMember(data!),
+      addTeamMember(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['team-members'] });
       setShowAddTeamModal(false);
@@ -252,7 +256,7 @@ const UV_SupplierSettings: React.FC = () => {
   });
   
   const removeTeamMemberMutation = useMutation({
-    mutationFn: (memberId: string) => removeTeamMember(memberId!),
+    mutationFn: (memberId: string) => removeTeamMember(memberId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['team-members'] });
       setSuccessMessage('Team member removed successfully!');
