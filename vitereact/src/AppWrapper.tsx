@@ -60,9 +60,16 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 						<h1 className="text-2xl font-bold text-gray-900 mb-2">
 							Something went wrong
 						</h1>
-						<p className="text-gray-600 mb-6">
+						<p className="text-gray-600 mb-4">
 							We apologize for the inconvenience. An unexpected error occurred.
 						</p>
+						{this.state.error && (
+							<div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-left">
+								<p className="text-xs text-red-800 font-mono">
+									{this.state.error.message}
+								</p>
+							</div>
+						)}
 						<button
 							onClick={() => window.location.reload()}
 							className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"

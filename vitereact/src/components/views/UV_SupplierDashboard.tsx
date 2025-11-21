@@ -96,7 +96,7 @@ interface DashboardMetrics {
 const API_BASE = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api`;
 
 const fetchSupplierProfile = async (token: string): Promise<SupplierProfile> => {
-  const response = await axios.get(`${API_BASE}/api/suppliers/me`, {
+  const response = await axios.get(`${API_BASE}/suppliers/me`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   return response.data;
@@ -150,6 +150,9 @@ const UV_SupplierDashboard: React.FC = () => {
   // const currentUser = useAppStore(state => state.authentication_state.current_user);
   const supplierProfile = useAppStore(state => state.authentication_state.supplier_profile);
   const authToken = useAppStore(state => state.authentication_state.auth_token);
+  const isAuthenticated = useAppStore(state => state.authentication_state.authentication_status.is_authenticated);
+  const authIsLoading = useAppStore(state => state.authentication_state.authentication_status.is_loading);
+  const userType = useAppStore(state => state.authentication_state.authentication_status.user_type);
   
   const supplier_id = supplierProfile?.supplier_id || '';
   // const date_range = searchParams.get('date_range') || 'month';
@@ -166,7 +169,7 @@ const UV_SupplierDashboard: React.FC = () => {
   } = useQuery({
     queryKey: ['supplier', 'profile', supplier_id],
     queryFn: () => fetchSupplierProfile(authToken!),
-    enabled: !!authToken && !!supplier_id,
+    enabled: !!authToken && !!isAuthenticated && userType === 'supplier' && !!supplier_id,
     staleTime: 5 * 60 * 1000,
     retry: 1
   });
@@ -294,6 +297,43 @@ const UV_SupplierDashboard: React.FC = () => {
   // RENDER
   // ============================================================================
 
+  // Show loading state while auth is initializing
+  if (authIsLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 flex items-center justify-center">
+        <div className="flex flex-col items-center space-y-4">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600"></div>
+          <p className="text-gray-600 font-medium">Initializing...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error if supplier profile is not available after auth is complete
+  if (isAuthenticated && userType === 'supplier' && !supplier_id && !isLoadingProfile && !authIsLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 flex items-center justify-center">
+        <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
+          <div className="mb-4">
+            <XCircle className="mx-auto h-16 w-16 text-red-500" />
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            Supplier Profile Not Found
+          </h1>
+          <p className="text-gray-600 mb-6">
+            Your supplier profile could not be loaded. Please contact support for assistance.
+          </p>
+          <Link
+            to="/supplier/settings"
+            className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+          >
+            Go to Settings
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
@@ -303,7 +343,7 @@ const UV_SupplierDashboard: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-3xl font-bold text-gray-900 leading-tight">
-                  Welcome back, {profile?.business_name || 'Supplier'}
+                  Welcome back, {profile?.business_name || supplierProfile?.business_name || 'Supplier'}
                 </h1>
                 <p className="text-gray-600 mt-1">
                   {new Date().toLocaleDateString('en-US', { 

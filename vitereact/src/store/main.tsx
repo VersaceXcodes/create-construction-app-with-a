@@ -524,6 +524,39 @@ export const useAppStore = create<AppStore>()(
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
           const response = await axios.get('/users/me');
           
+          // Fetch role-specific profile data
+          let customer_profile = null;
+          let supplier_profile = null;
+          let admin_profile = null;
+          
+          if (response.data.user_type === 'customer') {
+            try {
+              const customerResponse = await axios.get('/customers/me');
+              customer_profile = customerResponse.data;
+            } catch (error) {
+              console.error('Failed to fetch customer profile:', error);
+              // Don't fail initialization if profile fetch fails
+            }
+          } else if (response.data.user_type === 'supplier') {
+            try {
+              const supplierResponse = await axios.get('/suppliers/me');
+              supplier_profile = supplierResponse.data;
+              console.log('Supplier profile loaded:', supplier_profile);
+            } catch (error: any) {
+              console.error('Failed to fetch supplier profile:', error);
+              console.error('Error details:', error.response?.data);
+              // Don't fail initialization if profile fetch fails - user can still access app
+            }
+          } else if (response.data.user_type === 'admin') {
+            try {
+              const adminResponse = await axios.get('/admins/me');
+              admin_profile = adminResponse.data;
+            } catch (error) {
+              console.error('Failed to fetch admin profile:', error);
+              // Don't fail initialization if profile fetch fails
+            }
+          }
+          
           set({
             authentication_state: {
               ...get().authentication_state,
@@ -533,6 +566,9 @@ export const useAppStore = create<AppStore>()(
                 is_loading: false,
                 user_type: response.data.user_type,
               },
+              customer_profile,
+              supplier_profile,
+              admin_profile,
             },
           });
 
@@ -541,7 +577,8 @@ export const useAppStore = create<AppStore>()(
             get().fetch_cart();
           }
           get().fetch_notifications();
-        } catch {
+        } catch (error) {
+          console.error('Initialize auth failed:', error);
           delete axios.defaults.headers.common['Authorization'];
           set({
             authentication_state: {
