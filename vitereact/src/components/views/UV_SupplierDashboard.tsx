@@ -90,6 +90,17 @@ interface DashboardMetrics {
 }
 
 // ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+
+// Safe number formatting to prevent .toFixed errors
+const safeToFixed = (value: any, decimals: number = 2): string => {
+  const num = Number(value);
+  if (isNaN(num)) return '0.' + '0'.repeat(decimals);
+  return num.toFixed(decimals);
+};
+
+// ============================================================================
 // API FUNCTIONS
 // ============================================================================
 
@@ -588,7 +599,7 @@ const UV_SupplierDashboard: React.FC = () => {
                                 </div>
                                 <div className="text-right">
                                   <p className="text-lg font-bold text-gray-900">
-                                    ${order.total_amount.toFixed(2)}
+                                    ${safeToFixed(order.total_amount, 2)}
                                   </p>
                                   <p className="text-xs text-gray-500">
                                     {order.items_count} item{order.items_count !== 1 ? 's' : ''}
@@ -739,14 +750,14 @@ const UV_SupplierDashboard: React.FC = () => {
                           <div className="flex items-center space-x-1">
                             <Star className="size-4 text-yellow-500 fill-yellow-500" />
                             <span className="font-bold text-gray-900">
-                              {Number(profile?.rating_average || 0).toFixed(1)}
+                              {safeToFixed(profile?.rating_average, 1)}
                             </span>
                           </div>
                         </div>
                         <div className="bg-gray-200 rounded-full h-2 overflow-hidden">
                           <div 
                             className="bg-yellow-500 h-full rounded-full"
-                            style={{ width: `${((profile?.rating_average || 0) / 5) * 100}%` }}
+                            style={{ width: `${(Number(profile?.rating_average || 0) / 5) * 100}%` }}
                           ></div>
                         </div>
                         <p className="text-xs text-gray-500 mt-1">
@@ -759,13 +770,13 @@ const UV_SupplierDashboard: React.FC = () => {
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-sm font-medium text-gray-600">Fulfillment Rate</span>
                           <span className="font-bold text-gray-900">
-                            {Number(profile?.fulfillment_rate || 0).toFixed(1)}%
+                            {safeToFixed(profile?.fulfillment_rate, 1)}%
                           </span>
                         </div>
                         <div className="bg-gray-200 rounded-full h-2 overflow-hidden">
                           <div 
                             className="bg-green-500 h-full rounded-full"
-                            style={{ width: `${profile?.fulfillment_rate || 0}%` }}
+                            style={{ width: `${Number(profile?.fulfillment_rate || 0)}%` }}
                           ></div>
                         </div>
                       </div>
@@ -776,7 +787,7 @@ const UV_SupplierDashboard: React.FC = () => {
                           <div className="flex items-center justify-between mb-2">
                             <span className="text-sm font-medium text-gray-600">Avg Response Time</span>
                             <span className="font-bold text-gray-900">
-                              {Number(profile.response_time_average).toFixed(1)}h
+                              {safeToFixed(profile.response_time_average, 1)}h
                             </span>
                           </div>
                           <p className="text-xs text-gray-500">
