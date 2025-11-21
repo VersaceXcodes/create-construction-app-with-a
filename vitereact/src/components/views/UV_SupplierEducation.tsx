@@ -201,7 +201,7 @@ const UV_SupplierEducation: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'resources' | 'live' | 'recorded' | 'community' | 'updates'>('resources');
   const [searchQuery, setSearchQuery] = useState(urlSearchQuery || '');
   const [resourceTypeFilter, setResourceTypeFilter] = useState<string>(urlResourceType || 'all');
-  const [selectedResource, setSelectedResource] = useState<string | null>(null); // Placeholder for future implementation
+  // const [selectedResource, setSelectedResource] = useState<string | null>(null); // Placeholder for future implementation
   
   const queryClient = useQueryClient();
   
@@ -520,7 +520,7 @@ const UV_SupplierEducation: React.FC = () => {
                     <div
                       key={resource.resource_id}
                       className="bg-white rounded-xl overflow-hidden border border-gray-100 hover:shadow-xl transition-all duration-200 cursor-pointer group"
-                      onClick={() => setSelectedResource(resource.resource_id)}
+                      onClick={() => console.log('Resource selected:', resource.resource_id)}
                     >
                       {/* Resource Type Badge */}
                       <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 border-b border-gray-100">

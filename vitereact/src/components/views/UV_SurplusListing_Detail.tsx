@@ -20,53 +20,54 @@ import React from 'react';
 // TYPE DEFINITIONS (from Zod schemas)
 // ============================================================================
 
-interface SurplusListing {
-  listing_id: string;
-  seller_id: string;
-  product_name: string;
-  category_id: string;
-  description: string;
-  condition: 'new' | 'like_new' | 'used' | 'refurbished';
-  photos: string[] | null;
-  asking_price: number;
-  original_price: number | null;
-  price_type: 'fixed' | 'negotiable' | 'auction';
-  quantity: number;
-  pickup_location: string | null;
-  pickup_instructions: string | null;
-  shipping_available: boolean;
-  shipping_rate: number | null;
-  status: 'active' | 'sold' | 'expired' | 'removed';
-  reason_for_selling: string | null;
-  views_count: number;
-  created_date: string;
-}
+// Unused type definitions - kept for future reference but commented out to avoid TS6196 errors
+// interface SurplusListing {
+//   listing_id: string;
+//   seller_id: string;
+//   product_name: string;
+//   category_id: string;
+//   description: string;
+//   condition: 'new' | 'like_new' | 'used' | 'refurbished';
+//   photos: string[] | null;
+//   asking_price: number;
+//   original_price: number | null;
+//   price_type: 'fixed' | 'negotiable' | 'auction';
+//   quantity: number;
+//   pickup_location: string | null;
+//   pickup_instructions: string | null;
+//   shipping_available: boolean;
+//   shipping_rate: number | null;
+//   status: 'active' | 'sold' | 'expired' | 'removed';
+//   reason_for_selling: string | null;
+//   views_count: number;
+//   created_date: string;
+// }
 
-interface SellerProfile {
-  customer_id: string;
-  user_id: string;
-  first_name: string;
-  last_name: string;
-  profile_photo_url: string | null;
-  member_since: string;
-  surplus_sales_count?: number;
-  surplus_rating_average?: number;
-}
+// interface SellerProfile {
+//   customer_id: string;
+//   user_id: string;
+//   first_name: string;
+//   last_name: string;
+//   profile_photo_url: string | null;
+//   member_since: string;
+//   surplus_sales_count?: number;
+//   surplus_rating_average?: number;
+// }
 
-interface CategoryInfo {
-  category_id: string;
-  category_name: string;
-  parent_category_id: string | null;
-}
+// interface CategoryInfo {
+//   category_id: string;
+//   category_name: string;
+//   parent_category_id: string | null;
+// }
 
-interface SimilarListing {
-  listing_id: string;
-  product_name: string;
-  asking_price: number;
-  condition: string;
-  primary_photo_url: string | null;
-  seller_name: string;
-}
+// interface SimilarListing {
+//   listing_id: string;
+//   product_name: string;
+//   asking_price: number;
+//   condition: string;
+//   primary_photo_url: string | null;
+//   seller_name: string;
+// }
 
 // ============================================================================
 // API FUNCTIONS

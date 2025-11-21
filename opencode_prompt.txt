@@ -1,34 +1,21 @@
-VALIDATION FAILURE - Frontend TypeScript Compilation (Attempt 5/100)
+VALIDATION FAILURE - Frontend TypeScript Compilation (Attempt 6/100)
 
 The project validation failed at the "Frontend TypeScript Compilation" step. You need to analyze the error and fix it.
 
 ## Error Details:
-src/components/views/UV_AdminDashboard.tsx(324,9): error TS6133: 'getStatusColor' is declared but its value is never read.
-src/components/views/UV_AdminFinancials.tsx(392,9): error TS6133: 'formatDateTime' is declared but its value is never read.
-src/components/views/UV_Checkout.tsx(411,11): error TS6133: 'finalPaymentMethodId' is declared but its value is never read.
-src/components/views/UV_KnowledgeBase.tsx(487,9): error TS6133: 'handleBackToSearch' is declared but its value is never read.
-src/components/views/UV_OrderDetail_Supplier.tsx(300,9): error TS6133: 'handleUpdateTracking' is declared but its value is never read.
-src/components/views/UV_ProductDetail_Customer.tsx(203,10): error TS6133: 'showReviewForm' is declared but its value is never read.
-src/components/views/UV_ProductDetail_Customer.tsx(222,10): error TS6133: 'wsSocket' is declared but its value is never read.
-src/components/views/UV_ProductDetail_Customer.tsx(303,9): error TS6133: 'submitReviewMutation' is declared but its value is never read.
-src/components/views/UV_ProductManagement_Supplier.tsx(361,9): error TS6133: 'formatDate' is declared but its value is never read.
-src/components/views/UV_SupplierDashboard.tsx(146,9): error TS6133: 'searchParams' is declared but its value is never read.
-src/components/views/UV_SupplierEducation.tsx(204,9): error TS6133: 'selectedResource' is declared but its value is never read.
-src/components/views/UV_SupplierEducation.tsx(523,38): error TS2552: Cannot find name 'setSelectedResource'. Did you mean 'selectedResource'?
-src/components/views/UV_SupplierSettings.tsx(123,33): error TS6133: 'authToken' is declared but its value is never read.
-src/components/views/UV_SupplierSettings.tsx(138,7): error TS2451: Cannot redeclare block-scoped variable 'removeTeamMember'.
-src/components/views/UV_SupplierSettings.tsx(148,7): error TS2451: Cannot redeclare block-scoped variable 'removeTeamMember'.
-src/components/views/UV_SupplierSettings.tsx(148,33): error TS6133: 'memberId' is declared but its value is never read.
-src/components/views/UV_SurplusListing_Detail.tsx(2,1): error TS6192: All imports in import declaration are unused.
-src/components/views/UV_SurplusListing_Detail.tsx(3,1): error TS6192: All imports in import declaration are unused.
-src/components/views/UV_SurplusListing_Detail.tsx(75,7): error TS6133: 'API_BASE_URL' is declared but its value is never read.
-src/components/views/UV_SurplusListing_Detail.tsx(78,7): error TS6133: 'fetchSurplusListing' is declared but its value is never read.
-src/components/views/UV_SurplusListing_Detail.tsx(84,7): error TS6133: 'fetchSellerProfile' is declared but its value is never read.
-src/components/views/UV_SurplusListing_Detail.tsx(90,7): error TS6133: 'fetchCategory' is declared but its value is never read.
-src/components/views/UV_SurplusListing_Detail.tsx(96,7): error TS6133: 'fetchSimilarListings' is declared but its value is never read.
-src/components/views/UV_SurplusListing_Detail.tsx(101,10): error TS2552: Cannot find name 'response'. Did you mean 'Response'?
-src/components/views/UV_SurplusListing_Detail.tsx(102,42): error TS2552: Cannot find name 'current_listing_id'. Did you mean '_current_listing_id'?
-src/components/views/UV_TermsOfService.tsx(492,9): error TS6133: '_current_version' is declared but its value is never read.
+src/components/views/UV_Checkout.tsx(411,11): error TS6133: '_finalPaymentMethodId' is declared but its value is never read.
+src/components/views/UV_Checkout.tsx(426,9): error TS2552: Cannot find name 'finalPaymentMethodId'. Did you mean 'newPaymentMethod'?
+src/components/views/UV_ProductDetail_Customer.tsx(303,9): error TS6133: '_submitReviewMutation' is declared but its value is never read.
+src/components/views/UV_ProductDetail_Customer.tsx(320,7): error TS2552: Cannot find name 'setShowReviewForm'. Did you mean '_setShowReviewForm'?
+src/components/views/UV_ProductDetail_Customer.tsx(362,5): error TS2552: Cannot find name 'setWsSocket'. Did you mean '_setWsSocket'?
+src/components/views/UV_ProductDetail_Customer.tsx(980,44): error TS2552: Cannot find name 'setShowReviewForm'. Did you mean '_setShowReviewForm'?
+src/components/views/UV_ProductDetail_Customer.tsx(1125,40): error TS2552: Cannot find name 'setShowReviewForm'. Did you mean '_setShowReviewForm'?
+src/components/views/UV_SupplierDashboard.tsx(146,9): error TS6133: '_searchParams' is declared but its value is never read.
+src/components/views/UV_SupplierEducation.tsx(204,10): error TS6133: 'selectedResource' is declared but its value is never read.
+src/components/views/UV_SurplusListing_Detail.tsx(23,11): error TS6196: 'SurplusListing' is declared but never used.
+src/components/views/UV_SurplusListing_Detail.tsx(45,11): error TS6196: 'SellerProfile' is declared but never used.
+src/components/views/UV_SurplusListing_Detail.tsx(56,11): error TS6196: 'CategoryInfo' is declared but never used.
+src/components/views/UV_SurplusListing_Detail.tsx(62,11): error TS6196: 'SimilarListing' is declared but never used.
 src/components/views/UV_TradeCredit_Application.tsx(102,7): error TS6133: 'validateApplication' is declared but its value is never read.
 src/components/views/UV_TradeCredit_Application.tsx(164,9): error TS6133: '_existing_application_id' is declared but its value is never read.
 src/components/views/UV_TradeCredit_Application.tsx(200,7): error TS2552: Cannot find name 'setExistingApplicationId'. Did you mean '_existing_application_id'?
@@ -43,11 +30,11 @@ src/components/views/UV_TradeCredit_Dashboard.tsx(577,17): error TS2552: Cannot 
 ## Validation Context:
 - Step: Frontend TypeScript Compilation
 - Working Directory: /app/vitereact
-- Attempt: 5/100
+- Attempt: 6/100
 - Previous failures for this step: 2
 
 ## Project Memory Summary:
-- Total validation attempts: 9
+- Total validation attempts: 10
 - Common issues encountered: None
 - Known dependencies: @hookform/resolvers, @radix-ui/react-accordion, @radix-ui/react-alert-dialog, @radix-ui/react-aspect-ratio, @radix-ui/react-avatar, @radix-ui/react-checkbox, @radix-ui/react-collapsible, @radix-ui/react-context-menu, @radix-ui/react-dialog, @radix-ui/react-dropdown-menu
 - Missing dependencies: None
@@ -166,8 +153,8 @@ PROTECTED DIRECTORIES (DO NOT MODIFY):
 
 
 ## Previous Validation Failures for Frontend TypeScript Compilation:
-- 6:33:18 PM: 
 - 6:39:22 PM: 
+- 6:45:24 PM: 
 
 ## Your Task:
 1. **Analyze the Error**: Understand what specifically went wrong in the Frontend TypeScript Compilation step

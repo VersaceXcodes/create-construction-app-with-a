@@ -175,8 +175,8 @@ const UV_TradeCredit_Dashboard: React.FC = () => {
 
   // Local state
   const [activeTab, setActiveTab] = useState<'overview' | 'transactions' | 'payment' | 'increase'>('overview');
-  const showPaymentModal = false; // For future implementation
-  const showIncreaseModal = false; // For future implementation
+  const [_showPaymentModal, setShowPaymentModal] = useState(false); // For future implementation
+  const [_showIncreaseModal, setShowIncreaseModal] = useState(false); // For future implementation
   const [dateRangeFilter, setDateRangeFilter] = useState({
     start_date: '',
     end_date: '',

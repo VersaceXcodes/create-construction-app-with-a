@@ -99,17 +99,18 @@ const uploadDocument = async (
   };
 };
 
-const validateApplication = async (
-  _applicationData: ApplicationFormData,
-  _authToken: string
-): Promise<{ is_valid: boolean; errors: Record<string, string>; estimated_timeline: string }> => {
-  // Mock implementation for MVP - to be replaced with actual API call
-  return {
-    is_valid: true,
-    errors: {},
-    estimated_timeline: '3-5 business days'
-  };
-};
+// Unused validation function - kept for future reference
+// const validateApplication = async (
+//   _applicationData: ApplicationFormData,
+//   _authToken: string
+// ): Promise<{ is_valid: boolean; errors: Record<string, string>; estimated_timeline: string }> => {
+//   // Mock implementation for MVP - to be replaced with actual API call
+//   return {
+//     is_valid: true,
+//     errors: {},
+//     estimated_timeline: '3-5 business days'
+//   };
+// };
 
 const submitApplication = async (
   applicationData: ApplicationFormData,
@@ -161,7 +162,7 @@ const UV_TradeCredit_Application: React.FC = () => {
 
   // Local State
   const [current_application_step, setCurrentApplicationStep] = useState(1);
-  const _existing_application_id = null; // For future implementation
+  const [_existingApplicationId, setExistingApplicationId] = useState<string | null>(null); // For future implementation
   const [credit_check_consent, setCreditCheckConsent] = useState(false);
   const [submission_error, setSubmissionError] = useState<string | null>(null);
 

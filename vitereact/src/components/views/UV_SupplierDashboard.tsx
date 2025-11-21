@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useAppStore } from '@/store/main';
@@ -143,7 +143,7 @@ const acceptOrder = async (orderId: string, token: string): Promise<void> => {
 // ============================================================================
 
 const UV_SupplierDashboard: React.FC = () => {
-  const _searchParams = useSearchParams()[0];
+  // const searchParams = useSearchParams()[0]; // Removed - not currently used
   const queryClient = useQueryClient();
   
   // CRITICAL: Individual selectors to avoid infinite loops

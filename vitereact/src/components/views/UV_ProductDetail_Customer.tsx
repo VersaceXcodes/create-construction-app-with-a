@@ -200,7 +200,7 @@ const UV_ProductDetail_Customer: React.FC = () => {
     verified_only: false,
   });
   const [reviewSortBy, setReviewSortBy] = useState('review_date');
-  const [_showReviewForm, _setShowReviewForm] = useState(false);
+  const [_showReviewForm, setShowReviewForm] = useState(false);
   const [reviewFormData, setReviewFormData] = useState({
     rating_overall: 0,
     rating_product: 0,
@@ -359,7 +359,8 @@ const UV_ProductDetail_Customer: React.FC = () => {
       setRealTimeStock(prev => ({ ...prev, websocket_connected: false }));
     });
 
-    setWsSocket(socket);
+    // Store socket reference for cleanup
+    // setWsSocket(socket); // Removed - not needed for cleanup
 
     return () => {
       socket.emit('unsubscribe_product', { product_id });

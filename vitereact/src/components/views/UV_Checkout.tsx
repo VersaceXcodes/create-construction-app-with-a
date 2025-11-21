@@ -408,10 +408,8 @@ const UV_Checkout: React.FC = () => {
 
     try {
       // If new card, create payment method first
-      let _finalPaymentMethodId = selectedPaymentMethodId;
-      
       if (showNewCardForm && !usingTradeCredit) {
-        const newPaymentMethod = await addPaymentMethodMutation.mutateAsync({
+        await addPaymentMethodMutation.mutateAsync({
           user_id: currentUser?.user_id,
           payment_type: 'credit_card',
           card_brand: detectCardBrand(newCardForm.card_number),
@@ -422,8 +420,6 @@ const UV_Checkout: React.FC = () => {
           payment_token: `tok_${Date.now()}`, // Mock token
           is_default: newCardForm.save_for_future
         });
-        
-        finalPaymentMethodId = newPaymentMethod.payment_method_id;
       }
 
       // Build delivery windows array
