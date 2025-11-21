@@ -17,8 +17,7 @@ import {
   MessageSquare,
   Image as ImageIcon,
   ThumbsUp,
-  Shield,
-  BarChart3
+  Shield
 } from 'lucide-react';
 
 // ============================================================================
@@ -61,7 +60,7 @@ interface FilterConfig {
   verification_status: boolean | null;
 }
 
-interface ModerationQueueStats {
+interface ModerationQueueStats { // eslint-disable-line @typescript-eslint/no-unused-vars
   total_flagged: number;
   pending_moderation: number;
   moderated_today: number;
@@ -74,7 +73,7 @@ interface PaginationState {
   limit: number;
 }
 
-interface LoadingStates {
+interface LoadingStates { // eslint-disable-line @typescript-eslint/no-unused-vars
   reviews_loading: boolean;
   moderation_processing: boolean;
 }

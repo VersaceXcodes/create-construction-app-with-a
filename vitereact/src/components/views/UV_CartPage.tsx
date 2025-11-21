@@ -25,7 +25,7 @@ interface CartItem {
   business_name?: string;
 }
 
-interface Cart {
+interface Cart { // eslint-disable-line @typescript-eslint/no-unused-vars
   cart_id: string;
   customer_id: string;
   created_date: string;
@@ -67,7 +67,7 @@ interface StockWarning {
   message: string;
 }
 
-interface Product {
+interface Product { // eslint-disable-line @typescript-eslint/no-unused-vars
   product_id: string;
   product_name: string;
   price_per_unit: number;

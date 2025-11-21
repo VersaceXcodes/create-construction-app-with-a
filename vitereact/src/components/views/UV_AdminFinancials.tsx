@@ -11,15 +11,11 @@ import {
   Download,
   RefreshCcw,
   AlertCircle,
-  CheckCircle,
   Clock,
   XCircle,
   Settings,
   Filter,
   Calendar,
-  ChevronDown,
-  ChevronRight,
-  Search,
   Eye
 } from 'lucide-react';
 
@@ -58,7 +54,7 @@ interface Payout {
   supplier_name?: string;
 }
 
-interface Transaction {
+interface Transaction { // eslint-disable-line @typescript-eslint/no-unused-vars
   transaction_id: string;
   order_id: string;
   order_number: string;
@@ -72,7 +68,7 @@ interface Transaction {
   status: string;
 }
 
-interface FinancialReport {
+interface FinancialReport { // eslint-disable-line @typescript-eslint/no-unused-vars
   report_id: string;
   report_type: string;
   report_name: string;
@@ -418,7 +414,7 @@ export default function UV_AdminFinancials() {
     });
   };
 
-  const formatDateTime = (dateString: string) => {
+  const formatDateTime = (dateString: string) => { // eslint-disable-line @typescript-eslint/no-unused-vars
     return new Date(dateString).toLocaleString('en-US', {
       month: 'short',
       day: 'numeric',

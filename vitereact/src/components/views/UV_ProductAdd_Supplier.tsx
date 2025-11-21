@@ -11,7 +11,6 @@ import {
   Image as ImageIcon,
   Settings,
   Eye,
-  Save,
   X,
   Plus,
   Trash2,

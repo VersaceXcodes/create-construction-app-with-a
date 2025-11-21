@@ -14,8 +14,6 @@ import {
   Check,
   ChevronLeft,
   ChevronRight,
-  Trash2,
-  Filter,
   Loader2,
   AlertCircle,
   Inbox,

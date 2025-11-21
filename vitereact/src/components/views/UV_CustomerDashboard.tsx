@@ -11,7 +11,6 @@ import {
   Package, 
   TrendingUp,
   Calendar,
-  DollarSign,
   AlertCircle,
   RefreshCw,
   ChevronRight,
@@ -56,12 +55,12 @@ interface Product {
   status: string;
 }
 
-interface WishlistItem {
+interface WishlistItem { // eslint-disable-line @typescript-eslint/no-unused-vars
   wishlist_item_id: string;
   product_id: string;
 }
 
-interface Project {
+interface Project { // eslint-disable-line @typescript-eslint/no-unused-vars
   project_id: string;
   project_name: string;
 }
@@ -253,7 +252,7 @@ const UV_CustomerDashboard: React.FC = () => {
 
   const {
     data: wishlistCount = 0,
-    isLoading: wishlistLoading,
+    isLoading: wishlistLoading, // eslint-disable-line @typescript-eslint/no-unused-vars
   } = useQuery<number, Error>({
     queryKey: ['wishlist-count'],
     queryFn: () => fetchWishlistCount(authToken!),
@@ -265,7 +264,7 @@ const UV_CustomerDashboard: React.FC = () => {
 
   const {
     data: projectsCount = 0,
-    isLoading: projectsLoading,
+    isLoading: projectsLoading, // eslint-disable-line @typescript-eslint/no-unused-vars
   } = useQuery<number, Error>({
     queryKey: ['projects-count'],
     queryFn: () => fetchProjectsCount(authToken!),

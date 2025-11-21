@@ -78,7 +78,7 @@ interface DeliveryData {
   current_longitude: number | null;
 }
 
-interface DeliveryAddress {
+interface DeliveryAddress { // eslint-disable-line @typescript-eslint/no-unused-vars
   address_id: string;
   full_name: string;
   phone_number: string;
@@ -226,7 +226,7 @@ const UV_OrderDetail: React.FC = () => {
     data: orderDetails, 
     isLoading, 
     error,
-    refetch 
+    refetch // eslint-disable-line @typescript-eslint/no-unused-vars 
   } = useQuery({
     queryKey: ['order', order_id],
     queryFn: () => fetchOrderDetails(order_id, authToken),

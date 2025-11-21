@@ -50,7 +50,7 @@ interface InventorySummary {
   out_of_stock_count: number;
 }
 
-interface StockMovement {
+interface StockMovement { // eslint-disable-line @typescript-eslint/no-unused-vars
   log_id: string;
   product_id: string;
   change_type: string;
@@ -68,7 +68,7 @@ interface FilterState {
   category_filter: string | null;
 }
 
-interface SyncStatus {
+interface SyncStatus { // eslint-disable-line @typescript-eslint/no-unused-vars
   enabled: boolean;
   last_sync_timestamp: string | null;
   sync_in_progress: boolean;

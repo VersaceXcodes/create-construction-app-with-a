@@ -17,8 +17,7 @@ import {
   TrendingUp, 
   Users, 
   XCircle,
-  Wifi,
-  WifiOff
+  Wifi
 } from 'lucide-react';
 
 // ============================================================================

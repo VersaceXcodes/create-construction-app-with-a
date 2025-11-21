@@ -25,7 +25,7 @@ import {
 // TYPE DEFINITIONS
 // ============================================================================
 
-interface ProcessStep {
+interface ProcessStep { // eslint-disable-line @typescript-eslint/no-unused-vars
   step_number: number;
   title: string;
   description: string;
@@ -34,7 +34,7 @@ interface ProcessStep {
   illustration_url: string | null;
 }
 
-interface Benefit {
+interface Benefit { // eslint-disable-line @typescript-eslint/no-unused-vars
   benefit_id: string;
   title: string;
   description: string;

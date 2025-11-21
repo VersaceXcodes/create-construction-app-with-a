@@ -15,7 +15,6 @@ import {
   AlertCircle,
   MessageSquare,
   ArrowLeft,
-  Calendar,
   DollarSign,
   CreditCard
 } from 'lucide-react';
@@ -298,7 +297,7 @@ export default function UV_OrderDetail_Supplier() {
     updateStatusMutation.mutate('shipped');
   };
 
-  const handleUpdateTracking = () => {
+  const handleUpdateTracking = () => { // eslint-disable-line @typescript-eslint/no-unused-vars
     if (!trackingNumber) {
       alert('Please enter a tracking number');
       return;

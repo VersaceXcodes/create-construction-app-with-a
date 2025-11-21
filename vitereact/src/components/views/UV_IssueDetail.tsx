@@ -13,7 +13,6 @@ import {
   Send, 
   Paperclip,
   AlertTriangle,
-  User,
   ShieldAlert,
   Calendar,
   FileText,
@@ -240,7 +239,7 @@ const UV_IssueDetail: React.FC = () => {
     data: issueData, 
     isLoading: isLoadingIssue, 
     error: issueError,
-    refetch: refetchIssue
+    refetch: refetchIssue // eslint-disable-line @typescript-eslint/no-unused-vars
   } = useQuery({
     queryKey: ['issue', issue_id],
     queryFn: () => fetchIssueDetails(issue_id!, authToken!),

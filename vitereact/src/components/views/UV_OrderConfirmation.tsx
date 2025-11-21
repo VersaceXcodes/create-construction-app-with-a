@@ -12,7 +12,6 @@ import {
   ShoppingBag,
   MapPin,
   Calendar,
-  CreditCard,
   ChevronDown,
   ChevronUp
 } from 'lucide-react';
@@ -63,7 +62,7 @@ interface Delivery {
   delivery_status: string;
 }
 
-interface Address {
+interface Address { // eslint-disable-line @typescript-eslint/no-unused-vars
   address_id: string;
   full_name: string;
   phone_number: string;

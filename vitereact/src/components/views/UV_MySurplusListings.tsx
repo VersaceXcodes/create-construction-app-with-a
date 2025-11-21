@@ -47,7 +47,7 @@ interface PendingOffer {
   created_at: string;
 }
 
-interface SaleHistory {
+interface SaleHistory { // eslint-disable-line @typescript-eslint/no-unused-vars
   sale_id: string;
   listing_id: string;
   product_name: string;

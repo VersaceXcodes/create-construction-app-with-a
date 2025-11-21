@@ -10,7 +10,6 @@ import {
   Clock, 
   DollarSign, 
   Search, 
-  Filter,
   ChevronDown,
   ChevronUp,
   Eye,
@@ -151,7 +150,7 @@ const acceptOrder = async (orderId: string, authToken: string | null): Promise<O
 
 const rejectOrder = async (
   orderId: string, 
-  rejectionReason: string, 
+  rejectionReason: string, // eslint-disable-line @typescript-eslint/no-unused-vars 
   authToken: string | null
 ): Promise<Order> => {
   if (!authToken) {

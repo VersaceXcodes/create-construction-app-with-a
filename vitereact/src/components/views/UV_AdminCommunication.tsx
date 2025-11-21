@@ -142,15 +142,7 @@ const updateTemplate = async (token: string, template_id: string, updates: { tem
   return data;
 };
 
-const fetchCampaignAnalytics = async (token: string, campaign_id: string) => {
-  const { data } = await axios.get(
-    `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api/admin/communications/campaigns/analytics?campaign_id=${campaign_id}&metrics=delivery_rate,open_rate,click_rate,conversion_rate`,
-    {
-      headers: { Authorization: `Bearer ${token}` }
-    }
-  );
-  return data;
-};
+// fetchCampaignAnalytics removed - not currently used
 
 const sendEmergencyBroadcast = async (token: string, message: string, severity: string) => {
   const { data } = await axios.post(
@@ -185,7 +177,7 @@ const UV_AdminCommunication: React.FC = () => {
   const [showAnnouncementForm, setShowAnnouncementForm] = useState(false);
   const [showEmergencyConfirm, setShowEmergencyConfirm] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<NotificationTemplate | null>(null);
-  const [selectedCampaign] = useState<Campaign | null>(null);
+  // selectedCampaign removed - not currently used
   
   // Announcement Form State
   const [announcementForm, setAnnouncementForm] = useState<AnnouncementFormData>({

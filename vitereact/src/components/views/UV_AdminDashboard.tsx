@@ -112,7 +112,7 @@ const fetchPlatformMetrics = async (authToken: string, dateRange: string): Promi
   return response.data;
 };
 
-const fetchSystemHealth = async (authToken: string): Promise<SystemHealth> => {
+const fetchSystemHealth = async (_authToken: string): Promise<SystemHealth> => {
   // Mock implementation since endpoint doesn't exist in backend yet
   // In production, this would call: GET /api/admin/system/health
   return {
@@ -127,19 +127,19 @@ const fetchSystemHealth = async (authToken: string): Promise<SystemHealth> => {
   };
 };
 
-const fetchRecentActivity = async (authToken: string): Promise<ActivityItem[]> => {
+const fetchRecentActivity = async (_authToken: string): Promise<ActivityItem[]> => {
   // Mock implementation since endpoint doesn't exist in backend yet
   // In production, this would call: GET /api/admin/activity/recent?limit=20
   return [];
 };
 
-const fetchActiveAlerts = async (authToken: string): Promise<Alert[]> => {
+const fetchActiveAlerts = async (_authToken: string): Promise<Alert[]> => {
   // Mock implementation since endpoint doesn't exist in backend yet
   // In production, this would call: GET /api/admin/alerts/active
   return [];
 };
 
-const fetchGrowthMetrics = async (authToken: string, period: string): Promise<GrowthMetrics> => {
+const fetchGrowthMetrics = async (_authToken: string, period: string): Promise<GrowthMetrics> => {
   // Mock implementation since endpoint doesn't exist in backend yet
   // In production, this would call: GET /api/admin/analytics/growth?period={period}
   return {
@@ -166,7 +166,7 @@ const dismissAlert = async (authToken: string, alertId: string): Promise<void> =
 
 export default function UV_AdminDashboard() {
   // CRITICAL: Individual selectors to avoid infinite loops
-  // const authToken = useAppStore(state => state.authentication_state.auth_token);
+  const authToken = useAppStore(state => state.authentication_state.auth_token);
   const currentUser = useAppStore(state => state.authentication_state.current_user);
   
   const [searchParams, setSearchParams] = useSearchParams();
@@ -321,7 +321,7 @@ export default function UV_AdminDashboard() {
     return new Intl.NumberFormat('en-US').format(num);
   };
 
-  const getStatusColor = (status: string): string => {
+  const getStatusColor = (status: string): string => { // eslint-disable-line @typescript-eslint/no-unused-vars
     switch (status) {
       case 'operational':
       case 'healthy':

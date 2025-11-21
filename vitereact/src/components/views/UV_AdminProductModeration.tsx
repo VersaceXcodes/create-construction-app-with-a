@@ -126,7 +126,7 @@ const UV_AdminProductModeration: React.FC = () => {
   const categoriesList = categoriesData || [];
   
   // Fetch products for moderation
-  const { data: productsData, isLoading: productsLoading, error: productsError } = useQuery({
+  const { data: productsData, isLoading: productsLoading } = useQuery({
     queryKey: ['admin', 'products', filterConfig, pagination.current_page, searchQuery],
     queryFn: async () => {
       const params: Record<string, any> = {

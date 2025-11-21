@@ -13,8 +13,6 @@ import {
   ThumbsDown,
   Clock,
   User,
-  ChevronDown,
-  ChevronUp,
   X,
   Menu
 } from 'lucide-react';
@@ -428,7 +426,7 @@ export default function UV_KnowledgeBase() {
       }
       return submitHelpfulVote(articleId, wasHelpful, authToken);
     },
-    onSuccess: (data) => {
+    onSuccess: (_data) => {
       // Optimistically update article
       if (currentArticle) {
         // Query will auto-refetch, but we can show immediate feedback
@@ -486,7 +484,7 @@ export default function UV_KnowledgeBase() {
     handleArticleClick(articleId);
   };
 
-  const handleBackToSearch = () => {
+  const handleBackToSearch = () => { // eslint-disable-line @typescript-eslint/no-unused-vars
     setSelectedArticleId(null);
     setSearchParams({});
   };

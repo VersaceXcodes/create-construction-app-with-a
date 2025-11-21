@@ -14,7 +14,6 @@ import {
   
   MapPin,
   AlertCircle,
-  Search,
   Filter,
   ChevronLeft,
   ChevronRight,

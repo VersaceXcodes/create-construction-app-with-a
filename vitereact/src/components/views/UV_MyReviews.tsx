@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useAppStore } from '@/store/main';
-import { Star, Edit2, Trash2, Image as ImageIcon, X, Upload, Calendar, CheckCircle, AlertCircle } from 'lucide-react';
+import { Star, Edit2, Trash2, X, Upload, Calendar, CheckCircle, AlertCircle } from 'lucide-react';
 
 // ============================================================================
 // TYPE DEFINITIONS (matching reviewSchema from Zod)
@@ -33,7 +33,7 @@ interface Review {
   updated_at: string;
 }
 
-interface ReviewsListState {
+interface ReviewsListState { // eslint-disable-line @typescript-eslint/no-unused-vars
   reviews: Review[];
   pagination: {
     current_page: number;
