@@ -96,8 +96,19 @@ interface DashboardMetrics {
 // Safe number formatting to prevent .toFixed errors
 const safeToFixed = (value: any, decimals: number = 2): string => {
   const num = Number(value);
-  if (isNaN(num)) return '0.' + '0'.repeat(decimals);
+  if (isNaN(num) || !isFinite(num) || value === null || value === undefined) {
+    return '0.' + '0'.repeat(decimals);
+  }
   return num.toFixed(decimals);
+};
+
+// Safe number formatting for locale string
+const safeToLocaleString = (value: any, options?: Intl.NumberFormatOptions): string => {
+  const num = Number(value);
+  if (isNaN(num) || !isFinite(num) || value === null || value === undefined) {
+    return '0.00';
+  }
+  return num.toLocaleString('en-US', options);
 };
 
 // ============================================================================
@@ -278,9 +289,9 @@ const UV_SupplierDashboard: React.FC = () => {
     // const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
     // const yearStart = new Date(now.getFullYear(), 0, 1);
 
-    // Use profile data for aggregates
-    const total_sales = profile?.total_sales || 0;
-    const total_orders_count = profile?.total_orders || 0;
+    // Use profile data for aggregates - ensure they are numbers
+    const total_sales = Number(profile?.total_sales) || 0;
+    const total_orders_count = Number(profile?.total_orders) || 0;
 
     return {
       sales: {
@@ -443,10 +454,10 @@ const UV_SupplierDashboard: React.FC = () => {
                   </div>
                   <h3 className="text-gray-600 text-sm font-medium mb-1">Sales Today</h3>
                   <p className="text-3xl font-bold text-gray-900">
-                    ${dashboard_metrics.sales.today.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    ${safeToLocaleString(dashboard_metrics.sales.today, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </p>
                   <p className="text-gray-500 text-xs mt-2">
-                    YTD: ${dashboard_metrics.sales.year_to_date.toLocaleString()}
+                    YTD: ${safeToLocaleString(dashboard_metrics.sales.year_to_date)}
                   </p>
                 </div>
 
@@ -500,7 +511,7 @@ const UV_SupplierDashboard: React.FC = () => {
                   </div>
                   <h3 className="text-gray-600 text-sm font-medium mb-1">Avg Order Value</h3>
                   <p className="text-3xl font-bold text-gray-900">
-                    ${dashboard_metrics.average_order_value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    ${safeToLocaleString(dashboard_metrics.average_order_value, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </p>
                   <p className="text-gray-500 text-xs mt-2">
                     Per transaction
@@ -776,7 +787,7 @@ const UV_SupplierDashboard: React.FC = () => {
                         <div className="bg-gray-200 rounded-full h-2 overflow-hidden">
                           <div 
                             className="bg-yellow-500 h-full rounded-full"
-                            style={{ width: `${(Number(profile?.rating_average || 0) / 5) * 100}%` }}
+                            style={{ width: `${Math.min(100, Math.max(0, (Number(profile?.rating_average || 0) / 5) * 100))}%` }}
                           ></div>
                         </div>
                         <p className="text-xs text-gray-500 mt-1">
@@ -795,7 +806,7 @@ const UV_SupplierDashboard: React.FC = () => {
                         <div className="bg-gray-200 rounded-full h-2 overflow-hidden">
                           <div 
                             className="bg-green-500 h-full rounded-full"
-                            style={{ width: `${Number(profile?.fulfillment_rate || 0)}%` }}
+                            style={{ width: `${Math.min(100, Math.max(0, Number(profile?.fulfillment_rate || 0)))}%` }}
                           ></div>
                         </div>
                       </div>
@@ -820,7 +831,7 @@ const UV_SupplierDashboard: React.FC = () => {
                         <div className="flex items-center justify-between">
                           <span className="text-sm font-medium text-gray-600">Total Sales</span>
                           <span className="font-bold text-gray-900">
-                            ${(profile?.total_sales || 0).toLocaleString()}
+                            ${safeToLocaleString(profile?.total_sales || 0)}
                           </span>
                         </div>
                       </div>
@@ -830,7 +841,7 @@ const UV_SupplierDashboard: React.FC = () => {
                         <div className="flex items-center justify-between">
                           <span className="text-sm font-medium text-gray-600">Total Orders</span>
                           <span className="font-bold text-gray-900">
-                            {(profile?.total_orders || 0).toLocaleString()}
+                            {safeToLocaleString(profile?.total_orders || 0)}
                           </span>
                         </div>
                       </div>
