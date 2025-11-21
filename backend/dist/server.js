@@ -54,9 +54,31 @@ const authenticateToken = async (req, res, next) => {
             return res.status(401).json({ error: 'InvalidToken', message: 'Invalid or inactive user' });
         }
         req.user = result.rows[0];
+        // Set role IDs from token
         req.user.customer_id = decoded.customer_id;
         req.user.supplier_id = decoded.supplier_id;
         req.user.admin_id = decoded.admin_id;
+        // If customer_id not in token but user is a customer, fetch it from database
+        if (!req.user.customer_id && req.user.user_type === 'customer') {
+            const customerResult = await pool.query('SELECT customer_id FROM customers WHERE user_id = $1', [req.user.user_id]);
+            if (customerResult.rows.length > 0) {
+                req.user.customer_id = customerResult.rows[0].customer_id;
+            }
+        }
+        // If supplier_id not in token but user is a supplier, fetch it from database
+        if (!req.user.supplier_id && req.user.user_type === 'supplier') {
+            const supplierResult = await pool.query('SELECT supplier_id FROM suppliers WHERE user_id = $1', [req.user.user_id]);
+            if (supplierResult.rows.length > 0) {
+                req.user.supplier_id = supplierResult.rows[0].supplier_id;
+            }
+        }
+        // If admin_id not in token but user is an admin, fetch it from database
+        if (!req.user.admin_id && req.user.user_type === 'admin') {
+            const adminResult = await pool.query('SELECT admin_id FROM admins WHERE user_id = $1', [req.user.user_id]);
+            if (adminResult.rows.length > 0) {
+                req.user.admin_id = adminResult.rows[0].admin_id;
+            }
+        }
         next();
     }
     catch (error) {
@@ -1257,12 +1279,12 @@ app.get('/api/cart', authenticateToken, requireCustomer, async (req, res) => {
        INNER JOIN products p ON ci.product_id = p.product_id
        INNER JOIN suppliers s ON ci.supplier_id = s.supplier_id
        WHERE ci.cart_id = $1`, [cart.cart_id]);
-        const subtotal = itemsResult.rows.reduce((sum, item) => sum + (item.quantity * item.price_per_unit), 0);
+        const subtotal = itemsResult.rows.reduce((sum, item) => sum + (parseFloat(item.quantity) * parseFloat(item.price_per_unit)), 0);
         res.json({
             cart,
             items: itemsResult.rows,
             subtotal,
-            total_items: itemsResult.rows.reduce((sum, item) => sum + item.quantity, 0)
+            total_items: itemsResult.rows.reduce((sum, item) => sum + parseInt(item.quantity, 10), 0)
         });
     }
     catch (error) {
