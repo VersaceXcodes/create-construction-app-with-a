@@ -25,14 +25,6 @@ interface CartItem {
   business_name?: string;
 }
 
-interface Cart { // eslint-disable-line @typescript-eslint/no-unused-vars
-  cart_id: string;
-  customer_id: string;
-  created_date: string;
-  last_modified_date: string;
-  status: string;
-}
-
 interface SupplierGroup {
   supplier_info: {
     supplier_id: string;
@@ -66,11 +58,6 @@ interface StockWarning {
   warning_type: 'stock_reduced' | 'out_of_stock' | 'price_changed';
   message: string;
 }
-
-interface Product { // eslint-disable-line @typescript-eslint/no-unused-vars
-  product_id: string;
-  product_name: string;
-  price_per_unit: number;
   primary_image_url: string | null;
   stock_quantity: number;
   supplier_id: string;

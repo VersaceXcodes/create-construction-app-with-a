@@ -54,31 +54,6 @@ interface Payout {
   supplier_name?: string;
 }
 
-interface Transaction { // eslint-disable-line @typescript-eslint/no-unused-vars
-  transaction_id: string;
-  order_id: string;
-  order_number: string;
-  customer_name: string;
-  supplier_name: string;
-  transaction_date: string;
-  gross_amount: number;
-  commission_amount: number;
-  net_amount: number;
-  payment_method: string;
-  status: string;
-}
-
-interface FinancialReport { // eslint-disable-line @typescript-eslint/no-unused-vars
-  report_id: string;
-  report_type: string;
-  report_name: string;
-  period_start: string;
-  period_end: string;
-  generated_date: string;
-  file_url: string | null;
-  status: 'pending' | 'completed' | 'failed';
-}
-
 // ============================================================================
 // API FUNCTIONS
 // ============================================================================
@@ -414,7 +389,8 @@ export default function UV_AdminFinancials() {
     });
   };
 
-  const formatDateTime = (dateString: string) => { // eslint-disable-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const formatDateTime = (dateString: string) => {
     return new Date(dateString).toLocaleString('en-US', {
       month: 'short',
       day: 'numeric',

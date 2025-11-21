@@ -238,8 +238,9 @@ const UV_IssueDetail: React.FC = () => {
   const { 
     data: issueData, 
     isLoading: isLoadingIssue, 
-    error: issueError,
-    refetch: refetchIssue // eslint-disable-line @typescript-eslint/no-unused-vars
+    error: issueError
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // refetch: refetchIssue
   } = useQuery({
     queryKey: ['issue', issue_id],
     queryFn: () => fetchIssueDetails(issue_id!, authToken!),

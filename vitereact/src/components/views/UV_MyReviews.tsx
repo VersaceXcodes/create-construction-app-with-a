@@ -33,17 +33,6 @@ interface Review {
   updated_at: string;
 }
 
-interface ReviewsListState { // eslint-disable-line @typescript-eslint/no-unused-vars
-  reviews: Review[];
-  pagination: {
-    current_page: number;
-    total_pages: number;
-    total_count: number;
-  };
-  loading: boolean;
-  error: string | null;
-}
-
 interface FilterOptions {
   sort_by: 'review_date' | 'rating_overall';
   sort_order: 'asc' | 'desc';

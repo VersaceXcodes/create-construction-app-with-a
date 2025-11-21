@@ -62,18 +62,6 @@ interface Delivery {
   delivery_status: string;
 }
 
-interface Address { // eslint-disable-line @typescript-eslint/no-unused-vars
-  address_id: string;
-  full_name: string;
-  phone_number: string;
-  street_address: string;
-  apt_suite: string | null;
-  city: string;
-  state: string;
-  postal_code: string;
-  delivery_instructions: string | null;
-}
-
 interface OrderConfirmationResponse {
   order: Order;
   items: OrderItem[];

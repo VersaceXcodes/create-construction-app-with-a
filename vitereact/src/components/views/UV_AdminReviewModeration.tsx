@@ -60,22 +60,11 @@ interface FilterConfig {
   verification_status: boolean | null;
 }
 
-interface ModerationQueueStats { // eslint-disable-line @typescript-eslint/no-unused-vars
-  total_flagged: number;
-  pending_moderation: number;
-  moderated_today: number;
-}
-
 interface PaginationState {
   current_page: number;
   total_pages: number;
   total_count: number;
   limit: number;
-}
-
-interface LoadingStates { // eslint-disable-line @typescript-eslint/no-unused-vars
-  reviews_loading: boolean;
-  moderation_processing: boolean;
 }
 
 // ============================================================================

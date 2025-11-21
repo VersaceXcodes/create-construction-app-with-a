@@ -484,7 +484,8 @@ export default function UV_KnowledgeBase() {
     handleArticleClick(articleId);
   };
 
-  const handleBackToSearch = () => { // eslint-disable-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleBackToSearch = () => {
     setSelectedArticleId(null);
     setSearchParams({});
   };

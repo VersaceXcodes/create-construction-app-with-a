@@ -55,16 +55,6 @@ interface Product {
   status: string;
 }
 
-interface WishlistItem { // eslint-disable-line @typescript-eslint/no-unused-vars
-  wishlist_item_id: string;
-  product_id: string;
-}
-
-interface Project { // eslint-disable-line @typescript-eslint/no-unused-vars
-  project_id: string;
-  project_name: string;
-}
-
 interface DashboardOrder {
   order_id: string;
   order_number: string;
@@ -251,8 +241,9 @@ const UV_CustomerDashboard: React.FC = () => {
   });
 
   const {
-    data: wishlistCount = 0,
-    isLoading: wishlistLoading, // eslint-disable-line @typescript-eslint/no-unused-vars
+    data: wishlistCount = 0
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // isLoading: wishlistLoading
   } = useQuery<number, Error>({
     queryKey: ['wishlist-count'],
     queryFn: () => fetchWishlistCount(authToken!),
@@ -263,8 +254,9 @@ const UV_CustomerDashboard: React.FC = () => {
   });
 
   const {
-    data: projectsCount = 0,
-    isLoading: projectsLoading, // eslint-disable-line @typescript-eslint/no-unused-vars
+    data: projectsCount = 0
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // isLoading: projectsLoading
   } = useQuery<number, Error>({
     queryKey: ['projects-count'],
     queryFn: () => fetchProjectsCount(authToken!),

@@ -25,23 +25,6 @@ import {
 // TYPE DEFINITIONS
 // ============================================================================
 
-interface ProcessStep { // eslint-disable-line @typescript-eslint/no-unused-vars
-  step_number: number;
-  title: string;
-  description: string;
-  icon_url: string;
-  features: string[];
-  illustration_url: string | null;
-}
-
-interface Benefit { // eslint-disable-line @typescript-eslint/no-unused-vars
-  benefit_id: string;
-  title: string;
-  description: string;
-  icon_url: string;
-  details: string[];
-}
-
 interface SuccessMetrics {
   total_suppliers: number;
   total_products: number;

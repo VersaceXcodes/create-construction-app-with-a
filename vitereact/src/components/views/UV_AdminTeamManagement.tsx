@@ -150,7 +150,7 @@ const fetchRoleDefinitions = async (): Promise<RoleDefinition[]> => {
 // Mock activity logs (would be backend endpoint)
 const fetchActivityLogs = async (
   _token: string,
-  filters: {
+  _filters: {
     admin_user_id?: string;
     action_type?: string;
     date_from?: string;
@@ -255,8 +255,9 @@ const UV_AdminTeamManagement: React.FC = () => {
   const {
     data: adminUsersData,
     isLoading: isLoadingUsers,
-    error: usersError,
-    refetch: refetchUsers // eslint-disable-line @typescript-eslint/no-unused-vars
+    error: usersError
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // refetch: refetchUsers
   } = useQuery({
     queryKey: ['admin-users', roleFilter],
     queryFn: () => fetchAdminUsers(authToken!, roleFilter),

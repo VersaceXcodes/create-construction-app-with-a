@@ -50,29 +50,11 @@ interface InventorySummary {
   out_of_stock_count: number;
 }
 
-interface StockMovement { // eslint-disable-line @typescript-eslint/no-unused-vars
-  log_id: string;
-  product_id: string;
-  change_type: string;
-  quantity_before: number;
-  quantity_change: number;
-  quantity_after: number;
-  reason: string;
-  timestamp: string;
-}
-
 interface FilterState {
   low_stock_only: boolean;
   out_of_stock_only: boolean;
   search_query: string;
   category_filter: string | null;
-}
-
-interface SyncStatus { // eslint-disable-line @typescript-eslint/no-unused-vars
-  enabled: boolean;
-  last_sync_timestamp: string | null;
-  sync_in_progress: boolean;
-  sync_errors: string[];
 }
 
 interface BulkUpdateState {

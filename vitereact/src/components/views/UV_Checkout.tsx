@@ -71,14 +71,6 @@ interface SupplierGroup {
   supplier_subtotal: number;
 }
 
-interface DeliveryWindow { // eslint-disable-line @typescript-eslint/no-unused-vars
-  window_id: string;
-  window_start: string;
-  window_end: string;
-  delivery_method: string;
-  delivery_fee: number;
-}
-
 interface NewAddressForm {
   full_name: string;
   phone_number: string;
@@ -416,7 +408,8 @@ const UV_Checkout: React.FC = () => {
 
     try {
       // If new card, create payment method first
-      let finalPaymentMethodId = selectedPaymentMethodId; // eslint-disable-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      let finalPaymentMethodId = selectedPaymentMethodId;
       
       if (showNewCardForm && !usingTradeCredit) {
         const newPaymentMethod = await addPaymentMethodMutation.mutateAsync({

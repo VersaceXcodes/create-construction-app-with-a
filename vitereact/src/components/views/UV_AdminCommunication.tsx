@@ -60,17 +60,6 @@ interface NotificationTemplate {
   usage_count: number;
 }
 
-interface Campaign {
-  campaign_id: string;
-  campaign_name: string;
-  status: 'active' | 'completed' | 'draft';
-  sent_count: number;
-  delivery_rate: number;
-  open_rate: number;
-  click_rate: number;
-  created_at: string;
-}
-
 interface AnnouncementFormData {
   subject: string;
   content: string;

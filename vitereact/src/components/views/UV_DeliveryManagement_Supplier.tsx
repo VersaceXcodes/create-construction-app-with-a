@@ -72,13 +72,6 @@ interface DeliveryCalendarDay {
   capacity_total: number;
 }
 
-interface DeliveryPerformance { // eslint-disable-line @typescript-eslint/no-unused-vars
-  on_time_rate: number;
-  average_delivery_time: number;
-  customer_satisfaction: number;
-  delivery_issues: number;
-}
-
 interface DeliveryConfigurationResponse {
   delivery_zones: DeliveryZone[];
   delivery_methods: LogisticsSettings;

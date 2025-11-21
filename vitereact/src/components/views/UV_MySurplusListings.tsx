@@ -47,17 +47,6 @@ interface PendingOffer {
   created_at: string;
 }
 
-interface SaleHistory { // eslint-disable-line @typescript-eslint/no-unused-vars
-  sale_id: string;
-  listing_id: string;
-  product_name: string;
-  sale_price: number;
-  buyer_name: string;
-  sale_date: string;
-  buyer_rating: number | null;
-  seller_rating: number | null;
-}
-
 interface ListingFilters {
   status: 'all' | 'active' | 'sold' | 'expired' | 'removed';
   date_range: 'all_time' | 'last_7_days' | 'last_30_days' | 'last_90_days';
