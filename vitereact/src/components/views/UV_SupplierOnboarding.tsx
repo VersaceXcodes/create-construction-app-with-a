@@ -1137,7 +1137,7 @@ const UV_SupplierOnboarding: React.FC = () => {
                           <div>
                             <p className="font-medium text-gray-900">{product.product_name}</p>
                             <p className="text-sm text-gray-600">
-                              SKU: {product.sku} • ${product.price_per_unit.toFixed(2)}/{product.unit_of_measure} • Stock: {product.stock_quantity}
+                              SKU: {product.sku} • ${Number(product.price_per_unit || 0).toFixed(2)}/{product.unit_of_measure} • Stock: {product.stock_quantity}
                             </p>
                           </div>
                           <button

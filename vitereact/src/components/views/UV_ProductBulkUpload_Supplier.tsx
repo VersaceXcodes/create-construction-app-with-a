@@ -618,7 +618,7 @@ const UV_ProductBulkUpload_Supplier: React.FC = () => {
                               <div className="max-w-xs truncate">{product.product_name}</div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                              ${product.price_per_unit.toFixed(2)}
+                              ${Number(product.price_per_unit || 0).toFixed(2)}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{product.stock_quantity}</td>
                             <td className="px-6 py-4 whitespace-nowrap">

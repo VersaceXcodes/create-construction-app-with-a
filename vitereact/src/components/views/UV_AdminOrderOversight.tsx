@@ -801,7 +801,7 @@ const UV_AdminOrderOversight: React.FC = () => {
                               </div>
                               <div className="text-right">
                                 <p className="font-semibold text-gray-900">${item.line_total.toFixed(2)}</p>
-                                <p className="text-sm text-gray-600">${item.price_per_unit.toFixed(2)} each</p>
+                                <p className="text-sm text-gray-600">${Number(item.price_per_unit || 0).toFixed(2)} each</p>
                               </div>
                             </div>
                           ))}

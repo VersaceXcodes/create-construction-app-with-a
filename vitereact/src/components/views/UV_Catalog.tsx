@@ -764,7 +764,7 @@ const UV_Catalog: React.FC = () => {
                         {/* Price */}
                         <div className="flex items-baseline gap-2">
                           <span className="text-2xl font-bold text-blue-600">
-                            ${product.price_per_unit.toFixed(2)}
+                            ${Number(product.price_per_unit || 0).toFixed(2)}
                           </span>
                           <span className="text-sm text-gray-500">
                             per {product.unit_of_measure}

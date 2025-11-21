@@ -524,7 +524,7 @@ const GV_MiniCart_Customer: React.FC = () => {
                                 
                                 <div className="mt-1 flex items-center space-x-2">
                                   <span className="text-sm font-semibold text-gray-900">
-                                    ${item.price_per_unit.toFixed(2)}
+                                    ${Number(item.price_per_unit || 0).toFixed(2)}
                                   </span>
                                   <span className="text-xs text-gray-500">per unit</span>
                                 </div>
@@ -576,7 +576,7 @@ const GV_MiniCart_Customer: React.FC = () => {
 
                                   {/* Line Total */}
                                   <span className="text-sm font-semibold text-gray-900">
-                                    ${(item.quantity * item.price_per_unit).toFixed(2)}
+                                    ${(item.quantity * Number(item.price_per_unit || 0)).toFixed(2)}
                                   </span>
                                 </div>
                               </div>

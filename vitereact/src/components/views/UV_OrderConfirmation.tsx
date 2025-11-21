@@ -488,7 +488,7 @@ const UV_OrderConfirmation: React.FC = () => {
                               <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
                                 <span>Qty: {item.quantity}</span>
                                 <span>×</span>
-                                <span>${item.price_per_unit.toFixed(2)}</span>
+                                <span>${Number(item.price_per_unit || 0).toFixed(2)}</span>
                               </div>
                             </div>
                             <div className="text-right">

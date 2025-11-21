@@ -872,11 +872,11 @@ const UV_Checkout: React.FC = () => {
                                   {item.product_name}
                                 </p>
                                 <p className="text-sm text-gray-500">
-                                  Qty: {item.quantity} × ${item.price_per_unit.toFixed(2)}
+                                  Qty: {item.quantity} × ${Number(item.price_per_unit || 0).toFixed(2)}
                                 </p>
                               </div>
                               <p className="text-sm font-semibold text-gray-900">
-                                ${(item.quantity * item.price_per_unit).toFixed(2)}
+                                ${(item.quantity * Number(item.price_per_unit || 0)).toFixed(2)}
                               </p>
                             </div>
                           ))}

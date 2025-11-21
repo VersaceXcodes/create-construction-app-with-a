@@ -1368,7 +1368,7 @@ const UV_ProductAdd_Supplier: React.FC = () => {
                       
                       <div>
                         <div className="text-4xl font-bold text-blue-600">
-                          ${product_form.price_per_unit.toFixed(2)}
+                          ${Number(product_form.price_per_unit || 0).toFixed(2)}
                         </div>
                         <p className="text-sm text-gray-600 mt-1">per {product_form.unit_of_measure || 'unit'}</p>
                       </div>

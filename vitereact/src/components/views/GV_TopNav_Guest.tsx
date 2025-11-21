@@ -375,7 +375,7 @@ const GV_TopNav_Guest: React.FC = () => {
                                 {product.product_name}
                               </p>
                               <p className="text-xs text-gray-500">
-                                ${product.price_per_unit.toFixed(2)}
+                                ${Number(product.price_per_unit || 0).toFixed(2)}
                                 {product.supplier_name && (
                                   <span className="ml-2">• {product.supplier_name}</span>
                                 )}

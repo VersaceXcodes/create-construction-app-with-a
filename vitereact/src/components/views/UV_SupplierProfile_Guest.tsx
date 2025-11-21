@@ -716,7 +716,7 @@ const UV_SupplierProfile_Guest: React.FC = () => {
                           </h3>
                           <div className="flex items-baseline space-x-2 mb-2">
                             <span className="text-2xl font-bold text-blue-600">
-                              ${product.price_per_unit.toFixed(2)}
+                              ${Number(product.price_per_unit || 0).toFixed(2)}
                             </span>
                             <span className="text-sm text-gray-500">
                               per {product.unit_of_measure}

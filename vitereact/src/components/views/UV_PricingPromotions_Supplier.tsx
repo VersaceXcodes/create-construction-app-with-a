@@ -531,7 +531,7 @@ const UV_PricingPromotions_Supplier: React.FC = () => {
                                 </div>
                               ) : (
                                 <div className="text-sm font-semibold text-gray-900">
-                                  ${product.price_per_unit.toFixed(2)}
+                                  ${Number(product.price_per_unit || 0).toFixed(2)}
                                 </div>
                               )}
                             </td>

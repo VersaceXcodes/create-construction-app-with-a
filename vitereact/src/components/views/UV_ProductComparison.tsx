@@ -666,7 +666,7 @@ const UV_ProductComparison: React.FC = () => {
           {/* Product info */}
           <h3 className="text-lg font-bold text-gray-900 mb-2">{currentProduct.product_name}</h3>
           <p className="text-2xl font-bold text-blue-600 mb-4">
-            ${currentProduct.price_per_unit.toFixed(2)}
+            ${Number(currentProduct.price_per_unit || 0).toFixed(2)}
           </p>
           
           {/* Attributes list */}
