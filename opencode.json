@@ -1,8 +1,1 @@
-{
-  "lsp": {
-    "typescript": {
-      "disabled": true
-    }
-  },
-  "$schema": "https://opencode.ai/config.json"
-}
+{"lsp":{"typescript":{"disabled":true}}}
