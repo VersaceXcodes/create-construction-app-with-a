@@ -557,7 +557,7 @@ export const useAppStore = create<AppStore>()(
             }
           } else if (response.data.user_type === 'admin') {
             try {
-              const adminResponse = await axios.get('/admins/me');
+              const adminResponse = await axios.get('/admin/me');
               admin_profile = adminResponse.data;
             } catch (error) {
               console.error('Failed to fetch admin profile:', error);

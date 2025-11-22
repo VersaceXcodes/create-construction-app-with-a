@@ -670,7 +670,21 @@ app.patch('/api/customers/me', authenticateToken, requireCustomer, async (req: A
   }
 });
 
+// Admin profile endpoint (plural form for backward compatibility)
 app.get('/api/admins/me', authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+  try {
+    const result = await pool.query('SELECT * FROM admins WHERE user_id = $1', [req.user.user_id]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'AdminNotFound', message: 'Admin profile not found' });
+    }
+    res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: 'InternalServerError', message: error.message });
+  }
+});
+
+// Admin profile endpoint (singular form to match API pattern)
+app.get('/api/admin/me', authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
   try {
     const result = await pool.query('SELECT * FROM admins WHERE user_id = $1', [req.user.user_id]);
     if (result.rows.length === 0) {
