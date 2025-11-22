@@ -3250,8 +3250,32 @@ app.get('/api/admin/users', authenticateToken, requireAdmin, async (req, res) =>
         const result = await pool.query(sqlQuery, params);
         const countQuery = sqlQuery.substring(0, sqlQuery.indexOf('ORDER BY')).replace(/SELECT .* FROM/, 'SELECT COUNT(*) as total FROM');
         const countResult = await pool.query(countQuery, params.slice(0, -2));
+        // Enrich user data with customer/supplier details
+        const enrichedUsers = await Promise.all(result.rows.map(async (user) => {
+            const enrichedUser = { ...user };
+            if (user.user_type === 'customer') {
+                const customerResult = await pool.query('SELECT customer_id, account_type, trade_credit_status, trade_credit_limit, trade_credit_balance, trade_credit_used FROM customers WHERE user_id = $1', [user.user_id]);
+                if (customerResult.rows.length > 0) {
+                    enrichedUser.customer = customerResult.rows[0];
+                    // Get order stats
+                    const orderStatsResult = await pool.query('SELECT COUNT(*) as total_orders, COALESCE(SUM(total_amount), 0) as total_spent FROM orders WHERE customer_id = $1', [customerResult.rows[0].customer_id]);
+                    enrichedUser.customer.total_orders = parseInt(orderStatsResult.rows[0].total_orders);
+                    enrichedUser.customer.total_spent = parseFloat(orderStatsResult.rows[0].total_spent);
+                }
+            }
+            else if (user.user_type === 'supplier') {
+                const supplierResult = await pool.query('SELECT supplier_id, business_name, verification_status, rating_average, total_reviews, total_orders, total_sales FROM suppliers WHERE user_id = $1', [user.user_id]);
+                if (supplierResult.rows.length > 0) {
+                    enrichedUser.supplier = supplierResult.rows[0];
+                    // Convert numeric fields to numbers
+                    enrichedUser.supplier.total_orders = parseInt(supplierResult.rows[0].total_orders || '0');
+                    enrichedUser.supplier.total_sales = parseFloat(supplierResult.rows[0].total_sales || '0');
+                }
+            }
+            return enrichedUser;
+        }));
         res.json({
-            users: result.rows,
+            users: enrichedUsers,
             total: parseInt(countResult.rows[0].total),
             limit: limitNum,
             offset: offsetNum
