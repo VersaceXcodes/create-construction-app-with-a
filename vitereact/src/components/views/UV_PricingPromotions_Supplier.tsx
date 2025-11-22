@@ -888,27 +888,14 @@ const UV_PricingPromotions_Supplier: React.FC = () => {
                     id="promotion-start-date"
                     name="start_date"
                     type="datetime-local"
+                    required
                     value={normalizeDateTimeValue(promotionForm.start_date)}
                     onChange={(e) => {
-                      const normalized = normalizeDateTimeValue(e.target.value);
-                      if (normalized) {
-                        handleFormChange('start_date', normalized);
-                      }
-                    }}
-                    onInput={(e) => {
-                      // Handle programmatic input for automated testing
-                      const target = e.target as HTMLInputElement;
-                      const normalized = normalizeDateTimeValue(target.value);
-                      if (normalized && normalized !== promotionForm.start_date) {
-                        handleFormChange('start_date', normalized);
-                      }
-                    }}
-                    onBlur={(e) => {
-                      // Ensure value is set even if onChange didn't fire
-                      const normalized = normalizeDateTimeValue(e.target.value);
-                      if (normalized && normalized !== promotionForm.start_date) {
-                        handleFormChange('start_date', normalized);
-                      }
+                      // Always update the value, even if empty or unchanged
+                      const inputValue = e.target.value;
+                      const normalized = normalizeDateTimeValue(inputValue);
+                      // Set the value directly without conditional checks to ensure state updates
+                      handleFormChange('start_date', inputValue || normalized);
                     }}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all"
                     data-testid="promotion-start-date"
@@ -923,27 +910,14 @@ const UV_PricingPromotions_Supplier: React.FC = () => {
                     id="promotion-end-date"
                     name="end_date"
                     type="datetime-local"
+                    required
                     value={normalizeDateTimeValue(promotionForm.end_date)}
                     onChange={(e) => {
-                      const normalized = normalizeDateTimeValue(e.target.value);
-                      if (normalized) {
-                        handleFormChange('end_date', normalized);
-                      }
-                    }}
-                    onInput={(e) => {
-                      // Handle programmatic input for automated testing
-                      const target = e.target as HTMLInputElement;
-                      const normalized = normalizeDateTimeValue(target.value);
-                      if (normalized && normalized !== promotionForm.end_date) {
-                        handleFormChange('end_date', normalized);
-                      }
-                    }}
-                    onBlur={(e) => {
-                      // Ensure value is set even if onChange didn't fire
-                      const normalized = normalizeDateTimeValue(e.target.value);
-                      if (normalized && normalized !== promotionForm.end_date) {
-                        handleFormChange('end_date', normalized);
-                      }
+                      // Always update the value, even if empty or unchanged
+                      const inputValue = e.target.value;
+                      const normalized = normalizeDateTimeValue(inputValue);
+                      // Set the value directly without conditional checks to ensure state updates
+                      handleFormChange('end_date', inputValue || normalized);
                     }}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all"
                     data-testid="promotion-end-date"

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DateTime Input Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+        .test-case { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        input { padding: 10px; margin: 10px 0; width: 100%; box-sizing: border-box; }
+        button { padding: 10px 20px; margin: 5px; }
+        .result { margin-top: 10px; padding: 10px; background-color: #f0f0f0; border-radius: 3px; }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>DateTime Input Validation Test</h1>
+    
+    <div class="test-case">
+        <h2>Test 1: Manual Input (Fixed Approach)</h2>
+        <form id="test-form-1">
+            <label>Start Date:</label>
+            <input type="datetime-local" id="start-date-1" required />
+            
+            <label>End Date:</label>
+            <input type="datetime-local" id="end-date-1" required />
+            
+            <button type="submit">Submit</button>
+        </form>
+        <div id="result-1" class="result"></div>
+    </div>
+
+    <div class="test-case">
+        <h2>Test 2: Programmatic Input (Simulating Automation)</h2>
+        <form id="test-form-2">
+            <label>Start Date:</label>
+            <input type="datetime-local" id="start-date-2" required />
+            
+            <label>End Date:</label>
+            <input type="datetime-local" id="end-date-2" required />
+            
+            <button type="button" onclick="fillDatesAutomation()">Fill Dates (Automation Style)</button>
+            <button type="submit">Submit</button>
+        </form>
+        <div id="result-2" class="result"></div>
+    </div>
+
+    <script>
+        // Normalization function (matching the React component)
+        function normalizeDateTimeValue(value) {
+            if (!value) return '';
+            
+            // If already in correct format
+            if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?$/.test(value)) {
+                return value.substring(0, 16);
+            }
+            
+            // Handle ISO 8601 with timezone
+            if (value.includes('Z') || /[+-]\d{2}:\d{2}$/.test(value)) {
+                try {
+                    const date = new Date(value);
+                    if (!isNaN(date.getTime())) {
+                        const year = date.getFullYear();
+                        const month = String(date.getMonth() + 1).padStart(2, '0');
+                        const day = String(date.getDate()).padStart(2, '0');
+                        const hours = String(date.getHours()).padStart(2, '0');
+                        const minutes = String(date.getMinutes()).padStart(2, '0');
+                        return `${year}-${month}-${day}T${hours}:${minutes}`;
+                    }
+                } catch (error) {
+                    // Fall through
+                }
+            }
+            
+            // Try to parse general date
+            try {
+                const date = new Date(value);
+                if (isNaN(date.getTime())) return '';
+                
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                const hours = String(date.getHours()).padStart(2, '0');
+                const minutes = String(date.getMinutes()).padStart(2, '0');
+                
+                return `${year}-${month}-${day}T${hours}:${minutes}`;
+            } catch (error) {
+                return '';
+            }
+        }
+
+        // Test 1: Handle form submission
+        document.getElementById('test-form-1').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const startDate = document.getElementById('start-date-1').value;
+            const endDate = document.getElementById('end-date-1').value;
+            
+            const result = document.getElementById('result-1');
+            if (startDate && endDate) {
+                result.className = 'result success';
+                result.innerHTML = `✓ Success!<br>Start: ${startDate}<br>End: ${endDate}`;
+            } else {
+                result.className = 'result error';
+                result.innerHTML = '✗ Failed: Missing date values';
+            }
+        });
+
+        // Test 2: Handle form submission
+        document.getElementById('test-form-2').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const startDate = document.getElementById('start-date-2').value;
+            const endDate = document.getElementById('end-date-2').value;
+            
+            const result = document.getElementById('result-2');
+            if (startDate && endDate && this.checkValidity()) {
+                result.className = 'result success';
+                result.innerHTML = `✓ Success!<br>Start: ${startDate}<br>End: ${endDate}`;
+            } else {
+                result.className = 'result error';
+                result.innerHTML = '✗ Failed: ' + (this.checkValidity() ? 'Missing date values' : 'Validation error');
+            }
+        });
+
+        // Simulate automation filling dates
+        function fillDatesAutomation() {
+            const startInput = document.getElementById('start-date-2');
+            const endInput = document.getElementById('end-date-2');
+            
+            // Simulating how automation tools might set values
+            const startDateValue = '2025-11-20T10:00';
+            const endDateValue = '2025-12-31T23:59';
+            
+            // Set values directly (simulating automation)
+            startInput.value = startDateValue;
+            endInput.value = endDateValue;
+            
+            // Trigger change events
+            startInput.dispatchEvent(new Event('change', { bubbles: true }));
+            endInput.dispatchEvent(new Event('change', { bubbles: true }));
+            
+            const result = document.getElementById('result-2');
+            result.className = 'result';
+            result.innerHTML = `Dates filled programmatically:<br>Start: ${startInput.value}<br>End: ${endInput.value}<br>Valid: ${startInput.checkValidity() && endInput.checkValidity()}`;
+        }
+    </script>
+</body>
+</html>
