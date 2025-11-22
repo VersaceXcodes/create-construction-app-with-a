@@ -1390,6 +1390,185 @@ app.get('/api/suppliers/me/analytics/financials', authenticateToken, requireSupp
         res.status(500).json({ error: 'InternalServerError', message: error.message });
     }
 });
+// Supplier Delivery Management Routes
+app.get('/api/suppliers/me/delivery/settings', authenticateToken, requireSupplier, async (req, res) => {
+    try {
+        const supplier_id = req.user.supplier_id;
+        // Get delivery zones
+        const zonesResult = await pool.query('SELECT * FROM delivery_zones WHERE supplier_id = $1 ORDER BY created_at DESC', [supplier_id]);
+        // Transform delivery zones to match frontend interface
+        const delivery_zones = zonesResult.rows.map(zone => ({
+            zone_id: zone.zone_id,
+            zone_name: zone.zone_name,
+            postal_codes: zone.postal_codes || [],
+            radius_miles: Number(zone.radius_miles) || 0,
+            delivery_fee: 50, // Default value since not in DB
+            estimated_days: 2, // Default value since not in DB
+            is_active: true // Default value since not in DB
+        }));
+        // Default logistics settings
+        const delivery_methods = {
+            standard_delivery: {
+                enabled: true,
+                base_fee: 50,
+                estimated_days: 2
+            },
+            express_delivery: {
+                enabled: false,
+                base_fee: 100,
+                estimated_days: 1
+            },
+            same_day_delivery: {
+                enabled: false,
+                base_fee: 150,
+                cutoff_time: '14:00'
+            },
+            pickup_available: true,
+            freight_delivery: {
+                enabled: false,
+                minimum_weight: 1000
+            }
+        };
+        // Mock carrier integrations
+        const carrier_integrations = [
+            {
+                carrier_name: 'FedEx',
+                integration_status: 'inactive',
+                api_key_status: 'not_configured',
+                last_sync: null,
+                supported_services: ['Ground', 'Express', 'Overnight']
+            },
+            {
+                carrier_name: 'UPS',
+                integration_status: 'inactive',
+                api_key_status: 'not_configured',
+                last_sync: null,
+                supported_services: ['Ground', 'Next Day Air', '2nd Day Air']
+            },
+            {
+                carrier_name: 'USPS',
+                integration_status: 'inactive',
+                api_key_status: 'not_configured',
+                last_sync: null,
+                supported_services: ['Priority Mail', 'First Class', 'Express']
+            }
+        ];
+        res.json({
+            delivery_zones,
+            delivery_methods,
+            carrier_integrations
+        });
+    }
+    catch (error) {
+        res.status(500).json({ error: 'InternalServerError', message: error.message });
+    }
+});
+app.put('/api/suppliers/me/delivery/zones', authenticateToken, requireSupplier, async (req, res) => {
+    const client = await pool.connect();
+    try {
+        await client.query('BEGIN');
+        const { delivery_zones } = req.body;
+        const supplier_id = req.user.supplier_id;
+        const now = new Date().toISOString();
+        if (!Array.isArray(delivery_zones)) {
+            await client.query('ROLLBACK');
+            return res.status(400).json({ error: 'ValidationError', message: 'delivery_zones must be an array' });
+        }
+        // Delete all existing zones for this supplier
+        await client.query('DELETE FROM delivery_zones WHERE supplier_id = $1', [supplier_id]);
+        // Insert new zones
+        for (const zone of delivery_zones) {
+            await client.query('INSERT INTO delivery_zones (zone_id, supplier_id, zone_name, postal_codes, radius_miles, center_latitude, center_longitude, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)', [
+                zone.zone_id || uuidv4(),
+                supplier_id,
+                zone.zone_name,
+                JSON.stringify(zone.postal_codes || []),
+                zone.radius_miles || 0,
+                null, // center_latitude
+                null, // center_longitude
+                now,
+                now
+            ]);
+        }
+        await client.query('COMMIT');
+        res.json({ message: 'Delivery zones updated successfully' });
+    }
+    catch (error) {
+        await client.query('ROLLBACK');
+        res.status(500).json({ error: 'InternalServerError', message: error.message });
+    }
+    finally {
+        client.release();
+    }
+});
+app.get('/api/suppliers/me/deliveries', authenticateToken, requireSupplier, async (req, res) => {
+    try {
+        const supplier_id = req.user.supplier_id;
+        const { status, date_from, date_to } = req.query;
+        let query = `
+      SELECT d.*, o.order_number, o.customer_id, u.first_name || ' ' || u.last_name as customer_name,
+             a.street_address || ', ' || a.city || ', ' || a.state as delivery_address,
+             (SELECT COUNT(*) FROM order_items oi WHERE oi.order_id = d.order_id AND oi.supplier_id = $1) as items_count
+      FROM deliveries d
+      INNER JOIN orders o ON d.order_id = o.order_id
+      INNER JOIN users u ON o.customer_id IN (SELECT user_id FROM customers WHERE customer_id = o.customer_id)
+      INNER JOIN addresses a ON o.delivery_address_id = a.address_id
+      WHERE d.supplier_id = $1
+    `;
+        const params = [supplier_id];
+        let paramCount = 2;
+        if (status) {
+            const statuses = asString(status)?.split(',').map(s => s.trim());
+            if (statuses && statuses.length > 0) {
+                query += ` AND d.delivery_status = ANY($${paramCount})`;
+                params.push(statuses);
+                paramCount++;
+            }
+        }
+        if (date_from) {
+            query += ` AND d.delivery_window_start >= $${paramCount}`;
+            params.push(asString(date_from));
+            paramCount++;
+        }
+        if (date_to) {
+            query += ` AND d.delivery_window_end <= $${paramCount}`;
+            params.push(asString(date_to));
+            paramCount++;
+        }
+        query += ' ORDER BY d.delivery_window_start ASC';
+        const result = await pool.query(query, params);
+        res.json({
+            deliveries: result.rows,
+            calendar_view: []
+        });
+    }
+    catch (error) {
+        res.status(500).json({ error: 'InternalServerError', message: error.message });
+    }
+});
+app.put('/api/suppliers/me/delivery/carriers/:carrierName', authenticateToken, requireSupplier, async (req, res) => {
+    try {
+        // Mock implementation - in real app, would store carrier credentials securely
+        const { carrierName } = req.params;
+        const { api_credentials, service_settings } = req.body;
+        // Validate carrier name
+        const validCarriers = ['FedEx', 'UPS', 'USPS', 'DHL'];
+        if (!validCarriers.includes(carrierName)) {
+            return res.status(400).json({ error: 'ValidationError', message: 'Invalid carrier name' });
+        }
+        // In a real implementation, you would:
+        // 1. Validate API credentials with the carrier
+        // 2. Store encrypted credentials in database
+        // 3. Set up webhook endpoints for tracking updates
+        res.json({
+            message: `Carrier ${carrierName} configured successfully`,
+            integration_status: 'active'
+        });
+    }
+    catch (error) {
+        res.status(500).json({ error: 'InternalServerError', message: error.message });
+    }
+});
 app.get('/api/cart', authenticateToken, requireCustomer, async (req, res) => {
     try {
         const cartResult = await pool.query('SELECT * FROM carts WHERE customer_id = $1 AND status = \'active\' ORDER BY created_date DESC LIMIT 1', [req.user.customer_id]);
