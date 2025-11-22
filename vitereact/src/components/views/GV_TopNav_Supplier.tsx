@@ -211,7 +211,8 @@ const GV_TopNav_Supplier: React.FC = () => {
   const businessName = profileData?.business_name || supplierProfile?.business_name || 'My Business';
   const logoUrl = profileData?.logo_url || supplierProfile?.logo_url;
   const verificationStatus = profileData?.verification_status || supplierProfile?.verification_status || 'pending';
-  const ratingAverage = profileData?.rating_average || supplierProfile?.rating_average || 0;
+  const ratingAverageRaw = profileData?.rating_average || supplierProfile?.rating_average || 0;
+  const ratingAverage = Number(ratingAverageRaw) || 0;
   
   // Navigation items
   const navItems = [
@@ -377,7 +378,7 @@ const GV_TopNav_Supplier: React.FC = () => {
                       )}
                       <span className="text-xs text-gray-500 flex items-center">
                         <Star className="h-3 w-3 text-yellow-500 mr-1" />
-                        {ratingAverage.toFixed(1)}
+                        {(isNaN(ratingAverage) || !isFinite(ratingAverage) ? 0 : ratingAverage).toFixed(1)}
                       </span>
                     </div>
                   </div>
@@ -412,7 +413,7 @@ const GV_TopNav_Supplier: React.FC = () => {
                         )}
                         <span className="text-xs text-gray-500 flex items-center">
                           <Star className="h-3 w-3 text-yellow-500 mr-1" />
-                          {ratingAverage.toFixed(1)} rating
+                          {(isNaN(ratingAverage) || !isFinite(ratingAverage) ? 0 : ratingAverage).toFixed(1)} rating
                         </span>
                       </div>
                       <p className="text-xs text-gray-500 mt-1">{currentUser?.email}</p>

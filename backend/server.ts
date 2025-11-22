@@ -1279,7 +1279,15 @@ app.get('/api/suppliers/me', authenticateToken, requireSupplier, async (req: Aut
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'SupplierNotFound', message: 'Supplier profile not found' });
     }
-    res.json(result.rows[0]);
+    // Ensure numeric fields are properly typed
+    const supplier = result.rows[0];
+    supplier.rating_average = Number(supplier.rating_average) || 0;
+    supplier.total_reviews = Number(supplier.total_reviews) || 0;
+    supplier.total_sales = Number(supplier.total_sales) || 0;
+    supplier.total_orders = Number(supplier.total_orders) || 0;
+    supplier.fulfillment_rate = Number(supplier.fulfillment_rate) || 0;
+    supplier.response_time_average = supplier.response_time_average !== null ? Number(supplier.response_time_average) : null;
+    res.json(supplier);
   } catch (error) {
     res.status(500).json({ error: 'InternalServerError', message: error.message });
   }
@@ -1291,7 +1299,15 @@ app.get('/api/suppliers/:supplier_id', async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'SupplierNotFound', message: 'Supplier not found' });
     }
-    res.json(result.rows[0]);
+    // Ensure numeric fields are properly typed
+    const supplier = result.rows[0];
+    supplier.rating_average = Number(supplier.rating_average) || 0;
+    supplier.total_reviews = Number(supplier.total_reviews) || 0;
+    supplier.total_sales = Number(supplier.total_sales) || 0;
+    supplier.total_orders = Number(supplier.total_orders) || 0;
+    supplier.fulfillment_rate = Number(supplier.fulfillment_rate) || 0;
+    supplier.response_time_average = supplier.response_time_average !== null ? Number(supplier.response_time_average) : null;
+    res.json(supplier);
   } catch (error) {
     res.status(500).json({ error: 'InternalServerError', message: error.message });
   }
