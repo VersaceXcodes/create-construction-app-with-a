@@ -316,13 +316,24 @@ const UV_PricingPromotions_Supplier: React.FC = () => {
       return;
     }
 
+    // Enhanced date validation
     if (!promotionForm.start_date || !promotionForm.end_date) {
       setToastMessage({ type: 'error', text: 'Start and end dates are required' });
       setTimeout(() => setToastMessage(null), 3000);
       return;
     }
 
-    if (new Date(promotionForm.end_date) <= new Date(promotionForm.start_date)) {
+    // Validate date format and values
+    const startDate = new Date(promotionForm.start_date);
+    const endDate = new Date(promotionForm.end_date);
+    
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      setToastMessage({ type: 'error', text: 'Please enter valid dates' });
+      setTimeout(() => setToastMessage(null), 3000);
+      return;
+    }
+
+    if (endDate <= startDate) {
       setToastMessage({ type: 'error', text: 'End date must be after start date' });
       setTimeout(() => setToastMessage(null), 3000);
       return;
@@ -804,32 +815,64 @@ const UV_PricingPromotions_Supplier: React.FC = () => {
                 </div>
               </div>
 
-              {/* Date Range */}
+               {/* Date Range */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="promotion-start-date" className="block text-sm font-medium text-gray-700 mb-2">
                     Start Date *
                   </label>
                   <input
+                    id="promotion-start-date"
+                    name="start_date"
                     type="datetime-local"
                     required
-                    min={new Date().toISOString().slice(0, 16)}
                     value={promotionForm.start_date}
                     onChange={(e) => handleFormChange('start_date', e.target.value)}
+                    onInput={(e) => {
+                      // Handle programmatic input for automated testing
+                      const target = e.target as HTMLInputElement;
+                      if (target.value && target.value !== promotionForm.start_date) {
+                        handleFormChange('start_date', target.value);
+                      }
+                    }}
+                    onBlur={(e) => {
+                      // Ensure value is set even if onChange didn't fire
+                      if (e.target.value && e.target.value !== promotionForm.start_date) {
+                        handleFormChange('start_date', e.target.value);
+                      }
+                    }}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all"
+                    data-testid="promotion-start-date"
+                    aria-label="Promotion Start Date"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="promotion-end-date" className="block text-sm font-medium text-gray-700 mb-2">
                     End Date *
                   </label>
                   <input
+                    id="promotion-end-date"
+                    name="end_date"
                     type="datetime-local"
                     required
-                    min={promotionForm.start_date || new Date().toISOString().slice(0, 16)}
                     value={promotionForm.end_date}
                     onChange={(e) => handleFormChange('end_date', e.target.value)}
+                    onInput={(e) => {
+                      // Handle programmatic input for automated testing
+                      const target = e.target as HTMLInputElement;
+                      if (target.value && target.value !== promotionForm.end_date) {
+                        handleFormChange('end_date', target.value);
+                      }
+                    }}
+                    onBlur={(e) => {
+                      // Ensure value is set even if onChange didn't fire
+                      if (e.target.value && e.target.value !== promotionForm.end_date) {
+                        handleFormChange('end_date', e.target.value);
+                      }
+                    }}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all"
+                    data-testid="promotion-end-date"
+                    aria-label="Promotion End Date"
                   />
                 </div>
               </div>
