@@ -194,6 +194,8 @@ const UV_DeliveryManagement_Supplier: React.FC = () => {
   const [editingZone, setEditingZone] = useState<DeliveryZone | null>(null);
   const [showCarrierModal, setShowCarrierModal] = useState(false);
   const [selectedCarrier, setSelectedCarrier] = useState<string | null>(null);
+  const [showDeliveryCompleteModal, setShowDeliveryCompleteModal] = useState(false);
+  const [completingDelivery, setCompletingDelivery] = useState<ActiveDelivery | null>(null);
   
   // Zone Form State
   const [zoneForm, setZoneForm] = useState({
@@ -211,6 +213,16 @@ const UV_DeliveryManagement_Supplier: React.FC = () => {
     api_secret: '',
     account_number: '',
     service_level: 'standard',
+  });
+  
+  // Delivery Completion Form State
+  const [deliveryCompleteForm, setDeliveryCompleteForm] = useState({
+    driver_name: '',
+    driver_phone: '',
+    delivery_window_start: '',
+    delivery_window_end: '',
+    delivery_proof_photo_url: '',
+    delivery_notes: '',
   });
   
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
@@ -303,6 +315,18 @@ const UV_DeliveryManagement_Supplier: React.FC = () => {
       api_secret: '',
       account_number: '',
       service_level: 'standard',
+    });
+    setValidationErrors({});
+  };
+  
+  const resetDeliveryCompleteForm = () => {
+    setDeliveryCompleteForm({
+      driver_name: '',
+      driver_phone: '',
+      delivery_window_start: '',
+      delivery_window_end: '',
+      delivery_proof_photo_url: '',
+      delivery_notes: '',
     });
     setValidationErrors({});
   };
@@ -402,10 +426,70 @@ const UV_DeliveryManagement_Supplier: React.FC = () => {
   };
   
   const handleUpdateDeliveryStatus = (deliveryId: string, newStatus: string) => {
+    // If marking as delivered, show the completion form modal
+    if (newStatus === 'delivered') {
+      const delivery = activeDeliveriesData?.active_deliveries.find(d => d.delivery_id === deliveryId);
+      if (delivery) {
+        setCompletingDelivery(delivery);
+        // Pre-fill the form with existing delivery window if available
+        setDeliveryCompleteForm({
+          driver_name: '',
+          driver_phone: '',
+          delivery_window_start: delivery.delivery_window_start,
+          delivery_window_end: delivery.delivery_window_end,
+          delivery_proof_photo_url: '',
+          delivery_notes: '',
+        });
+        setShowDeliveryCompleteModal(true);
+      }
+      return;
+    }
+    
+    // For other status updates, proceed normally
     updateDeliveryStatusMutation.mutate({
       deliveryId,
       updates: { delivery_status: newStatus },
     });
+  };
+  
+  const handleCompleteDelivery = () => {
+    if (!completingDelivery) return;
+    
+    const errors: Record<string, string> = {};
+    
+    if (!deliveryCompleteForm.driver_name.trim()) {
+      errors.driver_name = 'Driver name is required';
+    }
+    if (!deliveryCompleteForm.driver_phone.trim()) {
+      errors.driver_phone = 'Driver phone is required';
+    }
+    
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
+      return;
+    }
+    
+    updateDeliveryStatusMutation.mutate(
+      {
+        deliveryId: completingDelivery.delivery_id,
+        updates: {
+          delivery_status: 'delivered',
+          driver_name: deliveryCompleteForm.driver_name,
+          driver_phone: deliveryCompleteForm.driver_phone,
+          delivery_window_start: deliveryCompleteForm.delivery_window_start,
+          delivery_window_end: deliveryCompleteForm.delivery_window_end,
+          delivery_proof_photo_url: deliveryCompleteForm.delivery_proof_photo_url || null,
+          delivery_notes: deliveryCompleteForm.delivery_notes || null,
+        },
+      },
+      {
+        onSuccess: () => {
+          setShowDeliveryCompleteModal(false);
+          setCompletingDelivery(null);
+          resetDeliveryCompleteForm();
+        },
+      }
+    );
   };
   
   const handleConfigureCarrier = () => {
@@ -1236,6 +1320,171 @@ const UV_DeliveryManagement_Supplier: React.FC = () => {
                       Saving...
                     </span>
                   ) : 'Save Configuration'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {/* DELIVERY COMPLETION MODAL */}
+        {showDeliveryCompleteModal && completingDelivery && (
+          <div className="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+                <h2 className="text-xl font-bold text-gray-900">
+                  Complete Delivery - Order #{completingDelivery.order_number}
+                </h2>
+                <button
+                  onClick={() => {
+                    setShowDeliveryCompleteModal(false);
+                    setCompletingDelivery(null);
+                    resetDeliveryCompleteForm();
+                  }}
+                  className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              
+              <div className="p-6 space-y-6">
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <p className="text-sm text-blue-800">
+                    <strong>Customer:</strong> {completingDelivery.customer_name}
+                  </p>
+                  <p className="text-sm text-blue-800 mt-1">
+                    <strong>Address:</strong> {completingDelivery.delivery_address}
+                  </p>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="driver_name" className="block text-sm font-medium text-gray-700 mb-2">
+                      Driver Name <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="driver_name"
+                      value={deliveryCompleteForm.driver_name}
+                      onChange={(e) => {
+                        setDeliveryCompleteForm(prev => ({ ...prev, driver_name: e.target.value }));
+                        setValidationErrors(prev => ({ ...prev, driver_name: '' }));
+                      }}
+                      placeholder="Enter driver name"
+                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all ${
+                        validationErrors.driver_name ? 'border-red-300' : 'border-gray-200 focus:border-blue-500'
+                      }`}
+                    />
+                    {validationErrors.driver_name && (
+                      <p className="mt-1 text-sm text-red-600">{validationErrors.driver_name}</p>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="driver_phone" className="block text-sm font-medium text-gray-700 mb-2">
+                      Driver Phone <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="tel"
+                      id="driver_phone"
+                      value={deliveryCompleteForm.driver_phone}
+                      onChange={(e) => {
+                        setDeliveryCompleteForm(prev => ({ ...prev, driver_phone: e.target.value }));
+                        setValidationErrors(prev => ({ ...prev, driver_phone: '' }));
+                      }}
+                      placeholder="+1-555-0123"
+                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all ${
+                        validationErrors.driver_phone ? 'border-red-300' : 'border-gray-200 focus:border-blue-500'
+                      }`}
+                    />
+                    {validationErrors.driver_phone && (
+                      <p className="mt-1 text-sm text-red-600">{validationErrors.driver_phone}</p>
+                    )}
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="delivery_window_start" className="block text-sm font-medium text-gray-700 mb-2">
+                      Delivery Window Start
+                    </label>
+                    <input
+                      type="datetime-local"
+                      id="delivery_window_start"
+                      value={deliveryCompleteForm.delivery_window_start ? new Date(deliveryCompleteForm.delivery_window_start).toISOString().slice(0, 16) : ''}
+                      onChange={(e) => setDeliveryCompleteForm(prev => ({ ...prev, delivery_window_start: new Date(e.target.value).toISOString() }))}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="delivery_window_end" className="block text-sm font-medium text-gray-700 mb-2">
+                      Delivery Window End
+                    </label>
+                    <input
+                      type="datetime-local"
+                      id="delivery_window_end"
+                      value={deliveryCompleteForm.delivery_window_end ? new Date(deliveryCompleteForm.delivery_window_end).toISOString().slice(0, 16) : ''}
+                      onChange={(e) => setDeliveryCompleteForm(prev => ({ ...prev, delivery_window_end: new Date(e.target.value).toISOString() }))}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all"
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                  <label htmlFor="delivery_proof_photo_url" className="block text-sm font-medium text-gray-700 mb-2">
+                    Proof of Delivery Photo URL
+                  </label>
+                  <input
+                    type="url"
+                    id="delivery_proof_photo_url"
+                    value={deliveryCompleteForm.delivery_proof_photo_url}
+                    onChange={(e) => setDeliveryCompleteForm(prev => ({ ...prev, delivery_proof_photo_url: e.target.value }))}
+                    placeholder="https://example.com/proof.jpg"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all"
+                  />
+                  <p className="mt-1 text-xs text-gray-500">Upload a photo showing proof of delivery</p>
+                </div>
+                
+                <div>
+                  <label htmlFor="delivery_notes" className="block text-sm font-medium text-gray-700 mb-2">
+                    Delivery Notes
+                  </label>
+                  <textarea
+                    id="delivery_notes"
+                    value={deliveryCompleteForm.delivery_notes}
+                    onChange={(e) => setDeliveryCompleteForm(prev => ({ ...prev, delivery_notes: e.target.value }))}
+                    placeholder="Add any additional delivery notes..."
+                    rows={3}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all"
+                  />
+                </div>
+              </div>
+              
+              <div className="sticky bottom-0 bg-gray-50 px-6 py-4 flex items-center justify-end space-x-3 border-t border-gray-200">
+                <button
+                  onClick={() => {
+                    setShowDeliveryCompleteModal(false);
+                    setCompletingDelivery(null);
+                    resetDeliveryCompleteForm();
+                  }}
+                  className="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleCompleteDelivery}
+                  disabled={updateDeliveryStatusMutation.isPending}
+                  className="px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {updateDeliveryStatusMutation.isPending ? (
+                    <span className="flex items-center">
+                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Completing...
+                    </span>
+                  ) : 'Complete Delivery'}
                 </button>
               </div>
             </div>

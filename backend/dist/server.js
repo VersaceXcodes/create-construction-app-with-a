@@ -1511,7 +1511,8 @@ app.get('/api/suppliers/me/deliveries', authenticateToken, requireSupplier, asyn
              (SELECT COUNT(*) FROM order_items oi WHERE oi.order_id = d.order_id AND oi.supplier_id = $1) as items_count
       FROM deliveries d
       INNER JOIN orders o ON d.order_id = o.order_id
-      INNER JOIN users u ON o.customer_id IN (SELECT user_id FROM customers WHERE customer_id = o.customer_id)
+      INNER JOIN customers c ON o.customer_id = c.customer_id
+      INNER JOIN users u ON c.user_id = u.user_id
       INNER JOIN addresses a ON o.delivery_address_id = a.address_id
       WHERE d.supplier_id = $1
     `;
@@ -2243,7 +2244,7 @@ app.patch('/api/deliveries/:delivery_id', authenticateToken, async (req, res) =>
     const client = await pool.connect();
     try {
         await client.query('BEGIN');
-        const { delivery_status, current_latitude, current_longitude, estimated_arrival_time, delivery_proof_photo_url } = req.body;
+        const { delivery_status, current_latitude, current_longitude, estimated_arrival_time, delivery_proof_photo_url, driver_name, driver_phone, delivery_window_start, delivery_window_end, delivery_notes } = req.body;
         const now = new Date().toISOString();
         const updates = [];
         const values = [];
@@ -2267,6 +2268,26 @@ app.patch('/api/deliveries/:delivery_id', authenticateToken, async (req, res) =>
         if (delivery_proof_photo_url !== undefined) {
             updates.push(`delivery_proof_photo_url = $${paramCount++}`);
             values.push(delivery_proof_photo_url);
+        }
+        if (driver_name !== undefined) {
+            updates.push(`driver_name = $${paramCount++}`);
+            values.push(driver_name);
+        }
+        if (driver_phone !== undefined) {
+            updates.push(`driver_phone = $${paramCount++}`);
+            values.push(driver_phone);
+        }
+        if (delivery_window_start !== undefined) {
+            updates.push(`delivery_window_start = $${paramCount++}`);
+            values.push(delivery_window_start);
+        }
+        if (delivery_window_end !== undefined) {
+            updates.push(`delivery_window_end = $${paramCount++}`);
+            values.push(delivery_window_end);
+        }
+        if (delivery_notes !== undefined) {
+            updates.push(`delivery_notes = $${paramCount++}`);
+            values.push(delivery_notes);
         }
         if (delivery_status === 'delivered') {
             updates.push(`actual_delivery_time = $${paramCount++}`);
