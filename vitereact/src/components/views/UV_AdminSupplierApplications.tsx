@@ -79,7 +79,7 @@ const fetchSupplierApplications = async (
   if (status_filter) params.application_status = status_filter;
   if (assigned_reviewer) params.assigned_reviewer_id = assigned_reviewer;
   
-  const response = await axios.get(`${API_BASE_URL}/admin/supplier-applications`, {
+  const response = await axios.get(`${API_BASE_URL}/api/admin/supplier-applications`, {
     headers: { Authorization: `Bearer ${token}` },
     params
   });
@@ -92,7 +92,7 @@ const fetchApplicationDetails = async (
   application_id: string
 ): Promise<SupplierApplication> => {
   const response = await axios.get(
-    `${API_BASE_URL}/admin/supplier-applications/${application_id}`,
+    `${API_BASE_URL}/api/admin/supplier-applications/${application_id}`,
     { headers: { Authorization: `Bearer ${token}` } }
   );
   
@@ -104,7 +104,7 @@ const approveApplication = async (
   application_id: string
 ): Promise<{ message: string; supplier: any }> => {
   const response = await axios.post(
-    `${API_BASE_URL}/admin/supplier-applications/${application_id}/approve`,
+    `${API_BASE_URL}/api/admin/supplier-applications/${application_id}/approve`,
     {},
     { headers: { Authorization: `Bearer ${token}` } }
   );
@@ -118,7 +118,7 @@ const rejectApplication = async (
   rejection_reason: string
 ): Promise<{ message: string }> => {
   const response = await axios.post(
-    `${API_BASE_URL}/admin/supplier-applications/${application_id}/reject`,
+    `${API_BASE_URL}/api/admin/supplier-applications/${application_id}/reject`,
     { rejection_reason },
     { headers: { Authorization: `Bearer ${token}` } }
   );
@@ -132,7 +132,7 @@ const updateVerificationChecklist = async (
   verification_checklist: Record<string, boolean>
 ): Promise<SupplierApplication> => {
   const response = await axios.patch(
-    `${API_BASE_URL}/admin/supplier-applications/${application_id}`,
+    `${API_BASE_URL}/api/admin/supplier-applications/${application_id}`,
     { verification_checklist },
     { headers: { Authorization: `Bearer ${token}` } }
   );

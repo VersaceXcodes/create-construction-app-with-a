@@ -70,9 +70,9 @@ const GV_TopNav_Admin: React.FC = () => {
 
       try {
         const [disputesRes, applicationsRes, reviewsRes] = await Promise.all([
-          axios.get(`${API_BASE_URL}/admin/disputes?status=open&limit=1`, { headers }),
-          axios.get(`${API_BASE_URL}/admin/supplier-applications?application_status=pending_review&limit=1`, { headers }),
-          axios.get(`${API_BASE_URL}/admin/reviews/flagged`, { headers })
+          axios.get(`${API_BASE_URL}/api/admin/disputes?status=open&limit=1`, { headers }),
+          axios.get(`${API_BASE_URL}/api/admin/supplier-applications?application_status=pending_review&limit=1`, { headers }),
+          axios.get(`${API_BASE_URL}/api/admin/reviews/flagged`, { headers })
         ]);
 
         return {
