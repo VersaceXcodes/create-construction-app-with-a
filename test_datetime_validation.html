@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DateTime Input Validation Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <h1>DateTime Input Validation Test</h1>
+    
+    <div class="test-section">
+        <h2>Test 1: Manual Input</h2>
+        <label>Start Date:</label>
+        <input type="datetime-local" id="manual-start" required>
+        
+        <label>End Date:</label>
+        <input type="datetime-local" id="manual-end" required>
+        
+        <button onclick="testManualInput()">Validate Manual Input</button>
+        <div id="manual-result" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 2: Programmatic Input</h2>
+        <label>Start Date:</label>
+        <input type="datetime-local" id="prog-start" required>
+        
+        <label>End Date:</label>
+        <input type="datetime-local" id="prog-end" required>
+        
+        <button onclick="setProgrammaticValues()">Set Values Programmatically</button>
+        <button onclick="testProgrammaticInput()">Validate Programmatic Input</button>
+        <div id="prog-result" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 3: ISO 8601 Conversion</h2>
+        <label>Input (YYYY-MM-DDTHH:mm):</label>
+        <input type="datetime-local" id="iso-input" value="2025-11-23T10:00">
+        
+        <button onclick="testISOConversion()">Convert to ISO 8601</button>
+        <div id="iso-result" class="result"></div>
+    </div>
+
+    <script>
+        function testManualInput() {
+            const startInput = document.getElementById('manual-start');
+            const endInput = document.getElementById('manual-end');
+            const result = document.getElementById('manual-result');
+            
+            const startValid = startInput.checkValidity();
+            const endValid = endInput.checkValidity();
+            
+            if (startValid && endValid) {
+                result.className = 'result success';
+                result.innerHTML = `✅ Validation passed!<br>
+                    Start: ${startInput.value}<br>
+                    End: ${endInput.value}`;
+            } else {
+                result.className = 'result error';
+                result.innerHTML = `❌ Validation failed!<br>
+                    Start valid: ${startValid}<br>
+                    End valid: ${endValid}`;
+            }
+        }
+        
+        function setProgrammaticValues() {
+            const startInput = document.getElementById('prog-start');
+            const endInput = document.getElementById('prog-end');
+            
+            // Set values programmatically (simulating test automation)
+            startInput.value = '2025-11-23T10:00';
+            endInput.value = '2025-11-24T10:00';
+            
+            // Clear custom validity (important!)
+            startInput.setCustomValidity('');
+            endInput.setCustomValidity('');
+            
+            const result = document.getElementById('prog-result');
+            result.className = 'result';
+            result.innerHTML = 'Values set! Click "Validate" to check.';
+        }
+        
+        function testProgrammaticInput() {
+            const startInput = document.getElementById('prog-start');
+            const endInput = document.getElementById('prog-end');
+            const result = document.getElementById('prog-result');
+            
+            const startValid = startInput.checkValidity();
+            const endValid = endInput.checkValidity();
+            
+            if (startValid && endValid) {
+                result.className = 'result success';
+                result.innerHTML = `✅ Validation passed!<br>
+                    Start: ${startInput.value}<br>
+                    End: ${endInput.value}`;
+            } else {
+                result.className = 'result error';
+                result.innerHTML = `❌ Validation failed!<br>
+                    Start valid: ${startValid}<br>
+                    End valid: ${endValid}<br>
+                    Start message: ${startInput.validationMessage}<br>
+                    End message: ${endInput.validationMessage}`;
+            }
+        }
+        
+        function testISOConversion() {
+            const input = document.getElementById('iso-input');
+            const result = document.getElementById('iso-result');
+            
+            try {
+                const date = new Date(input.value);
+                const isoString = date.toISOString();
+                
+                result.className = 'result success';
+                result.innerHTML = `✅ Conversion successful!<br>
+                    Input: ${input.value}<br>
+                    ISO 8601: ${isoString}`;
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = `❌ Conversion failed: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -79,11 +79,23 @@ const fetchActivePromotions = async (token: string, supplierId: string): Promise
 };
 
 const createPromotion = async (token: string, supplierId: string, data: PromotionFormData): Promise<Promotion> => {
-  // Convert datetime-local format (YYYY-MM-DDTHH:mm) to ISO 8601 with seconds
+  // Convert datetime-local format to ISO 8601
   const formatDateTimeForAPI = (dateTimeStr: string): string => {
     if (!dateTimeStr) return '';
-    // If already has seconds, return as-is, otherwise append :00
-    return dateTimeStr.includes(':00:') || dateTimeStr.length > 16 ? dateTimeStr : `${dateTimeStr}:00`;
+    
+    // Parse the date string and convert to ISO 8601
+    try {
+      const date = new Date(dateTimeStr);
+      if (isNaN(date.getTime())) {
+        console.error('[formatDateTimeForAPI] Invalid date:', dateTimeStr);
+        return dateTimeStr; // Return as-is if invalid
+      }
+      // Return ISO 8601 format
+      return date.toISOString();
+    } catch (error) {
+      console.error('[formatDateTimeForAPI] Error formatting date:', error, 'value:', dateTimeStr);
+      return dateTimeStr; // Return as-is if error
+    }
   };
 
   const response = await axios.post(
@@ -153,6 +165,10 @@ const UV_PricingPromotions_Supplier: React.FC = () => {
   const [editedPrice, setEditedPrice] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState('');
   const [toastMessage, setToastMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  
+  // Refs for datetime inputs
+  const startDateInputRef = React.useRef<HTMLInputElement>(null);
+  const endDateInputRef = React.useRef<HTMLInputElement>(null);
 
   // Promotion Form State
   const [promotionForm, setPromotionForm] = useState<PromotionFormData>({
@@ -189,7 +205,7 @@ const UV_PricingPromotions_Supplier: React.FC = () => {
         return '';
       }
       
-      // Format to YYYY-MM-DDTHH:mm (exactly 16 characters)
+      // Get local date/time components (not UTC)
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const day = String(date.getDate()).padStart(2, '0');
@@ -197,6 +213,8 @@ const UV_PricingPromotions_Supplier: React.FC = () => {
       const minutes = String(date.getMinutes()).padStart(2, '0');
       
       const normalized = `${year}-${month}-${day}T${hours}:${minutes}`;
+      
+      console.log('[normalizeDateTimeValue] Normalized:', value, '->', normalized);
       
       // Validate the output format
       if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(normalized)) {
@@ -222,10 +240,22 @@ const UV_PricingPromotions_Supplier: React.FC = () => {
         if (data.start_date !== undefined) {
           const normalized = normalizeDateTimeValue(data.start_date);
           updates.start_date = normalized;
+          // Also update the input element's value to trigger browser validation
+          if (startDateInputRef.current && normalized) {
+            startDateInputRef.current.value = normalized;
+            // Trigger validation
+            startDateInputRef.current.setCustomValidity('');
+          }
         }
         if (data.end_date !== undefined) {
           const normalized = normalizeDateTimeValue(data.end_date);
           updates.end_date = normalized;
+          // Also update the input element's value to trigger browser validation
+          if (endDateInputRef.current && normalized) {
+            endDateInputRef.current.value = normalized;
+            // Trigger validation
+            endDateInputRef.current.setCustomValidity('');
+          }
         }
         
         return {
@@ -399,26 +429,14 @@ const UV_PricingPromotions_Supplier: React.FC = () => {
       return;
     }
 
-    // Enhanced date validation
+    // Basic date validation - rely on browser's native validation for format
     if (!promotionForm.start_date || !promotionForm.end_date) {
       setToastMessage({ type: 'error', text: 'Start and end dates are required' });
       setTimeout(() => setToastMessage(null), 3000);
       return;
     }
 
-    // Validate date format - must be YYYY-MM-DDTHH:mm
-    const dateFormatRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/;
-    if (!dateFormatRegex.test(promotionForm.start_date) || !dateFormatRegex.test(promotionForm.end_date)) {
-      console.error('[handleCreatePromotion] Invalid date format:', {
-        start_date: promotionForm.start_date,
-        end_date: promotionForm.end_date
-      });
-      setToastMessage({ type: 'error', text: 'Please enter valid dates in the correct format' });
-      setTimeout(() => setToastMessage(null), 3000);
-      return;
-    }
-
-    // Validate date values
+    // Validate date values are parseable
     const startDate = new Date(promotionForm.start_date);
     const endDate = new Date(promotionForm.end_date);
     
@@ -924,6 +942,7 @@ const UV_PricingPromotions_Supplier: React.FC = () => {
                     Start Date *
                   </label>
                   <input
+                    ref={startDateInputRef}
                     id="promotion-start-date"
                     name="start_date"
                     type="datetime-local"
@@ -943,6 +962,7 @@ const UV_PricingPromotions_Supplier: React.FC = () => {
                     End Date *
                   </label>
                   <input
+                    ref={endDateInputRef}
                     id="promotion-end-date"
                     name="end_date"
                     type="datetime-local"
