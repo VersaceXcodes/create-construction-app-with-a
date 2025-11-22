@@ -3238,7 +3238,9 @@ app.get('/api/admin/users', authenticateToken, requireAdmin, async (req, res) =>
         const countResult = await pool.query(countQuery, params.slice(0, -2));
         res.json({
             users: result.rows,
-            total: parseInt(countResult.rows[0].total)
+            total: parseInt(countResult.rows[0].total),
+            limit: limitNum,
+            offset: offsetNum
         });
     }
     catch (error) {

@@ -73,7 +73,7 @@ import UV_SupplierEducation from '@/components/views/UV_SupplierEducation';
 // Unique Views - Admin
 import UV_AdminDashboard from '@/components/views/UV_AdminDashboard';
 import UV_AdminUserManagement_Customers from '@/components/views/UV_AdminUserManagement_Customers';
-// UV_AdminUserManagement_Suppliers doesn't exist - using Customers component for now
+import UV_AdminUserManagement_Suppliers from '@/components/views/UV_AdminUserManagement_Suppliers';
 import UV_AdminSupplierApplications from '@/components/views/UV_AdminSupplierApplications';
 import UV_AdminProductModeration from '@/components/views/UV_AdminProductModeration';
 import UV_AdminOrderOversight from '@/components/views/UV_AdminOrderOversight';
@@ -767,7 +767,7 @@ const App: React.FC = () => {
           <Route path="/admin/suppliers" element={
             <ProtectedRoute requiredRole="admin">
               <AdminLayout>
-                <UV_AdminUserManagement_Customers />
+                <UV_AdminUserManagement_Suppliers />
               </AdminLayout>
             </ProtectedRoute>
           } />

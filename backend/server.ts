@@ -3931,7 +3931,9 @@ app.get('/api/admin/users', authenticateToken, requireAdmin, async (req: AuthReq
 
     res.json({
       users: result.rows,
-      total: parseInt(countResult.rows[0].total)
+      total: parseInt(countResult.rows[0].total),
+      limit: limitNum,
+      offset: offsetNum
     });
   } catch (error) {
     res.status(500).json({ error: 'InternalServerError', message: error.message });
