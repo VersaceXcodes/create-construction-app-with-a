@@ -79,6 +79,13 @@ const fetchActivePromotions = async (token: string, supplierId: string): Promise
 };
 
 const createPromotion = async (token: string, supplierId: string, data: PromotionFormData): Promise<Promotion> => {
+  // Convert datetime-local format (YYYY-MM-DDTHH:mm) to ISO 8601 with seconds
+  const formatDateTimeForAPI = (dateTimeStr: string): string => {
+    if (!dateTimeStr) return '';
+    // If already has seconds, return as-is, otherwise append :00
+    return dateTimeStr.includes(':00:') || dateTimeStr.length > 16 ? dateTimeStr : `${dateTimeStr}:00`;
+  };
+
   const response = await axios.post(
     `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api/promotions`,
     {
@@ -87,8 +94,8 @@ const createPromotion = async (token: string, supplierId: string, data: Promotio
       promotion_type: data.promotion_type,
       discount_type: data.discount_type,
       discount_value: Number(data.discount_value),
-      start_date: data.start_date,
-      end_date: data.end_date,
+      start_date: formatDateTimeForAPI(data.start_date),
+      end_date: formatDateTimeForAPI(data.end_date),
       applicable_products: data.applicable_products.length > 0 ? data.applicable_products : null,
       promo_code: data.promo_code || null,
       minimum_purchase_amount: data.minimum_purchase_amount ? Number(data.minimum_purchase_amount) : null,
@@ -889,13 +896,11 @@ const UV_PricingPromotions_Supplier: React.FC = () => {
                     name="start_date"
                     type="datetime-local"
                     required
-                    value={normalizeDateTimeValue(promotionForm.start_date)}
+                    value={promotionForm.start_date}
                     onChange={(e) => {
-                      // Always update the value, even if empty or unchanged
-                      const inputValue = e.target.value;
-                      const normalized = normalizeDateTimeValue(inputValue);
-                      // Set the value directly without conditional checks to ensure state updates
-                      handleFormChange('start_date', inputValue || normalized);
+                      // Always normalize and store the value
+                      const normalized = normalizeDateTimeValue(e.target.value);
+                      handleFormChange('start_date', normalized);
                     }}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all"
                     data-testid="promotion-start-date"
@@ -911,13 +916,11 @@ const UV_PricingPromotions_Supplier: React.FC = () => {
                     name="end_date"
                     type="datetime-local"
                     required
-                    value={normalizeDateTimeValue(promotionForm.end_date)}
+                    value={promotionForm.end_date}
                     onChange={(e) => {
-                      // Always update the value, even if empty or unchanged
-                      const inputValue = e.target.value;
-                      const normalized = normalizeDateTimeValue(inputValue);
-                      // Set the value directly without conditional checks to ensure state updates
-                      handleFormChange('end_date', inputValue || normalized);
+                      // Always normalize and store the value
+                      const normalized = normalizeDateTimeValue(e.target.value);
+                      handleFormChange('end_date', normalized);
                     }}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all"
                     data-testid="promotion-end-date"
