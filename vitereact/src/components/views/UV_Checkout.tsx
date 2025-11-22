@@ -198,17 +198,21 @@ const UV_Checkout: React.FC = () => {
     staleTime: 0 // Always fetch fresh cart data
   });
 
-  const { data: addresses = [], isLoading: addressesLoading } = useQuery({
+  const { data: addressesData, isLoading: addressesLoading } = useQuery({
     queryKey: ['addresses'],
     queryFn: () => fetchAddresses(authToken!),
     enabled: !!authToken
   });
 
-  const { data: paymentMethods = [], isLoading: paymentMethodsLoading } = useQuery({
+  const { data: paymentMethodsData, isLoading: paymentMethodsLoading } = useQuery({
     queryKey: ['paymentMethods'],
     queryFn: () => fetchPaymentMethods(authToken!),
     enabled: !!authToken
   });
+
+  // Ensure addresses and paymentMethods are always arrays
+  const addresses = Array.isArray(addressesData) ? addressesData : [];
+  const paymentMethods = Array.isArray(paymentMethodsData) ? paymentMethodsData : [];
 
   // ============================================================================
   // MUTATIONS
