@@ -180,7 +180,7 @@ const addProductToCart = async (
   auth_token: string
 ): Promise<any> => {
   const { data } = await axios.post(
-    `${API_BASE_URL}/cart/items`,
+    `${API_BASE_URL}/api/cart/items`,
     { product_id, quantity },
     { headers: { Authorization: `Bearer ${auth_token}` } }
   );

@@ -634,7 +634,7 @@ export const useAppStore = create<AppStore>()(
         });
 
         try {
-          const response = await axios.get('/cart');
+          const response = await axios.get('/api/cart');
           const { items = [], subtotal = 0 } = response.data;
 
           set({
@@ -659,7 +659,7 @@ export const useAppStore = create<AppStore>()(
 
       add_to_cart: async (product_id: string, quantity: number) => {
         try {
-          await axios.post('/cart/items', { product_id, quantity });
+          await axios.post('/api/cart/items', { product_id, quantity });
           await get().fetch_cart();
         } catch (error) {
           console.error('Add to cart error:', error);
@@ -689,7 +689,7 @@ export const useAppStore = create<AppStore>()(
 
       clear_cart: async () => {
         try {
-          await axios.delete('/cart');
+          await axios.delete('/api/cart');
           set({
             cart_state: {
               items: [],
