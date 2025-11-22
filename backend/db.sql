@@ -820,7 +820,10 @@ INSERT INTO orders (order_id, customer_id, order_number, order_date, status, sub
 ('order_002', 'cust_002', 'ORD-2024-002', '2024-01-21T10:15:00Z', 'in_transit', 2890.75, 150.00, 244.47, 0, 3285.22, 'addr_003', 'trade_credit', 'paid', 'txn_002', NULL, NULL, '2024-01-21T10:15:00Z', '2024-01-25T09:00:00Z'),
 ('order_003', 'cust_003', 'ORD-2024-003', '2024-01-22T09:45:00Z', 'processing', 567.85, 50.00, 50.82, 0, 668.67, 'addr_004', 'credit_card', 'paid', 'txn_003', NULL, 'Contact before delivery', '2024-01-22T09:45:00Z', '2024-01-22T09:45:00Z'),
 ('order_004', 'cust_004', 'ORD-2024-004', '2024-01-23T15:20:00Z', 'delivered', 389.92, 25.00, 34.16, 15.00, 434.08, 'addr_005', 'debit_card', 'paid', 'txn_004', 'SAVE15', NULL, '2024-01-23T15:20:00Z', '2024-01-24T17:30:00Z'),
-('order_005', 'cust_005', 'ORD-2024-005', '2024-01-24T11:30:00Z', 'shipped', 1567.88, 100.00, 140.83, 0, 1808.71, 'addr_006', 'trade_credit', 'paid', 'txn_005', NULL, 'Use loading dock entrance', '2024-01-24T11:30:00Z', '2024-01-25T08:45:00Z');
+('order_005', 'cust_005', 'ORD-2024-005', '2024-01-24T11:30:00Z', 'shipped', 1567.88, 100.00, 140.83, 0, 1808.71, 'addr_006', 'trade_credit', 'paid', 'txn_005', NULL, 'Use loading dock entrance', '2024-01-24T11:30:00Z', '2024-01-25T08:45:00Z'),
+('order_006', 'cust_002', 'ORD-2024-006', '2024-01-25T14:30:00Z', 'pending', 1349.50, 75.00, 114.20, 0, 1538.70, 'addr_003', 'credit_card', 'paid', 'txn_006', NULL, 'Please call before delivery', '2024-01-25T14:30:00Z', '2024-01-25T14:30:00Z'),
+('order_007', 'cust_003', 'ORD-2024-007', '2024-01-25T15:45:00Z', 'processing', 897.45, 50.00, 80.48, 0, 1027.93, 'addr_004', 'trade_credit', 'paid', 'txn_007', NULL, NULL, '2024-01-25T15:45:00Z', '2024-01-25T16:00:00Z'),
+('order_008', 'cust_001', 'ORD-2024-008', '2024-01-26T09:15:00Z', 'pending', 674.75, 50.00, 60.53, 0, 785.28, 'addr_001', 'debit_card', 'paid', 'txn_008', NULL, 'Deliver to side entrance', '2024-01-26T09:15:00Z', '2024-01-26T09:15:00Z');
 
 -- Seed Order Items
 INSERT INTO order_items (order_item_id, order_id, product_id, supplier_id, product_name, sku, quantity, price_per_unit, line_total, created_at, updated_at) VALUES
@@ -833,7 +836,11 @@ INSERT INTO order_items (order_item_id, order_id, product_id, supplier_id, produ
 ('oi_007', 'order_003', 'prod_004', 'sup_004', '12/2 NM-B Romex Wire 250ft', 'ELEC-RMX-12-2-250', 2, 85.99, 171.98, '2024-01-22T09:45:00Z', '2024-01-22T09:45:00Z'),
 ('oi_008', 'order_004', 'prod_009', 'sup_002', 'Sherwin Williams Interior Paint Gallon', 'PAINT-SW-INT-GAL', 8, 42.99, 343.92, '2024-01-23T15:20:00Z', '2024-01-23T15:20:00Z'),
 ('oi_009', 'order_005', 'prod_007', 'sup_005', 'Kohler Single Handle Faucet', 'PLMB-KOHLER-VALVE', 6, 189.99, 1139.94, '2024-01-24T11:30:00Z', '2024-01-24T11:30:00Z'),
-('oi_010', 'order_005', 'prod_006', 'sup_005', '1/2" PVC Schedule 40 Pipe 10ft', 'PLMB-PVC-SCH40-1/2-10', 75, 5.49, 411.75, '2024-01-24T11:30:00Z', '2024-01-24T11:30:00Z');
+('oi_010', 'order_005', 'prod_006', 'sup_005', '1/2" PVC Schedule 40 Pipe 10ft', 'PLMB-PVC-SCH40-1/2-10', 75, 5.49, 411.75, '2024-01-24T11:30:00Z', '2024-01-24T11:30:00Z'),
+('oi_011', 'order_006', 'prod_002', 'sup_001', '2x6x10 SPF Lumber', 'LUM-2X6-10-SPF', 90, 14.99, 1349.10, '2024-01-25T14:30:00Z', '2024-01-25T14:30:00Z'),
+('oi_012', 'order_007', 'prod_001', 'sup_001', '2x4x8 SPF Lumber', 'LUM-2X4-8-SPF', 80, 7.49, 599.20, '2024-01-25T15:45:00Z', '2024-01-25T15:45:00Z'),
+('oi_013', 'order_007', 'prod_008', 'sup_001', '3" Drywall Screws (5lb Box)', 'HW-SCREW-DRY-3', 12, 24.99, 299.88, '2024-01-25T15:45:00Z', '2024-01-25T15:45:00Z'),
+('oi_014', 'order_008', 'prod_002', 'sup_001', '2x6x10 SPF Lumber', 'LUM-2X6-10-SPF', 45, 14.99, 674.55, '2024-01-26T09:15:00Z', '2024-01-26T09:15:00Z');
 
 -- Seed Deliveries
 INSERT INTO deliveries (delivery_id, order_id, supplier_id, delivery_window_start, delivery_window_end, delivery_method, delivery_fee, delivery_status, tracking_number, carrier, driver_name, driver_phone, estimated_arrival_time, actual_delivery_time, delivery_proof_photo_url, delivery_signature, delivery_notes, current_latitude, current_longitude, created_at, updated_at) VALUES
@@ -841,7 +848,10 @@ INSERT INTO deliveries (delivery_id, order_id, supplier_id, delivery_window_star
 ('del_002', 'order_002', 'sup_003', '2024-01-25T09:00:00Z', '2024-01-25T17:00:00Z', 'freight', 150.00, 'in_transit', 'TRK001234568', 'XPO Logistics', 'Mike Trucker', '+1-555-0902', '2024-01-25T14:00:00Z', NULL, NULL, NULL, NULL, 29.8500, -95.4500, '2024-01-21T10:15:00Z', '2024-01-25T09:00:00Z'),
 ('del_003', 'order_003', 'sup_004', '2024-01-22T13:00:00Z', '2024-01-22T15:00:00Z', 'same_day', 50.00, 'scheduled', 'TRK001234569', 'ElectricPlus Delivery', NULL, NULL, '2024-01-22T14:00:00Z', NULL, NULL, NULL, NULL, NULL, NULL, '2024-01-22T09:45:00Z', '2024-01-22T09:45:00Z'),
 ('del_004', 'order_004', 'sup_002', '2024-01-24T10:00:00Z', '2024-01-24T18:00:00Z', 'standard_delivery', 25.00, 'delivered', 'TRK001234570', 'BuildPro Delivery', 'Jim Courier', '+1-555-0903', '2024-01-24T16:00:00Z', '2024-01-24T16:15:00Z', 'https://images.unsplash.com/photo-1566576721346-d4a3b4eaeb55?w=800', 'data:image/png;base64,signature2', 'Delivered to front porch', 29.4241, -98.4936, '2024-01-23T15:20:00Z', '2024-01-24T16:15:00Z'),
-('del_005', 'order_005', 'sup_005', '2024-01-25T08:00:00Z', '2024-01-25T12:00:00Z', 'scheduled', 100.00, 'out_for_delivery', 'TRK001234571', 'PlumbMaster Delivery', 'Steve Carrier', '+1-555-0904', '2024-01-25T10:00:00Z', NULL, NULL, NULL, NULL, 29.5000, -98.4000, '2024-01-24T11:30:00Z', '2024-01-25T08:00:00Z');
+('del_005', 'order_005', 'sup_005', '2024-01-25T08:00:00Z', '2024-01-25T12:00:00Z', 'scheduled', 100.00, 'out_for_delivery', 'TRK001234571', 'PlumbMaster Delivery', 'Steve Carrier', '+1-555-0904', '2024-01-25T10:00:00Z', NULL, NULL, NULL, NULL, 29.5000, -98.4000, '2024-01-24T11:30:00Z', '2024-01-25T08:00:00Z'),
+('del_006', 'order_006', 'sup_001', '2024-01-27T10:00:00Z', '2024-01-27T14:00:00Z', 'standard_delivery', 75.00, 'scheduled', NULL, NULL, NULL, NULL, '2024-01-27T12:00:00Z', NULL, NULL, NULL, NULL, NULL, NULL, '2024-01-25T14:30:00Z', '2024-01-25T14:30:00Z'),
+('del_007', 'order_007', 'sup_001', '2024-01-27T08:00:00Z', '2024-01-27T12:00:00Z', 'standard_delivery', 50.00, 'scheduled', NULL, NULL, NULL, NULL, '2024-01-27T10:00:00Z', NULL, NULL, NULL, NULL, NULL, NULL, '2024-01-25T16:00:00Z', '2024-01-25T16:00:00Z'),
+('del_008', 'order_008', 'sup_001', '2024-01-28T09:00:00Z', '2024-01-28T13:00:00Z', 'standard_delivery', 50.00, 'scheduled', NULL, NULL, NULL, NULL, '2024-01-28T11:00:00Z', NULL, NULL, NULL, NULL, NULL, NULL, '2024-01-26T09:15:00Z', '2024-01-26T09:15:00Z');
 
 -- Seed Order Timeline
 INSERT INTO order_timeline (timeline_id, order_id, milestone, status, timestamp, description, performed_by, created_at) VALUES
@@ -855,7 +865,14 @@ INSERT INTO order_timeline (timeline_id, order_id, milestone, status, timestamp,
 ('tl_008', 'order_002', 'payment_confirmed', 'completed', '2024-01-21T10:16:00Z', 'Payment confirmed', 'system', '2024-01-21T10:16:00Z'),
 ('tl_009', 'order_002', 'processing', 'completed', '2024-01-21T14:00:00Z', 'Order processing', 'sup_003', '2024-01-21T14:00:00Z'),
 ('tl_010', 'order_002', 'shipped', 'completed', '2024-01-24T08:00:00Z', 'Freight shipment dispatched', 'sup_003', '2024-01-24T08:00:00Z'),
-('tl_011', 'order_002', 'in_transit', 'in_progress', '2024-01-25T09:00:00Z', 'Shipment in transit', 'carrier', '2024-01-25T09:00:00Z');
+('tl_011', 'order_002', 'in_transit', 'in_progress', '2024-01-25T09:00:00Z', 'Shipment in transit', 'carrier', '2024-01-25T09:00:00Z'),
+('tl_012', 'order_006', 'order_placed', 'completed', '2024-01-25T14:30:00Z', 'Order placed and payment received', 'cust_002', '2024-01-25T14:30:00Z'),
+('tl_013', 'order_006', 'payment_confirmed', 'completed', '2024-01-25T14:31:00Z', 'Payment confirmed - Credit card', 'system', '2024-01-25T14:31:00Z'),
+('tl_014', 'order_007', 'order_placed', 'completed', '2024-01-25T15:45:00Z', 'Order placed and payment received', 'cust_003', '2024-01-25T15:45:00Z'),
+('tl_015', 'order_007', 'payment_confirmed', 'completed', '2024-01-25T15:46:00Z', 'Payment confirmed - Trade credit', 'system', '2024-01-25T15:46:00Z'),
+('tl_016', 'order_007', 'processing', 'in_progress', '2024-01-25T16:00:00Z', 'Order being prepared for shipment', 'sup_001', '2024-01-25T16:00:00Z'),
+('tl_017', 'order_008', 'order_placed', 'completed', '2024-01-26T09:15:00Z', 'Order placed and payment received', 'cust_001', '2024-01-26T09:15:00Z'),
+('tl_018', 'order_008', 'payment_confirmed', 'completed', '2024-01-26T09:16:00Z', 'Payment confirmed - Debit card', 'system', '2024-01-26T09:16:00Z');
 
 -- Seed Reviews
 INSERT INTO reviews (review_id, order_id, customer_id, supplier_id, product_id, rating_overall, rating_product, rating_service, rating_delivery, review_text, photos, helpful_votes, verified_purchase, would_buy_again, is_anonymous, review_date, status, supplier_response, supplier_response_date, created_at, updated_at) VALUES
