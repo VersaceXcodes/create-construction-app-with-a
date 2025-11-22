@@ -510,25 +510,25 @@ const UV_OrderConfirmation: React.FC = () => {
               <div className="space-y-2">
                 <div className="flex justify-between text-gray-600">
                   <span>Subtotal</span>
-                  <span>${orderDetails.subtotal_amount.toFixed(2)}</span>
+                  <span>${Number(orderDetails.subtotal_amount).toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Delivery</span>
-                  <span>${orderDetails.delivery_fee_total.toFixed(2)}</span>
+                  <span>${Number(orderDetails.delivery_fee_total).toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Taxes</span>
-                  <span>${orderDetails.tax_amount.toFixed(2)}</span>
+                  <span>${Number(orderDetails.tax_amount).toFixed(2)}</span>
                 </div>
                 {orderDetails.discount_amount > 0 && (
                   <div className="flex justify-between text-green-600">
                     <span>Discount</span>
-                    <span>-${orderDetails.discount_amount.toFixed(2)}</span>
+                    <span>-${Number(orderDetails.discount_amount).toFixed(2)}</span>
                   </div>
                 )}
                 <div className="flex justify-between text-xl font-bold text-gray-900 pt-2 border-t border-gray-300">
                   <span>Total Paid</span>
-                  <span>${orderDetails.total_amount.toFixed(2)}</span>
+                  <span>${Number(orderDetails.total_amount).toFixed(2)}</span>
                 </div>
               </div>
               

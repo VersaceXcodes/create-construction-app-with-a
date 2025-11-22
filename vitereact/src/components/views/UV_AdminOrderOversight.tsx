@@ -668,7 +668,7 @@ const UV_AdminOrderOversight: React.FC = () => {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className="text-sm font-semibold text-gray-900">
-                            ${order.total_amount.toFixed(2)}
+                            ${Number(order.total_amount).toFixed(2)}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm">
@@ -813,25 +813,25 @@ const UV_AdminOrderOversight: React.FC = () => {
                         <div className="space-y-2">
                           <div className="flex justify-between text-sm">
                             <span className="text-gray-700">Subtotal</span>
-                            <span className="font-medium text-gray-900">${orderDetailsData.order.subtotal_amount.toFixed(2)}</span>
+                            <span className="font-medium text-gray-900">${Number(orderDetailsData.order.subtotal_amount).toFixed(2)}</span>
                           </div>
                           <div className="flex justify-between text-sm">
                             <span className="text-gray-700">Delivery Fee</span>
-                            <span className="font-medium text-gray-900">${orderDetailsData.order.delivery_fee_total.toFixed(2)}</span>
+                            <span className="font-medium text-gray-900">${Number(orderDetailsData.order.delivery_fee_total).toFixed(2)}</span>
                           </div>
                           <div className="flex justify-between text-sm">
                             <span className="text-gray-700">Tax</span>
-                            <span className="font-medium text-gray-900">${orderDetailsData.order.tax_amount.toFixed(2)}</span>
+                            <span className="font-medium text-gray-900">${Number(orderDetailsData.order.tax_amount).toFixed(2)}</span>
                           </div>
                           {orderDetailsData.order.discount_amount > 0 && (
                             <div className="flex justify-between text-sm">
                               <span className="text-gray-700">Discount</span>
-                              <span className="font-medium text-green-600">-${orderDetailsData.order.discount_amount.toFixed(2)}</span>
+                              <span className="font-medium text-green-600">-${Number(orderDetailsData.order.discount_amount).toFixed(2)}</span>
                             </div>
                           )}
                           <div className="border-t border-blue-200 pt-2 mt-2 flex justify-between">
                             <span className="text-lg font-bold text-gray-900">Total</span>
-                            <span className="text-lg font-bold text-gray-900">${orderDetailsData.order.total_amount.toFixed(2)}</span>
+                            <span className="text-lg font-bold text-gray-900">${Number(orderDetailsData.order.total_amount).toFixed(2)}</span>
                           </div>
                         </div>
                       </div>

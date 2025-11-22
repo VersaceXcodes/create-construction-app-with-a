@@ -596,7 +596,7 @@ const UV_OrderDashboard: React.FC = () => {
                                     <div className="flex items-center">
                                       <DollarSign className="w-4 h-4 mr-2 text-gray-400" />
                                       <span className="font-semibold text-gray-900">
-                                        ${order.total_amount.toFixed(2)}
+                                        ${Number(order.total_amount).toFixed(2)}
                                       </span>
                                     </div>
 

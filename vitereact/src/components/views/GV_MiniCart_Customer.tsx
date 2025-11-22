@@ -673,7 +673,7 @@ const GV_MiniCart_Customer: React.FC = () => {
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-600">Subtotal</span>
                     <span className="font-semibold text-gray-900">
-                      ${cartTotals.subtotal_amount.toFixed(2)}
+                      ${Number(cartTotals.subtotal_amount).toFixed(2)}
                     </span>
                   </div>
 
@@ -681,7 +681,7 @@ const GV_MiniCart_Customer: React.FC = () => {
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-green-600">Discount</span>
                       <span className="font-semibold text-green-600">
-                        -${appliedPromo.discount_amount.toFixed(2)}
+                        -${Number(appliedPromo.discount_amount).toFixed(2)}
                       </span>
                     </div>
                   )}
@@ -694,7 +694,7 @@ const GV_MiniCart_Customer: React.FC = () => {
                     <div className="flex items-center justify-between">
                       <span className="text-base font-bold text-gray-900">Total</span>
                       <span className="text-xl font-bold text-blue-600">
-                        ${cartTotals.total_amount.toFixed(2)}
+                        ${Number(cartTotals.total_amount).toFixed(2)}
                       </span>
                     </div>
                   </div>

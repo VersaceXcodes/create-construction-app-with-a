@@ -934,7 +934,7 @@ const UV_Checkout: React.FC = () => {
                         </div>
                         {orderTotals.total_amount > tradeCreditAvailable && (
                           <div className="text-xs text-green-600 mt-2">
-                            ${orderTotals.total_amount.toFixed(2)} exceeds available credit. Additional payment required.
+                            ${Number(orderTotals.total_amount).toFixed(2)} exceeds available credit. Additional payment required.
                           </div>
                         )}
                       </div>
@@ -1160,20 +1160,20 @@ const UV_Checkout: React.FC = () => {
                 <div className="space-y-3 mb-6">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Subtotal ({cartData?.total_items || 0} items)</span>
-                    <span className="font-medium text-gray-900">${orderTotals.subtotal_amount.toFixed(2)}</span>
+                    <span className="font-medium text-gray-900">${Number(orderTotals.subtotal_amount).toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Delivery Fees</span>
-                    <span className="font-medium text-gray-900">${orderTotals.delivery_fee_total.toFixed(2)}</span>
+                    <span className="font-medium text-gray-900">${Number(orderTotals.delivery_fee_total).toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Estimated Tax</span>
-                    <span className="font-medium text-gray-900">${orderTotals.tax_amount.toFixed(2)}</span>
+                    <span className="font-medium text-gray-900">${Number(orderTotals.tax_amount).toFixed(2)}</span>
                   </div>
                   {orderTotals.discount_amount > 0 && (
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Discount</span>
-                      <span className="font-medium text-green-600">-${orderTotals.discount_amount.toFixed(2)}</span>
+                      <span className="font-medium text-green-600">-${Number(orderTotals.discount_amount).toFixed(2)}</span>
                     </div>
                   )}
                 </div>
@@ -1182,7 +1182,7 @@ const UV_Checkout: React.FC = () => {
                   <div className="flex justify-between items-center">
                     <span className="text-lg font-semibold text-gray-900">Total</span>
                     <span className="text-2xl font-bold text-blue-600">
-                      ${orderTotals.total_amount.toFixed(2)}
+                      ${Number(orderTotals.total_amount).toFixed(2)}
                     </span>
                   </div>
                 </div>
@@ -1244,7 +1244,7 @@ const UV_Checkout: React.FC = () => {
                   ) : (
                     <>
                       <Lock className="w-5 h-5 mr-2" />
-                      Place Order • ${orderTotals.total_amount.toFixed(2)}
+                      Place Order • ${Number(orderTotals.total_amount).toFixed(2)}
                     </>
                   )}
                 </button>

@@ -465,7 +465,7 @@ const UV_IssueSubmit: React.FC = () => {
                       <span className="font-medium">Status:</span> {orderContext.order.status}
                     </p>
                     <p className="text-blue-800">
-                      <span className="font-medium">Total:</span> ${orderContext.order.total_amount.toFixed(2)}
+                      <span className="font-medium">Total:</span> ${Number(orderContext.order.total_amount).toFixed(2)}
                     </p>
                   </div>
                 </div>

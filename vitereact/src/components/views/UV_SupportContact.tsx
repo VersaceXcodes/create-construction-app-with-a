@@ -524,7 +524,7 @@ const UV_SupportContact: React.FC = () => {
                         <option value="">Not related to a specific order</option>
                         {orders.map((order) => (
                           <option key={order.order_id} value={order.order_id}>
-                            {order.order_number} - {new Date(order.order_date).toLocaleDateString()} - ${order.total_amount.toFixed(2)}
+                            {order.order_number} - {new Date(order.order_date).toLocaleDateString()} - ${Number(order.total_amount).toFixed(2)}
                           </option>
                         ))}
                       </select>
