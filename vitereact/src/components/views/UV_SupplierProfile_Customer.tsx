@@ -179,10 +179,10 @@ const addProductToCart = async (
   quantity: number,
   auth_token: string
 ): Promise<any> => {
+  // Use relative URL - axios baseURL already includes /api prefix and auth header is set globally
   const { data } = await axios.post(
-    `${API_BASE_URL}/api/cart/items`,
-    { product_id, quantity },
-    { headers: { Authorization: `Bearer ${auth_token}` } }
+    '/cart/items',
+    { product_id, quantity }
   );
   return data;
 };
@@ -191,13 +191,13 @@ const createChatConversation = async (
   supplier_id: string,
   auth_token: string
 ): Promise<{ conversation_id: string }> => {
+  // Use relative URL - axios baseURL already includes /api prefix and auth header is set globally
   const { data } = await axios.post(
-    `${API_BASE_URL}/chat/conversations`,
+    '/chat/conversations',
     {
       conversation_type: 'customer_supplier',
       supplier_id
-    },
-    { headers: { Authorization: `Bearer ${auth_token}` } }
+    }
   );
   return data;
 };

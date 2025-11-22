@@ -79,14 +79,8 @@ const fetchCartSummary = async (authToken: string | null): Promise<CartSummaryRe
     return { cart: null, items: [], subtotal: 0, total_items: 0 };
   }
 
-  const response = await axios.get<CartSummaryResponse>(
-    `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api/cart`,
-    {
-      headers: {
-        'Authorization': `Bearer ${authToken}`,
-      },
-    }
-  );
+  // Use relative URL - axios baseURL already includes /api prefix and auth header is set globally
+  const response = await axios.get<CartSummaryResponse>('/cart');
 
   return response.data;
 };
@@ -96,15 +90,13 @@ const fetchNotificationsSummary = async (authToken: string | null): Promise<Noti
     return { notifications: [], total: 0, unread_count: 0 };
   }
 
+  // Use relative URL - axios baseURL already includes /api prefix and auth header is set globally
   const response = await axios.get<NotificationSummaryResponse>(
-    `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api/notifications`,
+    '/notifications',
     {
       params: {
         limit: 10,
         is_read: false,
-      },
-      headers: {
-        'Authorization': `Bearer ${authToken}`,
       },
     }
   );
@@ -113,27 +105,16 @@ const fetchNotificationsSummary = async (authToken: string | null): Promise<Noti
 };
 
 const markNotificationRead = async (authToken: string, notification_id: string): Promise<void> => {
+  // Use relative URL - axios baseURL already includes /api prefix and auth header is set globally
   await axios.patch(
-    `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api/notifications/${notification_id}/read`,
-    {},
-    {
-      headers: {
-        'Authorization': `Bearer ${authToken}`,
-      },
-    }
+    `/notifications/${notification_id}`,
+    { is_read: true }
   );
 };
 
 const logoutApi = async (authToken: string): Promise<void> => {
-  await axios.post(
-    `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api/auth/logout`,
-    {},
-    {
-      headers: {
-        'Authorization': `Bearer ${authToken}`,
-      },
-    }
-  );
+  // Use relative URL - axios baseURL already includes /api prefix and auth header is set globally
+  await axios.post('/auth/logout', {});
 };
 
 // ============================================================================

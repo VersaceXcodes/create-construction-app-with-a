@@ -107,12 +107,8 @@ const GV_MiniCart_Customer: React.FC = () => {
     queryFn: async () => {
       if (!authToken) throw new Error('Not authenticated');
       
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api/cart`,
-        {
-          headers: { Authorization: `Bearer ${authToken}` }
-        }
-      );
+      // Use relative URL - axios baseURL already includes /api prefix
+      const response = await axios.get('/cart');
       return response.data;
     },
     enabled: !!authToken && isAuthenticated && userType === 'customer',
@@ -192,10 +188,10 @@ const GV_MiniCart_Customer: React.FC = () => {
   
   const updateQuantityMutation = useMutation({
     mutationFn: async ({ cart_item_id, quantity }: { cart_item_id: string; quantity: number }) => {
+      // Use relative URL - axios baseURL already includes /api prefix
       const response = await axios.patch(
-        `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api/cart/items/${cart_item_id}`,
-        { quantity },
-        { headers: { Authorization: `Bearer ${authToken}` } }
+        `/cart/items/${cart_item_id}`,
+        { quantity }
       );
       return response.data;
     },
@@ -223,10 +219,8 @@ const GV_MiniCart_Customer: React.FC = () => {
   
   const removeItemMutation = useMutation({
     mutationFn: async (cart_item_id: string) => {
-      await axios.delete(
-        `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api/cart/items/${cart_item_id}`,
-        { headers: { Authorization: `Bearer ${authToken}` } }
-      );
+      // Use relative URL - axios baseURL already includes /api prefix
+      await axios.delete(`/cart/items/${cart_item_id}`);
     },
     onMutate: async (cart_item_id) => {
       setUpdatingItemId(cart_item_id);
@@ -252,10 +246,10 @@ const GV_MiniCart_Customer: React.FC = () => {
   
   const applyPromoMutation = useMutation({
     mutationFn: async (data: PromoValidationRequest) => {
+      // Use relative URL - axios baseURL already includes /api prefix
       const response = await axios.post<PromoValidationResponse>(
-        `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api/promotions/validate`,
-        data,
-        { headers: { Authorization: `Bearer ${authToken}` } }
+        '/promotions/validate',
+        data
       );
       return response.data;
     },

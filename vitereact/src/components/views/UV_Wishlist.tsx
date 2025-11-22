@@ -70,13 +70,9 @@ const fetchWishlistItems = async (sortBy?: string, filterBy?: string): Promise<T
   if (sortBy) params.append('sort_by', sortBy);
   if (filterBy) params.append('filter_by', filterBy);
   
+  // Use relative URL - axios baseURL already includes /api prefix
   const response = await axios.get<WishlistApiResponse[]>(
-    `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api/wishlist?${params.toString()}`,
-    {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
-      },
-    }
+    `/wishlist?${params.toString()}`
   );
   
   // Transform response to include calculated fields
@@ -99,43 +95,29 @@ const fetchWishlistItems = async (sortBy?: string, filterBy?: string): Promise<T
 };
 
 const addToCartMutation = async (product_id: string, quantity: number = 1) => {
+  // Use relative URL - axios baseURL already includes /api prefix
   const response = await axios.post(
-    `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api/cart/items`,
+    '/cart/items',
     {
       product_id,
       quantity,
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
-      },
     }
   );
   return response.data;
 };
 
 const removeFromWishlistMutation = async (wishlist_item_id: string) => {
-  await axios.delete(
-    `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api/wishlist/${wishlist_item_id}`,
-    {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
-      },
-    }
-  );
+  // Use relative URL - axios baseURL already includes /api prefix
+  await axios.delete(`/wishlist/${wishlist_item_id}`);
 };
 
 const updateAlertsMutation = async (wishlist_item_id: string, price_drop_alert_enabled?: boolean, back_in_stock_alert_enabled?: boolean) => {
+  // Use relative URL - axios baseURL already includes /api prefix
   const response = await axios.patch(
-    `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api/wishlist/${wishlist_item_id}`,
+    `/wishlist/${wishlist_item_id}`,
     {
       price_drop_alert_enabled,
       back_in_stock_alert_enabled,
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
-      },
     }
   );
   return response.data;
