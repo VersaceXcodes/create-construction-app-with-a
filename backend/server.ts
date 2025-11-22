@@ -1741,7 +1741,8 @@ app.get('/api/suppliers/me/deliveries', authenticateToken, requireSupplier, asyn
              (SELECT COUNT(*) FROM order_items oi WHERE oi.order_id = d.order_id AND oi.supplier_id = $1) as items_count
       FROM deliveries d
       INNER JOIN orders o ON d.order_id = o.order_id
-      INNER JOIN users u ON o.customer_id IN (SELECT user_id FROM customers WHERE customer_id = o.customer_id)
+      INNER JOIN customers c ON o.customer_id = c.customer_id
+      INNER JOIN users u ON c.user_id = u.user_id
       INNER JOIN addresses a ON o.delivery_address_id = a.address_id
       WHERE d.supplier_id = $1
     `;
