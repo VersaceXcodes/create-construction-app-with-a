@@ -3990,6 +3990,64 @@ app.get('/api/admin/users', authenticateToken, requireAdmin, async (req: AuthReq
   }
 });
 
+app.get('/api/admin/users/:user_id', authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+  try {
+    const userResult = await pool.query(
+      'SELECT user_id, email, user_type, first_name, last_name, phone_number, registration_date, last_login_date, status, email_verified, profile_photo_url, created_at, updated_at FROM users WHERE user_id = $1',
+      [req.params.user_id]
+    );
+
+    if (userResult.rows.length === 0) {
+      return res.status(404).json({ error: 'UserNotFound', message: 'User not found' });
+    }
+
+    const user = userResult.rows[0];
+    const enrichedUser: any = { ...user };
+
+    // Enrich with customer/supplier/admin details
+    if (user.user_type === 'customer') {
+      const customerResult = await pool.query(
+        'SELECT customer_id, account_type, default_delivery_address_id, trade_credit_limit, trade_credit_balance, trade_credit_used, trade_credit_terms, trade_credit_status, preferred_brands, preferred_suppliers, preferred_categories, notification_preferences, onboarding_completed, created_at, updated_at FROM customers WHERE user_id = $1',
+        [user.user_id]
+      );
+      if (customerResult.rows.length > 0) {
+        enrichedUser.customer = customerResult.rows[0];
+        
+        // Get order stats
+        const orderStatsResult = await pool.query(
+          'SELECT COUNT(*) as total_orders, COALESCE(SUM(total_amount), 0) as total_spent FROM orders WHERE customer_id = $1',
+          [customerResult.rows[0].customer_id]
+        );
+        enrichedUser.customer.total_orders = parseInt(orderStatsResult.rows[0].total_orders);
+        enrichedUser.customer.total_spent = parseFloat(orderStatsResult.rows[0].total_spent);
+      }
+    } else if (user.user_type === 'supplier') {
+      const supplierResult = await pool.query(
+        'SELECT supplier_id, business_name, business_registration_number, business_type, business_description, logo_url, cover_photo_url, verification_status, verification_documents, rating_average, total_reviews, total_sales, total_orders, fulfillment_rate, response_time_average, bank_account_info, payout_frequency, commission_rate, subscription_plan, operating_hours, service_areas, return_policy, shipping_policy, minimum_order_value, status, onboarding_completed, member_since, created_at, updated_at FROM suppliers WHERE user_id = $1',
+        [user.user_id]
+      );
+      if (supplierResult.rows.length > 0) {
+        enrichedUser.supplier = supplierResult.rows[0];
+        // Convert numeric fields to numbers
+        enrichedUser.supplier.total_orders = parseInt(supplierResult.rows[0].total_orders || '0');
+        enrichedUser.supplier.total_sales = parseFloat(supplierResult.rows[0].total_sales || '0');
+      }
+    } else if (user.user_type === 'admin') {
+      const adminResult = await pool.query(
+        'SELECT admin_id, role, permissions, created_at, updated_at FROM admins WHERE user_id = $1',
+        [user.user_id]
+      );
+      if (adminResult.rows.length > 0) {
+        enrichedUser.admin = adminResult.rows[0];
+      }
+    }
+
+    res.json(enrichedUser);
+  } catch (error) {
+    res.status(500).json({ error: 'InternalServerError', message: error.message });
+  }
+});
+
 app.patch('/api/admin/users/:user_id', authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
   const client = await pool.connect();
   try {
