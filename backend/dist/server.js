@@ -1656,26 +1656,58 @@ app.post('/api/projects/:project_id/load-to-cart', authenticateToken, requireCus
         client.release();
     }
 });
-app.get('/api/orders', authenticateToken, requireCustomer, async (req, res) => {
+app.get('/api/orders', authenticateToken, async (req, res) => {
     try {
         const { status_filter, date_range, supplier_id, sort_by = 'order_date', sort_order = 'desc' } = req.query;
         // Coerce query params
         const limit = Math.min(asNumber(req.query.limit, 50) || 50, 100);
         const offset = asNumber(req.query.offset, 0) || 0;
-        let query = 'SELECT * FROM orders WHERE customer_id = $1';
-        const params = [req.user.customer_id];
-        let paramCount = 2;
-        if (status_filter) {
-            query += ` AND status = $${paramCount}`;
-            params.push(asString(status_filter));
-            paramCount++;
+        let query = '';
+        let countQuery = '';
+        let params = [];
+        let paramCount = 1;
+        // Different queries for customers vs suppliers
+        if (req.user?.user_type === 'customer') {
+            query = 'SELECT * FROM orders WHERE customer_id = $1';
+            countQuery = 'SELECT COUNT(*) as total FROM orders WHERE customer_id = $1';
+            params = [req.user.customer_id];
+            paramCount = 2;
+            if (status_filter) {
+                const statusClause = ` AND status = $${paramCount}`;
+                query += statusClause;
+                countQuery += statusClause;
+                params.push(asString(status_filter));
+                paramCount++;
+            }
         }
-        query += ` ORDER BY ${sort_by === 'total_amount' ? 'total_amount' : 'order_date'} ${sort_order === 'asc' ? 'ASC' : 'DESC'}`;
+        else if (req.user?.user_type === 'supplier') {
+            // For suppliers, get orders that contain their products
+            query = `SELECT DISTINCT o.* FROM orders o
+               INNER JOIN order_items oi ON o.order_id = oi.order_id
+               WHERE oi.supplier_id = $1`;
+            countQuery = `SELECT COUNT(DISTINCT o.order_id) as total FROM orders o
+                    INNER JOIN order_items oi ON o.order_id = oi.order_id
+                    WHERE oi.supplier_id = $1`;
+            params = [req.user.supplier_id];
+            paramCount = 2;
+            if (status_filter) {
+                const statusClause = ` AND o.status = $${paramCount}`;
+                query += statusClause;
+                countQuery += statusClause;
+                params.push(asString(status_filter));
+                paramCount++;
+            }
+        }
+        else {
+            return res.status(403).json({ error: 'Forbidden', message: 'Customer or Supplier access required' });
+        }
+        // Add ORDER BY with correct table reference
+        const tablePrefix = req.user?.user_type === 'supplier' ? 'o.' : '';
+        query += ` ORDER BY ${tablePrefix}${sort_by === 'total_amount' ? 'total_amount' : 'order_date'} ${sort_order === 'asc' ? 'ASC' : 'DESC'}`;
         query += ` LIMIT $${paramCount} OFFSET $${paramCount + 1}`;
         params.push(String(limit));
         params.push(String(offset));
         const result = await pool.query(query, params);
-        const countQuery = query.substring(0, query.indexOf('ORDER BY')).replace(/SELECT \* FROM/, 'SELECT COUNT(*) as total FROM');
         const countResult = await pool.query(countQuery, params.slice(0, -2));
         res.json({
             orders: result.rows,
