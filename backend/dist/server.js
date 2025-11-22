@@ -520,6 +520,18 @@ app.patch('/api/customers/me', authenticateToken, requireCustomer, async (req, r
         res.status(500).json({ error: 'InternalServerError', message: error.message });
     }
 });
+app.get('/api/admins/me', authenticateToken, requireAdmin, async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM admins WHERE user_id = $1', [req.user.user_id]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'AdminNotFound', message: 'Admin profile not found' });
+        }
+        res.json(result.rows[0]);
+    }
+    catch (error) {
+        res.status(500).json({ error: 'InternalServerError', message: error.message });
+    }
+});
 app.get('/api/addresses', authenticateToken, async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM addresses WHERE user_id = $1 ORDER BY is_default DESC, created_at DESC', [req.user.user_id]);
