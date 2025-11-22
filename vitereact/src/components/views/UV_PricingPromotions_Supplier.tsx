@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAppStore } from '@/store/main';
 import axios from 'axios';
@@ -159,6 +159,69 @@ const UV_PricingPromotions_Supplier: React.FC = () => {
     promo_code: '',
     minimum_purchase_amount: null,
   });
+
+  // Helper function to normalize datetime-local format
+  const normalizeDateTimeValue = React.useCallback((value: string): string => {
+    if (!value) return '';
+    
+    // If already in correct format (YYYY-MM-DDTHH:mm or YYYY-MM-DDTHH:mm:ss), return normalized
+    if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?$/.test(value)) {
+      // Return without seconds if present
+      return value.substring(0, 16);
+    }
+    
+    // Handle ISO 8601 format with timezone (e.g., 2025-11-22T08:00:00Z)
+    if (value.includes('Z') || /[+-]\d{2}:\d{2}$/.test(value)) {
+      try {
+        const date = new Date(value);
+        if (!isNaN(date.getTime())) {
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const day = String(date.getDate()).padStart(2, '0');
+          const hours = String(date.getHours()).padStart(2, '0');
+          const minutes = String(date.getMinutes()).padStart(2, '0');
+          return `${year}-${month}-${day}T${hours}:${minutes}`;
+        }
+      } catch (error) {
+        // Fall through to general parsing
+      }
+    }
+    
+    // Try to parse and format the date
+    try {
+      const date = new Date(value);
+      if (isNaN(date.getTime())) return '';
+      
+      // Format to YYYY-MM-DDTHH:mm
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      
+      return `${year}-${month}-${day}T${hours}:${minutes}`;
+    } catch (error) {
+      return '';
+    }
+  }, []);
+
+  // Expose promotion form setter for test automation
+  useEffect(() => {
+    // @ts-ignore - Exposing for test automation
+    window.__setPromotionFormData = (data: Partial<PromotionFormData>) => {
+      setPromotionForm(prev => ({
+        ...prev,
+        ...data,
+        start_date: data.start_date ? normalizeDateTimeValue(data.start_date) : prev.start_date,
+        end_date: data.end_date ? normalizeDateTimeValue(data.end_date) : prev.end_date,
+      }));
+    };
+    
+    return () => {
+      // @ts-ignore
+      delete window.__setPromotionFormData;
+    };
+  }, [normalizeDateTimeValue]);
 
   // ============================================================================
   // REACT QUERY: FETCH PRODUCTS
@@ -825,20 +888,26 @@ const UV_PricingPromotions_Supplier: React.FC = () => {
                     id="promotion-start-date"
                     name="start_date"
                     type="datetime-local"
-                    required
-                    value={promotionForm.start_date}
-                    onChange={(e) => handleFormChange('start_date', e.target.value)}
+                    value={normalizeDateTimeValue(promotionForm.start_date)}
+                    onChange={(e) => {
+                      const normalized = normalizeDateTimeValue(e.target.value);
+                      if (normalized) {
+                        handleFormChange('start_date', normalized);
+                      }
+                    }}
                     onInput={(e) => {
                       // Handle programmatic input for automated testing
                       const target = e.target as HTMLInputElement;
-                      if (target.value && target.value !== promotionForm.start_date) {
-                        handleFormChange('start_date', target.value);
+                      const normalized = normalizeDateTimeValue(target.value);
+                      if (normalized && normalized !== promotionForm.start_date) {
+                        handleFormChange('start_date', normalized);
                       }
                     }}
                     onBlur={(e) => {
                       // Ensure value is set even if onChange didn't fire
-                      if (e.target.value && e.target.value !== promotionForm.start_date) {
-                        handleFormChange('start_date', e.target.value);
+                      const normalized = normalizeDateTimeValue(e.target.value);
+                      if (normalized && normalized !== promotionForm.start_date) {
+                        handleFormChange('start_date', normalized);
                       }
                     }}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all"
@@ -854,20 +923,26 @@ const UV_PricingPromotions_Supplier: React.FC = () => {
                     id="promotion-end-date"
                     name="end_date"
                     type="datetime-local"
-                    required
-                    value={promotionForm.end_date}
-                    onChange={(e) => handleFormChange('end_date', e.target.value)}
+                    value={normalizeDateTimeValue(promotionForm.end_date)}
+                    onChange={(e) => {
+                      const normalized = normalizeDateTimeValue(e.target.value);
+                      if (normalized) {
+                        handleFormChange('end_date', normalized);
+                      }
+                    }}
                     onInput={(e) => {
                       // Handle programmatic input for automated testing
                       const target = e.target as HTMLInputElement;
-                      if (target.value && target.value !== promotionForm.end_date) {
-                        handleFormChange('end_date', target.value);
+                      const normalized = normalizeDateTimeValue(target.value);
+                      if (normalized && normalized !== promotionForm.end_date) {
+                        handleFormChange('end_date', normalized);
                       }
                     }}
                     onBlur={(e) => {
                       // Ensure value is set even if onChange didn't fire
-                      if (e.target.value && e.target.value !== promotionForm.end_date) {
-                        handleFormChange('end_date', e.target.value);
+                      const normalized = normalizeDateTimeValue(e.target.value);
+                      if (normalized && normalized !== promotionForm.end_date) {
+                        handleFormChange('end_date', normalized);
                       }
                     }}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all"
