@@ -1472,6 +1472,138 @@ app.get('/api/suppliers/:supplier_id/products', async (req, res) => {
   }
 });
 
+// Supplier Analytics Routes
+app.get('/api/suppliers/me/analytics/dashboard', authenticateToken, requireSupplier, async (req: AuthRequest, res: Response) => {
+  try {
+    const supplier_id = req.user.supplier_id;
+    
+    // Get supplier data
+    const supplierResult = await pool.query(
+      'SELECT total_sales, total_orders, fulfillment_rate, rating_average, total_reviews FROM suppliers WHERE supplier_id = $1',
+      [supplier_id]
+    );
+    const supplier = supplierResult.rows[0];
+    
+    // Get product count
+    const productResult = await pool.query(
+      'SELECT COUNT(*) as count FROM products WHERE supplier_id = $1 AND status != \'discontinued\'',
+      [supplier_id]
+    );
+    
+    // Get customer count (unique customers who have ordered)
+    const customerResult = await pool.query(
+      'SELECT COUNT(DISTINCT customer_id) as count FROM orders WHERE supplier_id = $1',
+      [supplier_id]
+    );
+    
+    const avg_order_value = supplier.total_orders > 0 ? supplier.total_sales / supplier.total_orders : 0;
+    
+    res.json({
+      total_sales: parseFloat(supplier.total_sales) || 0,
+      total_orders: parseInt(supplier.total_orders) || 0,
+      avg_order_value: avg_order_value,
+      fulfillment_rate: parseFloat(supplier.fulfillment_rate) || 0,
+      customer_count: parseInt(customerResult.rows[0].count) || 0,
+      product_count: parseInt(productResult.rows[0].count) || 0,
+      rating_average: parseFloat(supplier.rating_average) || 0
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'InternalServerError', message: error.message });
+  }
+});
+
+app.get('/api/suppliers/me/analytics/sales', authenticateToken, requireSupplier, async (req: AuthRequest, res: Response) => {
+  try {
+    res.json({
+      daily_sales: [],
+      weekly_sales: [],
+      monthly_sales: [],
+      revenue_trends: [],
+      order_volume_trends: []
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'InternalServerError', message: error.message });
+  }
+});
+
+app.get('/api/suppliers/me/analytics/products', authenticateToken, requireSupplier, async (req: AuthRequest, res: Response) => {
+  try {
+    const supplier_id = req.user.supplier_id;
+    
+    // Get top products by sales
+    const topProducts = await pool.query(
+      'SELECT product_id, product_name, sales_count, views_count, stock_quantity FROM products WHERE supplier_id = $1 ORDER BY sales_count DESC LIMIT 10',
+      [supplier_id]
+    );
+    
+    res.json({
+      top_products: topProducts.rows.map(p => ({
+        product_id: p.product_id,
+        product_name: p.product_name,
+        total_sold: parseInt(p.sales_count) || 0,
+        total_revenue: 0,
+        conversion_rate: 0
+      })),
+      low_stock_products: [],
+      category_breakdown: [],
+      conversion_metrics: {
+        view_to_cart_rate: 0,
+        cart_to_order_rate: 0
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'InternalServerError', message: error.message });
+  }
+});
+
+app.get('/api/suppliers/me/analytics/customers', authenticateToken, requireSupplier, async (req: AuthRequest, res: Response) => {
+  try {
+    res.json({
+      acquisition_metrics: {
+        new_customers: 0,
+        returning_customers: 0,
+        growth_rate: 0
+      },
+      retention_metrics: {
+        repeat_customers: 0,
+        retention_rate: 0,
+        churn_rate: 0
+      },
+      customer_segments: [],
+      geographic_data: []
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'InternalServerError', message: error.message });
+  }
+});
+
+app.get('/api/suppliers/me/analytics/financials', authenticateToken, requireSupplier, async (req: AuthRequest, res: Response) => {
+  try {
+    const supplier_id = req.user.supplier_id;
+    
+    const supplierResult = await pool.query(
+      'SELECT total_sales, commission_rate FROM suppliers WHERE supplier_id = $1',
+      [supplier_id]
+    );
+    const supplier = supplierResult.rows[0];
+    
+    const gross_revenue = parseFloat(supplier.total_sales) || 0;
+    const commission_rate = parseFloat(supplier.commission_rate) || 0;
+    const commission_costs = gross_revenue * (commission_rate / 100);
+    const net_revenue = gross_revenue - commission_costs;
+    
+    res.json({
+      gross_revenue,
+      net_revenue,
+      commission_costs,
+      profit_margins: [],
+      payout_history: []
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'InternalServerError', message: error.message });
+  }
+});
+
 app.get('/api/cart', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
   try {
     const cartResult = await pool.query(

@@ -235,7 +235,7 @@ const UV_ProductEdit_Supplier: React.FC = () => {
 
   // Fetch categories
   const { 
-    data: available_categories = [],
+    data: categoriesData,
     isLoading: is_loading_categories 
   } = useQuery({
     queryKey: ['categories', 'active'],
@@ -244,6 +244,9 @@ const UV_ProductEdit_Supplier: React.FC = () => {
     staleTime: 5 * 60 * 1000 // Cache for 5 minutes
   });
 
+  // Ensure available_categories is always an array
+  const available_categories = Array.isArray(categoriesData) ? categoriesData : [];
+
   // Update product mutation
   const update_mutation = useMutation({
     mutationFn: (payload: UpdateProductPayload) => updateProduct(product_id!, payload, auth_token!),
@@ -251,6 +254,7 @@ const UV_ProductEdit_Supplier: React.FC = () => {
       // Invalidate queries
       queryClient.invalidateQueries({ queryKey: ['product', product_id] });
       queryClient.invalidateQueries({ queryKey: ['supplier-products'] });
+      queryClient.invalidateQueries({ queryKey: ['supplier-inventory'] });
       
       // Reset state
       setHasUnsavedChanges(false);
@@ -462,7 +466,7 @@ const UV_ProductEdit_Supplier: React.FC = () => {
   const handleAddImage = () => {
     if (!new_image_url.trim() || !edited_product) return;
     
-    const current_images = edited_product.images || [];
+    const current_images = Array.isArray(edited_product.images) ? edited_product.images : [];
     const updated_images = [...current_images, new_image_url.trim()];
     
     updateField('images', updated_images);
@@ -479,7 +483,7 @@ const UV_ProductEdit_Supplier: React.FC = () => {
   const handleRemoveImage = (index: number) => {
     if (!edited_product) return;
     
-    const current_images = edited_product.images || [];
+    const current_images = Array.isArray(edited_product.images) ? edited_product.images : [];
     const updated_images = current_images.filter((_, i) => i !== index);
     const removed_url = current_images[index];
     
@@ -500,7 +504,7 @@ const UV_ProductEdit_Supplier: React.FC = () => {
   const handleAddTag = () => {
     if (!new_tag.trim() || !edited_product) return;
     
-    const current_tags = edited_product.tags || [];
+    const current_tags = Array.isArray(edited_product.tags) ? edited_product.tags : [];
     if (current_tags.includes(new_tag.trim())) return;
     
     updateField('tags', [...current_tags, new_tag.trim()]);
@@ -511,7 +515,7 @@ const UV_ProductEdit_Supplier: React.FC = () => {
   const handleRemoveTag = (tag: string) => {
     if (!edited_product) return;
     
-    const current_tags = edited_product.tags || [];
+    const current_tags = Array.isArray(edited_product.tags) ? edited_product.tags : [];
     updateField('tags', current_tags.filter(t => t !== tag));
   };
 
@@ -542,7 +546,7 @@ const UV_ProductEdit_Supplier: React.FC = () => {
   const handleAddKeyFeature = () => {
     if (!edited_product) return;
     
-    const current_features = edited_product.key_features || [];
+    const current_features = Array.isArray(edited_product.key_features) ? edited_product.key_features : [];
     updateField('key_features', [...current_features, '']);
   };
 
@@ -550,7 +554,7 @@ const UV_ProductEdit_Supplier: React.FC = () => {
   const handleUpdateKeyFeature = (index: number, value: string) => {
     if (!edited_product) return;
     
-    const current_features = edited_product.key_features || [];
+    const current_features = Array.isArray(edited_product.key_features) ? edited_product.key_features : [];
     const updated_features = [...current_features];
     updated_features[index] = value;
     updateField('key_features', updated_features);
@@ -560,7 +564,7 @@ const UV_ProductEdit_Supplier: React.FC = () => {
   const handleRemoveKeyFeature = (index: number) => {
     if (!edited_product) return;
     
-    const current_features = edited_product.key_features || [];
+    const current_features = Array.isArray(edited_product.key_features) ? edited_product.key_features : [];
     updateField('key_features', current_features.filter((_, i) => i !== index));
   };
 
@@ -747,7 +751,7 @@ const UV_ProductEdit_Supplier: React.FC = () => {
                     Key Features
                   </label>
                   <div className="space-y-2">
-                    {(edited_product.key_features || []).map((feature, index) => (
+                    {Array.isArray(edited_product.key_features) && edited_product.key_features.map((feature, index) => (
                       <div key={index} className="flex items-center space-x-2">
                         <input
                           type="text"
@@ -925,7 +929,7 @@ const UV_ProductEdit_Supplier: React.FC = () => {
               <h2 className="text-xl font-semibold text-gray-900 mb-6">Product Images</h2>
               
               {/* Current Images */}
-              {edited_product.images && edited_product.images.length > 0 && (
+              {Array.isArray(edited_product.images) && edited_product.images.length > 0 && (
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                   {edited_product.images.map((url, index) => (
                     <div key={index} className="relative group">
@@ -1043,7 +1047,7 @@ const UV_ProductEdit_Supplier: React.FC = () => {
                   Tags
                 </label>
                 <div className="flex flex-wrap gap-2 mb-3">
-                  {(edited_product.tags || []).map(tag => (
+                  {Array.isArray(edited_product.tags) && edited_product.tags.map(tag => (
                     <span key={tag} className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
                       {tag}
                       <button

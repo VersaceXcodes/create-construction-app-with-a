@@ -459,17 +459,26 @@ const UV_InventoryManagement_Supplier: React.FC = () => {
               
               <div className="flex items-center space-x-3">
                 {bulkUpdateState.selected_product_ids.length > 0 && (
-                  <div className="flex items-center space-x-2 bg-blue-50 border border-blue-200 rounded-lg px-4 py-2">
-                    <span className="text-sm font-medium text-blue-800">
-                      {bulkUpdateState.selected_product_ids.length} selected
-                    </span>
+                  <>
+                    <div className="flex items-center space-x-2 bg-blue-50 border border-blue-200 rounded-lg px-4 py-2">
+                      <span className="text-sm font-medium text-blue-800">
+                        {bulkUpdateState.selected_product_ids.length} selected
+                      </span>
+                      <button
+                        onClick={() => setBulkUpdateState(prev => ({ ...prev, selected_product_ids: [] }))}
+                        className="text-blue-600 hover:text-blue-700"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
                     <button
-                      onClick={() => setBulkUpdateState(prev => ({ ...prev, selected_product_ids: [] }))}
-                      className="text-blue-600 hover:text-blue-700"
+                      onClick={() => alert('Bulk update functionality coming soon! You can update stock quantities individually for now.')}
+                      className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
                     >
-                      <X className="w-4 h-4" />
+                      <Boxes className="w-4 h-4 mr-2" />
+                      Bulk Update
                     </button>
-                  </div>
+                  </>
                 )}
                 
                 <button
@@ -762,7 +771,6 @@ const UV_InventoryManagement_Supplier: React.FC = () => {
                                 value={editStockValue}
                                 onChange={(e) => setEditStockValue(Number(e.target.value))}
                                 onKeyPress={(e) => handleKeyPress(e, product.product_id)}
-                                onBlur={() => saveStockUpdate(product.product_id)}
                                 autoFocus
                                 className="w-24 px-2 py-1 border border-blue-500 rounded focus:ring-2 focus:ring-blue-500 text-sm"
                               />
