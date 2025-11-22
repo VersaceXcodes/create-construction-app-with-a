@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promotion DateTime Input Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        input[type="datetime-local"],
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        input:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+        input:invalid {
+            border-color: #ef4444;
+        }
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+        .btn-test {
+            background: #10b981;
+            color: white;
+        }
+        .btn-test:hover {
+            background: #059669;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+        .result.success {
+            background: #d1fae5;
+            border: 1px solid #10b981;
+            color: #065f46;
+        }
+        .result.error {
+            background: #fee2e2;
+            border: 1px solid #ef4444;
+            color: #991b1b;
+        }
+        .result.info {
+            background: #dbeafe;
+            border: 1px solid #3b82f6;
+            color: #1e40af;
+        }
+        pre {
+            background: #f3f4f6;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+        .test-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #e5e7eb;
+        }
+        .test-section h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Promotion DateTime Input Test</h1>
+        <p class="subtitle">Test the datetime-local input validation fix</p>
+
+        <form id="promotionForm">
+            <div class="form-group">
+                <label for="promotion-name">Promotion Name *</label>
+                <input type="text" id="promotion-name" name="promotion_name" required value="Test Promotion">
+            </div>
+
+            <div class="form-group">
+                <label for="start-date">Start Date *</label>
+                <input type="datetime-local" id="start-date" name="start_date" required>
+            </div>
+
+            <div class="form-group">
+                <label for="end-date">End Date *</label>
+                <input type="datetime-local" id="end-date" name="end_date" required>
+            </div>
+
+            <div class="buttons">
+                <button type="submit" class="btn-primary">Submit Form</button>
+                <button type="button" class="btn-secondary" onclick="clearForm()">Clear</button>
+                <button type="button" class="btn-test" onclick="runAutomationTest()">Run Automation Test</button>
+            </div>
+        </form>
+
+        <div id="result" class="result"></div>
+
+        <div class="test-section">
+            <h2>📋 Test Scenarios</h2>
+            <div class="buttons">
+                <button type="button" class="btn-test" onclick="testScenario1()">Test 1: ISO with Timezone</button>
+                <button type="button" class="btn-test" onclick="testScenario2()">Test 2: ISO with Seconds</button>
+                <button type="button" class="btn-test" onclick="testScenario3()">Test 3: Correct Format</button>
+                <button type="button" class="btn-test" onclick="testScenario4()">Test 4: Future Dates</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Normalization function (matches the React component)
+        function normalizeDateTimeValue(value) {
+            if (!value) return '';
+            
+            // Already in correct format (YYYY-MM-DDTHH:mm or YYYY-MM-DDTHH:mm:ss)
+            if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?$/.test(value)) {
+                return value.substring(0, 16);
+            }
+            
+            // Handle ISO 8601 with timezone
+            if (value.includes('Z') || /[+-]\d{2}:\d{2}$/.test(value)) {
+                try {
+                    const date = new Date(value);
+                    if (!isNaN(date.getTime())) {
+                        return formatDateTimeLocal(date);
+                    }
+                } catch (error) {
+                    console.error('Failed to parse ISO date:', value);
+                }
+            }
+            
+            // General date parsing
+            try {
+                const date = new Date(value);
+                if (!isNaN(date.getTime())) {
+                    return formatDateTimeLocal(date);
+                }
+            } catch (error) {
+                console.error('Failed to parse date:', value);
+            }
+            
+            return '';
+        }
+
+        function formatDateTimeLocal(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            return `${year}-${month}-${day}T${hours}:${minutes}`;
+        }
+
+        function setDateValue(inputId, value) {
+            const input = document.getElementById(inputId);
+            const normalized = normalizeDateTimeValue(value);
+            input.value = normalized;
+            
+            // Trigger validation
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+            input.dispatchEvent(new Event('change', { bubbles: true }));
+            
+            return normalized;
+        }
+
+        function showResult(message, type = 'info', data = null) {
+            const result = document.getElementById('result');
+            result.className = `result ${type}`;
+            result.style.display = 'block';
+            
+            let html = `<strong>${message}</strong>`;
+            if (data) {
+                html += `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            }
+            result.innerHTML = html;
+        }
+
+        document.getElementById('promotionForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Check form validity
+            if (e.target.checkValidity()) {
+                showResult('✅ Form is valid and submitted successfully!', 'success', data);
+            } else {
+                showResult('❌ Form validation failed', 'error', {
+                    validity: {
+                        startDate: document.getElementById('start-date').validity,
+                        endDate: document.getElementById('end-date').validity
+                    }
+                });
+            }
+        });
+
+        function clearForm() {
+            document.getElementById('promotionForm').reset();
+            document.getElementById('result').style.display = 'none';
+        }
+
+        function runAutomationTest() {
+            showResult('🤖 Running automation test...', 'info');
+            
+            // Simulate test automation setting values
+            const startValue = setDateValue('start-date', '2025-12-01T09:00:00Z');
+            const endValue = setDateValue('end-date', '2025-12-31T17:00:00Z');
+            
+            setTimeout(() => {
+                const form = document.getElementById('promotionForm');
+                const isValid = form.checkValidity();
+                
+                if (isValid) {
+                    showResult('✅ Automation test PASSED! Form is valid.', 'success', {
+                        startDate: startValue,
+                        endDate: endValue,
+                        inputValidity: {
+                            startDate: document.getElementById('start-date').validity.valid,
+                            endDate: document.getElementById('end-date').validity.valid
+                        }
+                    });
+                } else {
+                    showResult('❌ Automation test FAILED! Form validation error.', 'error', {
+                        startDate: startValue,
+                        endDate: endValue,
+                        validity: {
+                            startDate: document.getElementById('start-date').validationMessage,
+                            endDate: document.getElementById('end-date').validationMessage
+                        }
+                    });
+                }
+            }, 100);
+        }
+
+        function testScenario1() {
+            showResult('Testing: ISO 8601 with timezone (2025-12-01T09:00:00Z)', 'info');
+            const start = setDateValue('start-date', '2025-12-01T09:00:00Z');
+            const end = setDateValue('end-date', '2025-12-31T17:00:00Z');
+            
+            setTimeout(() => {
+                const isValid = document.getElementById('promotionForm').checkValidity();
+                showResult(isValid ? '✅ Test passed' : '❌ Test failed', isValid ? 'success' : 'error', {
+                    startNormalized: start,
+                    endNormalized: end,
+                    valid: isValid
+                });
+            }, 100);
+        }
+
+        function testScenario2() {
+            showResult('Testing: ISO 8601 with seconds (2025-12-01T09:00:00)', 'info');
+            const start = setDateValue('start-date', '2025-12-01T09:00:00');
+            const end = setDateValue('end-date', '2025-12-31T17:00:00');
+            
+            setTimeout(() => {
+                const isValid = document.getElementById('promotionForm').checkValidity();
+                showResult(isValid ? '✅ Test passed' : '❌ Test failed', isValid ? 'success' : 'error', {
+                    startNormalized: start,
+                    endNormalized: end,
+                    valid: isValid
+                });
+            }, 100);
+        }
+
+        function testScenario3() {
+            showResult('Testing: Correct format (2025-12-01T09:00)', 'info');
+            const start = setDateValue('start-date', '2025-12-01T09:00');
+            const end = setDateValue('end-date', '2025-12-31T17:00');
+            
+            setTimeout(() => {
+                const isValid = document.getElementById('promotionForm').checkValidity();
+                showResult(isValid ? '✅ Test passed' : '❌ Test failed', isValid ? 'success' : 'error', {
+                    startNormalized: start,
+                    endNormalized: end,
+                    valid: isValid
+                });
+            }, 100);
+        }
+
+        function testScenario4() {
+            showResult('Testing: Future dates (next month)', 'info');
+            const now = new Date();
+            const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1, 9, 0);
+            const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 2, 0, 17, 0);
+            
+            const start = setDateValue('start-date', nextMonth.toISOString());
+            const end = setDateValue('end-date', endOfMonth.toISOString());
+            
+            setTimeout(() => {
+                const isValid = document.getElementById('promotionForm').checkValidity();
+                showResult(isValid ? '✅ Test passed' : '❌ Test failed', isValid ? 'success' : 'error', {
+                    startNormalized: start,
+                    endNormalized: end,
+                    valid: isValid
+                });
+            }, 100);
+        }
+
+        // Auto-run automation test on load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                showResult('Page loaded. Click "Run Automation Test" to verify the fix.', 'info');
+            }, 500);
+        });
+    </script>
+</body>
+</html>

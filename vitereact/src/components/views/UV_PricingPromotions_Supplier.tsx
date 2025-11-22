@@ -216,11 +216,19 @@ const UV_PricingPromotions_Supplier: React.FC = () => {
   useEffect(() => {
     // @ts-ignore - Exposing for test automation
     window.__setPromotionFormData = (data: Partial<PromotionFormData>) => {
+      const updates: Partial<PromotionFormData> = { ...data };
+      
+      // Normalize datetime fields if provided
+      if (data.start_date !== undefined) {
+        updates.start_date = normalizeDateTimeValue(data.start_date);
+      }
+      if (data.end_date !== undefined) {
+        updates.end_date = normalizeDateTimeValue(data.end_date);
+      }
+      
       setPromotionForm(prev => ({
         ...prev,
-        ...data,
-        start_date: data.start_date ? normalizeDateTimeValue(data.start_date) : prev.start_date,
-        end_date: data.end_date ? normalizeDateTimeValue(data.end_date) : prev.end_date,
+        ...updates,
       }));
     };
     
@@ -885,7 +893,7 @@ const UV_PricingPromotions_Supplier: React.FC = () => {
                 </div>
               </div>
 
-               {/* Date Range */}
+                {/* Date Range */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label htmlFor="promotion-start-date" className="block text-sm font-medium text-gray-700 mb-2">
@@ -896,11 +904,10 @@ const UV_PricingPromotions_Supplier: React.FC = () => {
                     name="start_date"
                     type="datetime-local"
                     required
-                    value={promotionForm.start_date}
+                    value={normalizeDateTimeValue(promotionForm.start_date)}
                     onChange={(e) => {
-                      // Always normalize and store the value
-                      const normalized = normalizeDateTimeValue(e.target.value);
-                      handleFormChange('start_date', normalized);
+                      // Store the raw input value directly - browser ensures it's in correct format
+                      handleFormChange('start_date', e.target.value);
                     }}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all"
                     data-testid="promotion-start-date"
@@ -916,11 +923,10 @@ const UV_PricingPromotions_Supplier: React.FC = () => {
                     name="end_date"
                     type="datetime-local"
                     required
-                    value={promotionForm.end_date}
+                    value={normalizeDateTimeValue(promotionForm.end_date)}
                     onChange={(e) => {
-                      // Always normalize and store the value
-                      const normalized = normalizeDateTimeValue(e.target.value);
-                      handleFormChange('end_date', normalized);
+                      // Store the raw input value directly - browser ensures it's in correct format
+                      handleFormChange('end_date', e.target.value);
                     }}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all"
                     data-testid="promotion-end-date"
