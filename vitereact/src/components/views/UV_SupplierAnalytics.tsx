@@ -115,8 +115,21 @@ interface DateSelection {
 // API FUNCTIONS
 // ============================================================================
 
+// Helper to get auth token from Zustand store
+const getAuthToken = (): string | null => {
+  try {
+    const stored = localStorage.getItem('app-storage');
+    if (!stored) return null;
+    const parsed = JSON.parse(stored);
+    return parsed?.state?.authentication_state?.auth_token || null;
+  } catch (error) {
+    console.error('Error reading auth token:', error);
+    return null;
+  }
+};
+
 const fetchDashboardMetrics = async (dateRange: string): Promise<DashboardMetrics> => {
-  const token = localStorage.getItem('auth_token');
+  const token = getAuthToken();
   const response = await axios.get(
     `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api/suppliers/me/analytics/dashboard`,
     {
@@ -128,7 +141,7 @@ const fetchDashboardMetrics = async (dateRange: string): Promise<DashboardMetric
 };
 
 const fetchSalesAnalytics = async (dateRange: string): Promise<SalesData> => {
-  const token = localStorage.getItem('auth_token');
+  const token = getAuthToken();
   const response = await axios.get(
     `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api/suppliers/me/analytics/sales`,
     {
@@ -140,7 +153,7 @@ const fetchSalesAnalytics = async (dateRange: string): Promise<SalesData> => {
 };
 
 const fetchProductPerformance = async (dateRange: string): Promise<ProductInsights> => {
-  const token = localStorage.getItem('auth_token');
+  const token = getAuthToken();
   const response = await axios.get(
     `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api/suppliers/me/analytics/products`,
     {
@@ -152,7 +165,7 @@ const fetchProductPerformance = async (dateRange: string): Promise<ProductInsigh
 };
 
 const fetchCustomerInsights = async (dateRange: string): Promise<CustomerInsights> => {
-  const token = localStorage.getItem('auth_token');
+  const token = getAuthToken();
   const response = await axios.get(
     `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api/suppliers/me/analytics/customers`,
     {
@@ -164,7 +177,7 @@ const fetchCustomerInsights = async (dateRange: string): Promise<CustomerInsight
 };
 
 const fetchFinancialOverview = async (dateRange: string): Promise<FinancialOverview> => {
-  const token = localStorage.getItem('auth_token');
+  const token = getAuthToken();
   const response = await axios.get(
     `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api/suppliers/me/analytics/financials`,
     {
@@ -176,7 +189,7 @@ const fetchFinancialOverview = async (dateRange: string): Promise<FinancialOverv
 };
 
 const exportAnalyticsData = async (format: string, dateRange: string, sections: string[]): Promise<Blob> => {
-  const token = localStorage.getItem('auth_token');
+  const token = getAuthToken();
   const response = await axios.post(
     `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api/suppliers/me/analytics/export`,
     { format, date_range: dateRange, sections },

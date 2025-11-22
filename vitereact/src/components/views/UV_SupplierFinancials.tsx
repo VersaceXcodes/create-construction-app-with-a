@@ -81,6 +81,19 @@ interface FinancialFilters {
 // API FUNCTIONS
 // ============================================================================
 
+// Helper to get auth token from Zustand store
+const getAuthToken = (): string | null => {
+  try {
+    const stored = localStorage.getItem('app-storage');
+    if (!stored) return null;
+    const parsed = JSON.parse(stored);
+    return parsed?.state?.authentication_state?.auth_token || null;
+  } catch (error) {
+    console.error('Error reading auth token:', error);
+    return null;
+  }
+};
+
 const fetchPayoutHistory = async (supplier_id: string, filters: FinancialFilters): Promise<PayoutRecord[]> => {
   const params: any = {
     supplier_id,
@@ -97,7 +110,7 @@ const fetchPayoutHistory = async (supplier_id: string, filters: FinancialFilters
   const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api/admin/payouts`, {
     params,
     headers: {
-      'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+      'Authorization': `Bearer ${getAuthToken()}`
     }
   });
 
@@ -107,7 +120,7 @@ const fetchPayoutHistory = async (supplier_id: string, filters: FinancialFilters
 const fetchSupplierProfile = async (): Promise<any> => {
   const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api/suppliers/me`, {
     headers: {
-      'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+      'Authorization': `Bearer ${getAuthToken()}`
     }
   });
   return response.data;
@@ -119,7 +132,7 @@ const updatePayoutSettings = async (settings: Partial<BankAccountSettings>): Pro
     settings,
     {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+        'Authorization': `Bearer ${getAuthToken()}`
       }
     }
   );
