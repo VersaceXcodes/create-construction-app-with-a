@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Datetime Input Manual Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-case {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+        button {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 3px;
+        }
+        .error {
+            color: red;
+        }
+        .success {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <h1>Datetime Input Manual Test</h1>
+    
+    <div class="test-case">
+        <h3>Test Case 1: Setting value programmatically</h3>
+        <label>Start Date:</label>
+        <input type="datetime-local" id="test1-start" />
+        <label>End Date:</label>
+        <input type="datetime-local" id="test1-end" />
+        <button onclick="testCase1()">Set Values (2026-01-01T10:00 and 2026-01-31T18:00)</button>
+        <div id="result1" class="result"></div>
+    </div>
+
+    <div class="test-case">
+        <h3>Test Case 2: Form validation</h3>
+        <form id="test-form" onsubmit="testCase2(event)">
+            <label>Start Date (required):</label>
+            <input type="datetime-local" id="test2-start" required />
+            <label>End Date (required):</label>
+            <input type="datetime-local" id="test2-end" required />
+            <button type="submit">Submit Form</button>
+        </form>
+        <div id="result2" class="result"></div>
+    </div>
+
+    <div class="test-case">
+        <h3>Test Case 3: Value normalization</h3>
+        <label>Input various formats:</label>
+        <input type="text" id="test3-input" placeholder="e.g., 2026-01-01T10:00:00Z" />
+        <button onclick="testCase3()">Normalize and Set</button>
+        <label>Result in datetime-local:</label>
+        <input type="datetime-local" id="test3-result" />
+        <div id="result3" class="result"></div>
+    </div>
+
+    <script>
+        // Test normalization function (same as in component)
+        function normalizeDateTimeValue(value) {
+            if (!value) return '';
+            
+            // If already in correct format (YYYY-MM-DDTHH:mm), return as-is
+            if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value)) {
+                return value;
+            }
+            
+            // If has seconds (YYYY-MM-DDTHH:mm:ss), remove them
+            if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/.test(value)) {
+                return value.substring(0, 16);
+            }
+            
+            // Handle ISO 8601 format with timezone or milliseconds
+            try {
+                const date = new Date(value);
+                if (isNaN(date.getTime())) {
+                    console.warn('Invalid date:', value);
+                    return '';
+                }
+                
+                // Format to YYYY-MM-DDTHH:mm
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                const hours = String(date.getHours()).padStart(2, '0');
+                const minutes = String(date.getMinutes()).padStart(2, '0');
+                
+                return `${year}-${month}-${day}T${hours}:${minutes}`;
+            } catch (error) {
+                console.error('Error parsing date:', error, 'value:', value);
+                return '';
+            }
+        }
+
+        function testCase1() {
+            const startInput = document.getElementById('test1-start');
+            const endInput = document.getElementById('test1-end');
+            const result = document.getElementById('result1');
+            
+            try {
+                startInput.value = '2026-01-01T10:00';
+                endInput.value = '2026-01-31T18:00';
+                
+                // Check validity
+                const startValid = startInput.checkValidity();
+                const endValid = endInput.checkValidity();
+                
+                result.innerHTML = `
+                    <p>Start: ${startInput.value} (Valid: ${startValid})</p>
+                    <p>End: ${endInput.value} (Valid: ${endValid})</p>
+                    <p class="${startValid && endValid ? 'success' : 'error'}">
+                        ${startValid && endValid ? 'SUCCESS' : 'FAILED'}
+                    </p>
+                `;
+            } catch (error) {
+                result.innerHTML = `<p class="error">Error: ${error.message}</p>`;
+            }
+        }
+
+        function testCase2(event) {
+            event.preventDefault();
+            const startInput = document.getElementById('test2-start');
+            const endInput = document.getElementById('test2-end');
+            const result = document.getElementById('result2');
+            
+            const startValid = startInput.checkValidity();
+            const endValid = endInput.checkValidity();
+            
+            result.innerHTML = `
+                <p>Start: ${startInput.value} (Valid: ${startValid})</p>
+                <p>End: ${endInput.value} (Valid: ${endValid})</p>
+                <p class="${startValid && endValid ? 'success' : 'error'}">
+                    Form ${startValid && endValid ? 'submitted successfully!' : 'validation failed!'}
+                </p>
+            `;
+        }
+
+        function testCase3() {
+            const input = document.getElementById('test3-input');
+            const result = document.getElementById('test3-result');
+            const resultDiv = document.getElementById('result3');
+            
+            try {
+                const normalized = normalizeDateTimeValue(input.value);
+                result.value = normalized;
+                
+                const valid = result.checkValidity();
+                
+                resultDiv.innerHTML = `
+                    <p>Input: ${input.value}</p>
+                    <p>Normalized: ${normalized}</p>
+                    <p>Valid: ${valid}</p>
+                    <p class="${valid ? 'success' : 'error'}">
+                        ${valid ? 'SUCCESS' : 'FAILED'}
+                    </p>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">Error: ${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
