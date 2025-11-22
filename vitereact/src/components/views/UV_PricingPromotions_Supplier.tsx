@@ -813,6 +813,7 @@ const UV_PricingPromotions_Supplier: React.FC = () => {
                   <input
                     type="datetime-local"
                     required
+                    min={new Date().toISOString().slice(0, 16)}
                     value={promotionForm.start_date}
                     onChange={(e) => handleFormChange('start_date', e.target.value)}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all"
@@ -825,6 +826,7 @@ const UV_PricingPromotions_Supplier: React.FC = () => {
                   <input
                     type="datetime-local"
                     required
+                    min={promotionForm.start_date || new Date().toISOString().slice(0, 16)}
                     value={promotionForm.end_date}
                     onChange={(e) => handleFormChange('end_date', e.target.value)}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all"

@@ -3045,6 +3045,49 @@ app.get('/api/promotions', async (req, res) => {
         res.status(500).json({ error: 'InternalServerError', message: error.message });
     }
 });
+app.post('/api/promotions', authenticateToken, requireSupplier, async (req, res) => {
+    try {
+        const { supplier_id, promotion_name, promotion_type, discount_type, discount_value, start_date, end_date, applicable_products, promo_code, minimum_purchase_amount, is_active } = req.body;
+        // Validation
+        if (!promotion_name || !promotion_type || !discount_type || !discount_value || !start_date || !end_date) {
+            return res.status(400).json({ error: 'ValidationError', message: 'Missing required fields' });
+        }
+        // Verify supplier owns this promotion
+        if (supplier_id && supplier_id !== req.user.supplier_id) {
+            return res.status(403).json({ error: 'Forbidden', message: 'Cannot create promotions for other suppliers' });
+        }
+        const promotion_id = uuidv4();
+        const now = new Date().toISOString();
+        const result = await pool.query(`INSERT INTO promotions (
+        promotion_id, supplier_id, promotion_name, promotion_type, discount_type, 
+        discount_value, start_date, end_date, applicable_products, promo_code, 
+        minimum_purchase_amount, is_active, usage_count, created_at, updated_at
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) RETURNING *`, [
+            promotion_id,
+            supplier_id || req.user.supplier_id,
+            promotion_name,
+            promotion_type,
+            discount_type,
+            discount_value,
+            start_date,
+            end_date,
+            applicable_products ? JSON.stringify(applicable_products) : null,
+            promo_code || null,
+            minimum_purchase_amount || null,
+            is_active !== false,
+            0,
+            now,
+            now
+        ]);
+        res.status(201).json(result.rows[0]);
+    }
+    catch (error) {
+        if (error.code === '23505' && error.constraint === 'promotions_promo_code_key') {
+            return res.status(409).json({ error: 'ConflictError', message: 'Promo code already exists' });
+        }
+        res.status(500).json({ error: 'InternalServerError', message: error.message });
+    }
+});
 app.post('/api/promotions/validate', async (req, res) => {
     try {
         const { promo_code, cart_total } = req.body;
