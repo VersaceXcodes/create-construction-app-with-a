@@ -477,7 +477,14 @@ const UV_CustomerDashboard: React.FC = () => {
                             className="h-20 w-20 rounded-lg object-cover border border-gray-200"
                             onError={(e) => {
                               const target = e.target as HTMLImageElement;
-                              target.src = '/placeholder-product.png';
+                              // Prevent infinite loop by only setting fallback once
+                              if (!target.dataset.fallbackAttempted) {
+                                target.dataset.fallbackAttempted = 'true';
+                                target.src = '/placeholder-product.png';
+                              } else {
+                                // If fallback also fails, remove the error handler to stop loop
+                                target.onError = null;
+                              }
                             }}
                           />
 
@@ -575,7 +582,14 @@ const UV_CustomerDashboard: React.FC = () => {
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                               onError={(e) => {
                                 const target = e.target as HTMLImageElement;
-                                target.src = '/placeholder-product.png';
+                                // Prevent infinite loop by only setting fallback once
+                                if (!target.dataset.fallbackAttempted) {
+                                  target.dataset.fallbackAttempted = 'true';
+                                  target.src = '/placeholder-product.png';
+                                } else {
+                                  // If fallback also fails, remove the error handler to stop loop
+                                  target.onError = null;
+                                }
                               }}
                             />
                             {product.stock_quantity > 0 && product.stock_quantity <= 10 && (
