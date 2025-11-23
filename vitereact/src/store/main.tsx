@@ -947,6 +947,15 @@ export const useAppStore = create<AppStore>()(
           is_loading: false,
         },
       }),
+      onRehydrateStorage: () => {
+        return (state) => {
+          // Set axios auth header from rehydrated state
+          if (state?.authentication_state?.auth_token) {
+            axios.defaults.headers.common['Authorization'] = `Bearer ${state.authentication_state.auth_token}`;
+            console.log('Rehydrated auth token, set axios defaults');
+          }
+        };
+      },
     }
   )
 );

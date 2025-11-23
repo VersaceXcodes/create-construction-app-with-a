@@ -96,45 +96,46 @@ interface NewCardForm {
 // API FUNCTIONS
 // ============================================================================
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+// Note: axios.defaults.baseURL is already set to include /api in store/main.tsx
+// All API calls use relative paths (without /api prefix) and the token is passed explicitly in headers
 
 const fetchCart = async (token: string) => {
-  const { data } = await axios.get(`${API_BASE_URL}/cart`, {
+  const { data } = await axios.get('/cart', {
     headers: { Authorization: `Bearer ${token}` }
   });
   return data;
 };
 
 const fetchAddresses = async (token: string) => {
-  const { data } = await axios.get(`${API_BASE_URL}/addresses`, {
+  const { data } = await axios.get('/addresses', {
     headers: { Authorization: `Bearer ${token}` }
   });
   return data;
 };
 
 const fetchPaymentMethods = async (token: string) => {
-  const { data } = await axios.get(`${API_BASE_URL}/payment-methods`, {
+  const { data } = await axios.get('/payment-methods', {
     headers: { Authorization: `Bearer ${token}` }
   });
   return data;
 };
 
 const createAddress = async (token: string, addressData: any) => {
-  const { data } = await axios.post(`${API_BASE_URL}/addresses`, addressData, {
+  const { data } = await axios.post('/addresses', addressData, {
     headers: { Authorization: `Bearer ${token}` }
   });
   return data;
 };
 
 const createPaymentMethod = async (token: string, paymentData: any) => {
-  const { data } = await axios.post(`${API_BASE_URL}/payment-methods`, paymentData, {
+  const { data } = await axios.post('/payment-methods', paymentData, {
     headers: { Authorization: `Bearer ${token}` }
   });
   return data;
 };
 
 const createOrder = async (token: string, orderData: any) => {
-  const { data } = await axios.post(`${API_BASE_URL}/orders`, orderData, {
+  const { data } = await axios.post('/orders', orderData, {
     headers: { Authorization: `Bearer ${token}` }
   });
   return data;
@@ -152,6 +153,7 @@ const UV_Checkout: React.FC = () => {
   const authToken = useAppStore(state => state.authentication_state.auth_token);
   const currentUser = useAppStore(state => state.authentication_state.current_user);
   const customerProfile = useAppStore(state => state.authentication_state.customer_profile);
+  const isAuthenticated = useAppStore(state => state.authentication_state.authentication_status.is_authenticated);
 
   // Local state
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
@@ -194,20 +196,23 @@ const UV_Checkout: React.FC = () => {
   const { data: cartData, isLoading: cartLoading } = useQuery({
     queryKey: ['cart'],
     queryFn: () => fetchCart(authToken!),
-    enabled: !!authToken,
-    staleTime: 0 // Always fetch fresh cart data
+    enabled: !!authToken && !!isAuthenticated,
+    staleTime: 0, // Always fetch fresh cart data
+    retry: false // Don't retry on auth errors
   });
 
   const { data: addressesData, isLoading: addressesLoading } = useQuery({
     queryKey: ['addresses'],
     queryFn: () => fetchAddresses(authToken!),
-    enabled: !!authToken
+    enabled: !!authToken && !!isAuthenticated,
+    retry: false
   });
 
   const { data: paymentMethodsData, isLoading: paymentMethodsLoading } = useQuery({
     queryKey: ['paymentMethods'],
     queryFn: () => fetchPaymentMethods(authToken!),
-    enabled: !!authToken
+    enabled: !!authToken && !!isAuthenticated,
+    retry: false
   });
 
   // Ensure addresses and paymentMethods are always arrays
@@ -478,6 +483,12 @@ const UV_Checkout: React.FC = () => {
 
   const isLoading = cartLoading || addressesLoading || paymentMethodsLoading;
   const isSubmitting = createOrderMutation.isPending || addAddressMutation.isPending || addPaymentMethodMutation.isPending;
+
+  // Redirect to login if not authenticated
+  if (!isAuthenticated || !authToken) {
+    navigate('/login');
+    return null;
+  }
 
   if (isLoading) {
     return (
