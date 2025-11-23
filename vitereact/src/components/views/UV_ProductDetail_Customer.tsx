@@ -392,15 +392,15 @@ const UV_ProductDetail_Customer: React.FC = () => {
   const getCurrentPrice = () => {
     if (!product) return 0;
     const bulkPrices = getBulkPriceInfo();
-    if (!bulkPrices) return product.price_per_unit;
+    if (!bulkPrices) return Number(product.price_per_unit) || 0;
     
     for (let i = bulkPrices.length - 1; i >= 0; i--) {
       const [minQty, price] = bulkPrices[i];
       if (selectedQuantity >= parseInt(minQty)) {
-        return price;
+        return Number(price) || 0;
       }
     }
-    return product.price_per_unit;
+    return Number(product.price_per_unit) || 0;
   };
 
   // Loading state

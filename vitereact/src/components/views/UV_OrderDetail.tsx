@@ -18,7 +18,8 @@ import {
   MessageCircle,
   RotateCcw,
   ChevronRight,
-  User
+  User,
+  Star
 } from 'lucide-react';
 
 // ============================================================================
@@ -181,6 +182,38 @@ const downloadInvoice = async (order_id: string, auth_token: string) => {
   return response.data;
 };
 
+const submitReview = async (
+  order_id: string,
+  reviewData: {
+    supplier_id: string;
+    product_id: string | null;
+    rating_overall: number;
+    rating_product: number;
+    rating_service: number;
+    rating_delivery: number;
+    review_text: string;
+    would_buy_again: 'yes' | 'no' | 'maybe';
+    is_anonymous: boolean;
+  },
+  auth_token: string
+) => {
+  const response = await axios.post(
+    `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api/reviews`,
+    {
+      order_id,
+      ...reviewData,
+      photos: []
+    },
+    {
+      headers: {
+        'Authorization': `Bearer ${auth_token}`,
+        'Content-Type': 'application/json'
+      }
+    }
+  );
+  return response.data;
+};
+
 // ============================================================================
 // MAIN COMPONENT
 // ============================================================================
@@ -205,6 +238,18 @@ const UV_OrderDetail: React.FC = () => {
   const [newDeliveryEnd, setNewDeliveryEnd] = useState('');
   const [gpsLocation, setGpsLocation] = useState<{ latitude: number; longitude: number } | null>(null);
   const [etaMinutes, setEtaMinutes] = useState<number | null>(null);
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [reviewForm, setReviewForm] = useState({
+    supplier_id: '',
+    product_id: '',
+    rating_overall: 5,
+    rating_product: 5,
+    rating_service: 5,
+    rating_delivery: 5,
+    review_text: '',
+    would_buy_again: 'yes' as 'yes' | 'no' | 'maybe',
+    is_anonymous: false
+  });
   
   // ============================================================================
   // DATA FETCHING
@@ -251,6 +296,27 @@ const UV_OrderDetail: React.FC = () => {
     onSuccess: () => {
       fetchCart(); // Update cart state
       navigate('/cart');
+    }
+  });
+  
+  const reviewMutation = useMutation({
+    mutationFn: (reviewData: typeof reviewForm) => 
+      submitReview(order_id || '', reviewData, authToken || ''),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['order', order_id] });
+      setShowReviewModal(false);
+      // Reset form
+      setReviewForm({
+        supplier_id: '',
+        product_id: '',
+        rating_overall: 5,
+        rating_product: 5,
+        rating_service: 5,
+        rating_delivery: 5,
+        review_text: '',
+        would_buy_again: 'yes',
+        is_anonymous: false
+      });
     }
   });
   
@@ -419,6 +485,24 @@ const UV_OrderDetail: React.FC = () => {
   // Handle reorder
   const handleReorder = () => {
     reorderMutation.mutate();
+  };
+  
+  // Handle open review modal
+  const handleOpenReviewModal = (supplierId: string, productId?: string) => {
+    setReviewForm({
+      ...reviewForm,
+      supplier_id: supplierId,
+      product_id: productId || ''
+    });
+    setShowReviewModal(true);
+  };
+  
+  // Handle submit review
+  const handleSubmitReview = () => {
+    if (!reviewForm.supplier_id || !reviewForm.review_text.trim()) {
+      return;
+    }
+    reviewMutation.mutate(reviewForm);
   };
   
   // ============================================================================
@@ -684,6 +768,14 @@ const UV_OrderDetail: React.FC = () => {
                               <p className="font-bold text-gray-900">
                                 {formatCurrency(item.line_total)}
                               </p>
+                              {canReview && (
+                                <button
+                                  onClick={() => handleOpenReviewModal(item.supplier_id, item.product_id)}
+                                  className="mt-2 text-xs text-blue-600 hover:text-blue-700 font-medium"
+                                >
+                                  Review Product
+                                </button>
+                              )}
                             </div>
                           </div>
                         ))}
@@ -859,12 +951,18 @@ const UV_OrderDetail: React.FC = () => {
                     </button>
                     
                     {canReview && (
-                      <Link
-                        to={`/account/reviews?order_id=${order_id}`}
+                      <button
+                        onClick={() => {
+                          // Use the first supplier from items
+                          const firstItem = items[0];
+                          if (firstItem) {
+                            handleOpenReviewModal(firstItem.supplier_id, firstItem.product_id);
+                          }
+                        }}
                         className="w-full inline-flex items-center justify-center px-4 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
                       >
                         Leave Review
-                      </Link>
+                      </button>
                     )}
                   </div>
                 </div>
@@ -995,6 +1093,212 @@ const UV_OrderDetail: React.FC = () => {
                 className="flex-1 px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {rescheduleMutation.isPending ? 'Rescheduling...' : 'Confirm'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Review Modal */}
+      {showReviewModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full p-6 my-8">
+            <h3 className="text-2xl font-bold text-gray-900 mb-6">Leave a Review</h3>
+            
+            <div className="space-y-6">
+              {/* Overall Rating */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Overall Rating *
+                </label>
+                <div className="flex items-center gap-2">
+                  {[1, 2, 3, 4, 5].map((rating) => (
+                    <button
+                      key={rating}
+                      type="button"
+                      onClick={() => setReviewForm({ ...reviewForm, rating_overall: rating })}
+                      className="transition-colors"
+                    >
+                      <Star
+                        className={`w-8 h-8 ${
+                          rating <= reviewForm.rating_overall
+                            ? 'fill-yellow-400 text-yellow-400'
+                            : 'text-gray-300'
+                        }`}
+                      />
+                    </button>
+                  ))}
+                  <span className="ml-2 text-gray-700 font-medium">
+                    {reviewForm.rating_overall} / 5
+                  </span>
+                </div>
+              </div>
+              
+              {/* Product Rating */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Product Quality
+                </label>
+                <div className="flex items-center gap-2">
+                  {[1, 2, 3, 4, 5].map((rating) => (
+                    <button
+                      key={rating}
+                      type="button"
+                      onClick={() => setReviewForm({ ...reviewForm, rating_product: rating })}
+                      className="transition-colors"
+                    >
+                      <Star
+                        className={`w-6 h-6 ${
+                          rating <= reviewForm.rating_product
+                            ? 'fill-yellow-400 text-yellow-400'
+                            : 'text-gray-300'
+                        }`}
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Service Rating */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Service Quality
+                </label>
+                <div className="flex items-center gap-2">
+                  {[1, 2, 3, 4, 5].map((rating) => (
+                    <button
+                      key={rating}
+                      type="button"
+                      onClick={() => setReviewForm({ ...reviewForm, rating_service: rating })}
+                      className="transition-colors"
+                    >
+                      <Star
+                        className={`w-6 h-6 ${
+                          rating <= reviewForm.rating_service
+                            ? 'fill-yellow-400 text-yellow-400'
+                            : 'text-gray-300'
+                        }`}
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Delivery Rating */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Delivery Experience
+                </label>
+                <div className="flex items-center gap-2">
+                  {[1, 2, 3, 4, 5].map((rating) => (
+                    <button
+                      key={rating}
+                      type="button"
+                      onClick={() => setReviewForm({ ...reviewForm, rating_delivery: rating })}
+                      className="transition-colors"
+                    >
+                      <Star
+                        className={`w-6 h-6 ${
+                          rating <= reviewForm.rating_delivery
+                            ? 'fill-yellow-400 text-yellow-400'
+                            : 'text-gray-300'
+                        }`}
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Review Text */}
+              <div>
+                <label htmlFor="review_text" className="block text-sm font-medium text-gray-700 mb-2">
+                  Your Review *
+                </label>
+                <textarea
+                  id="review_text"
+                  value={reviewForm.review_text}
+                  onChange={(e) => setReviewForm({ ...reviewForm, review_text: e.target.value })}
+                  rows={5}
+                  placeholder="Share your experience with this order..."
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all"
+                />
+              </div>
+              
+              {/* Would Buy Again */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Would you buy again?
+                </label>
+                <div className="flex gap-3">
+                  {(['yes', 'maybe', 'no'] as const).map((option) => (
+                    <button
+                      key={option}
+                      type="button"
+                      onClick={() => setReviewForm({ ...reviewForm, would_buy_again: option })}
+                      className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors ${
+                        reviewForm.would_buy_again === option
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      {option === 'yes' ? 'Yes' : option === 'maybe' ? 'Maybe' : 'No'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Anonymous checkbox */}
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  id="is_anonymous"
+                  checked={reviewForm.is_anonymous}
+                  onChange={(e) => setReviewForm({ ...reviewForm, is_anonymous: e.target.checked })}
+                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                />
+                <label htmlFor="is_anonymous" className="ml-2 text-sm text-gray-700">
+                  Post anonymously
+                </label>
+              </div>
+            </div>
+            
+            {reviewMutation.error && (
+              <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-sm text-red-700">
+                  {axios.isAxiosError(reviewMutation.error)
+                    ? reviewMutation.error.response?.data?.message || 'Failed to submit review'
+                    : 'An error occurred'}
+                </p>
+              </div>
+            )}
+            
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={() => {
+                  setShowReviewModal(false);
+                  setReviewForm({
+                    supplier_id: '',
+                    product_id: '',
+                    rating_overall: 5,
+                    rating_product: 5,
+                    rating_service: 5,
+                    rating_delivery: 5,
+                    review_text: '',
+                    would_buy_again: 'yes',
+                    is_anonymous: false
+                  });
+                }}
+                disabled={reviewMutation.isPending}
+                className="flex-1 px-4 py-3 bg-gray-100 text-gray-900 font-medium rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSubmitReview}
+                disabled={reviewMutation.isPending || !reviewForm.review_text.trim()}
+                className="flex-1 px-4 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {reviewMutation.isPending ? 'Submitting...' : 'Submit Review'}
               </button>
             </div>
           </div>
