@@ -209,14 +209,29 @@ const UV_Wishlist: React.FC = () => {
   };
   
   const handleAddToCart = (product_id: string, product_name: string) => {
+    console.log(`Adding ${product_name} to cart...`);
     addToCartMut.mutate(
       { product_id, quantity: 1 },
       {
         onSuccess: () => {
-          alert(`${product_name} added to cart!`);
+          console.log(`Successfully added ${product_name} to cart`);
+          // Use a non-blocking notification instead of alert
+          // alert() can cause issues in automated testing
+          const notification = document.createElement('div');
+          notification.textContent = `${product_name} added to cart!`;
+          notification.style.cssText = 'position:fixed;top:20px;right:20px;background:#10b981;color:white;padding:16px 24px;border-radius:8px;z-index:9999;box-shadow:0 4px 6px rgba(0,0,0,0.1);';
+          document.body.appendChild(notification);
+          setTimeout(() => notification.remove(), 3000);
         },
         onError: (err: any) => {
-          alert(err.response?.data?.message || 'Failed to add item to cart');
+          console.error('Failed to add item to cart:', err);
+          const errorMsg = err.response?.data?.message || 'Failed to add item to cart';
+          // Use a non-blocking notification instead of alert
+          const notification = document.createElement('div');
+          notification.textContent = errorMsg;
+          notification.style.cssText = 'position:fixed;top:20px;right:20px;background:#ef4444;color:white;padding:16px 24px;border-radius:8px;z-index:9999;box-shadow:0 4px 6px rgba(0,0,0,0.1);';
+          document.body.appendChild(notification);
+          setTimeout(() => notification.remove(), 3000);
         },
       }
     );
@@ -225,7 +240,11 @@ const UV_Wishlist: React.FC = () => {
   const handleRemove = (wishlist_item_id: string, product_name: string) => {
     if (window.confirm(`Remove "${product_name}" from wishlist?`)) {
       removeMut.mutate(wishlist_item_id, {
+        onSuccess: () => {
+          console.log(`Successfully removed ${product_name} from wishlist`);
+        },
         onError: (err: any) => {
+          console.error('Failed to remove item from wishlist:', err);
           alert(err.response?.data?.message || 'Failed to remove item');
         },
       });
@@ -233,15 +252,32 @@ const UV_Wishlist: React.FC = () => {
   };
   
   const handleToggleAlert = (wishlist_item_id: string, alertType: 'price' | 'stock', currentValue: boolean) => {
+    const newValue = !currentValue;
+    console.log(`Toggling ${alertType} alert for ${wishlist_item_id}: ${currentValue} -> ${newValue}`);
+    
     if (alertType === 'price') {
       updateAlertsMut.mutate({
         wishlist_item_id,
-        price_drop_alert_enabled: !currentValue,
+        price_drop_alert_enabled: newValue,
+      }, {
+        onSuccess: () => {
+          console.log(`Successfully updated price alert to ${newValue}`);
+        },
+        onError: (err: any) => {
+          console.error('Failed to update price alert:', err);
+        },
       });
     } else {
       updateAlertsMut.mutate({
         wishlist_item_id,
-        back_in_stock_alert_enabled: !currentValue,
+        back_in_stock_alert_enabled: newValue,
+      }, {
+        onSuccess: () => {
+          console.log(`Successfully updated stock alert to ${newValue}`);
+        },
+        onError: (err: any) => {
+          console.error('Failed to update stock alert:', err);
+        },
       });
     }
   };
@@ -267,6 +303,8 @@ const UV_Wishlist: React.FC = () => {
       selectedItems.includes(item.wishlist_item_id)
     );
     
+    console.log(`Adding ${selectedProducts.length} items to cart...`);
+    
     // Add each selected item to cart
     let successCount = 0;
     let failCount = 0;
@@ -274,14 +312,25 @@ const UV_Wishlist: React.FC = () => {
     const promises = selectedProducts.map(item => 
       addToCartMutation(item.product_id, 1)
         .then(() => { successCount++; })
-        .catch(() => { failCount++; })
+        .catch((err) => { 
+          console.error(`Failed to add ${item.product_name}:`, err);
+          failCount++; 
+        })
     );
     
     Promise.all(promises).then(() => {
       fetchCart(); // Update global cart
       setSelectedItems([]);
-      alert(`Added ${successCount} items to cart${failCount > 0 ? `, ${failCount} failed` : ''}`);
       queryClient.invalidateQueries({ queryKey: ['cart'] });
+      
+      // Use a non-blocking notification instead of alert
+      const notification = document.createElement('div');
+      notification.textContent = `Added ${successCount} items to cart${failCount > 0 ? `, ${failCount} failed` : ''}`;
+      notification.style.cssText = `position:fixed;top:20px;right:20px;background:${failCount > 0 ? '#f59e0b' : '#10b981'};color:white;padding:16px 24px;border-radius:8px;z-index:9999;box-shadow:0 4px 6px rgba(0,0,0,0.1);`;
+      document.body.appendChild(notification);
+      setTimeout(() => notification.remove(), 3000);
+      
+      console.log(`Bulk add complete: ${successCount} succeeded, ${failCount} failed`);
     });
   };
   
@@ -523,7 +572,7 @@ const UV_Wishlist: React.FC = () => {
                   <button
                     onClick={() => handleRemove(item.wishlist_item_id, item.product_name)}
                     disabled={removeMut.isPending}
-                    className="absolute bottom-3 right-3 bg-white p-2 rounded-full shadow-lg hover:bg-red-50 transition-all opacity-0 group-hover:opacity-100 disabled:opacity-50"
+                    className="absolute bottom-3 right-3 bg-white p-2 rounded-full shadow-lg hover:bg-red-50 transition-all disabled:opacity-50"
                     aria-label="Remove from wishlist"
                   >
                     <Trash2 className="w-4 h-4 text-red-600" />
