@@ -193,9 +193,18 @@ const UV_Checkout: React.FC = () => {
   // DATA FETCHING
   // ============================================================================
 
-  const { data: cartData, isLoading: cartLoading } = useQuery({
+  const { data: cartData, isLoading: cartLoading, error: cartError } = useQuery({
     queryKey: ['cart'],
-    queryFn: () => fetchCart(authToken!),
+    queryFn: async () => {
+      console.log('UV_Checkout: Fetching cart data with token:', authToken?.substring(0, 20) + '...');
+      const result = await fetchCart(authToken!);
+      console.log('UV_Checkout: Cart data received:', {
+        hasCart: !!result.cart,
+        itemCount: result.items?.length || 0,
+        totalItems: result.total_items
+      });
+      return result;
+    },
     enabled: !!authToken && !!isAuthenticated,
     staleTime: 0, // Always fetch fresh cart data
     retry: false // Don't retry on auth errors
@@ -524,6 +533,10 @@ const UV_Checkout: React.FC = () => {
 
   // Redirect if cart is empty
   if (!cartData?.items || cartData.items.length === 0) {
+    console.error('UV_Checkout: Cart is empty, redirecting to cart page. CartData:', cartData);
+    if (cartError) {
+      console.error('UV_Checkout: Cart fetch error:', cartError);
+    }
     navigate('/cart');
     return null;
   }

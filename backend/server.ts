@@ -110,7 +110,12 @@ const authenticateToken = async (req: AuthRequest, res: Response, next: NextFunc
       const customerResult = await pool.query('SELECT customer_id FROM customers WHERE user_id = $1', [req.user.user_id]);
       if (customerResult.rows.length > 0) {
         req.user.customer_id = customerResult.rows[0].customer_id;
+        console.log('Auth: Fetched customer_id from database:', req.user.customer_id, 'for user_id:', req.user.user_id, 'email:', req.user.email);
+      } else {
+        console.error('Auth: No customer record found for user_id:', req.user.user_id, 'email:', req.user.email);
       }
+    } else if (req.user.customer_id) {
+      console.log('Auth: Using customer_id from token:', req.user.customer_id, 'for user_id:', req.user.user_id, 'email:', req.user.email);
     }
     
     // If supplier_id not in token but user is a supplier, fetch it from database
@@ -131,6 +136,7 @@ const authenticateToken = async (req: AuthRequest, res: Response, next: NextFunc
     
     next();
   } catch (error) {
+    console.error('Auth middleware error:', error);
     return res.status(403).json({ error: 'InvalidToken', message: 'Invalid or expired token' });
   }
 };
@@ -1838,10 +1844,20 @@ app.put('/api/suppliers/me/delivery/carriers/:carrierName', authenticateToken, r
 
 app.get('/api/cart', authenticateToken, requireCustomer, async (req: AuthRequest, res: Response) => {
   try {
+    // Ensure customer_id is available
+    if (!req.user.customer_id) {
+      console.error('Cart GET: customer_id is missing for user:', req.user.user_id);
+      return res.status(400).json({ error: 'InvalidRequest', message: 'Customer ID not found' });
+    }
+
+    console.log('Cart GET: Fetching cart for customer_id:', req.user.customer_id);
+
     const cartResult = await pool.query(
       'SELECT * FROM carts WHERE customer_id = $1 AND status = \'active\' ORDER BY created_date DESC LIMIT 1',
       [req.user.customer_id]
     );
+
+    console.log('Cart GET: Found', cartResult.rows.length, 'active carts');
 
     if (cartResult.rows.length === 0) {
       return res.json({ cart: null, items: [], subtotal: 0, total_items: 0 });
@@ -1857,6 +1873,8 @@ app.get('/api/cart', authenticateToken, requireCustomer, async (req: AuthRequest
       [cart.cart_id]
     );
 
+    console.log('Cart GET: Found', itemsResult.rows.length, 'items in cart');
+
     const subtotal = itemsResult.rows.reduce((sum, item) => sum + (parseFloat(item.quantity) * parseFloat(item.price_per_unit)), 0);
 
     res.json({
@@ -1866,6 +1884,7 @@ app.get('/api/cart', authenticateToken, requireCustomer, async (req: AuthRequest
       total_items: itemsResult.rows.reduce((sum, item) => sum + parseInt(item.quantity, 10), 0)
     });
   } catch (error) {
+    console.error('Cart GET error:', error);
     res.status(500).json({ error: 'InternalServerError', message: error.message });
   }
 });
@@ -1888,6 +1907,15 @@ app.post('/api/cart/items', authenticateToken, requireCustomer, async (req: Auth
     await client.query('BEGIN');
 
     const { product_id, quantity } = req.body;
+
+    // Ensure customer_id is available
+    if (!req.user.customer_id) {
+      console.error('Cart POST: customer_id is missing for user:', req.user.user_id);
+      await client.query('ROLLBACK');
+      return res.status(400).json({ error: 'InvalidRequest', message: 'Customer ID not found' });
+    }
+
+    console.log('Cart POST: Adding item for customer_id:', req.user.customer_id, 'product_id:', product_id, 'quantity:', quantity);
 
     if (!product_id || !quantity || quantity < 1) {
       await client.query('ROLLBACK');
@@ -1921,12 +1949,14 @@ app.post('/api/cart/items', authenticateToken, requireCustomer, async (req: Auth
 
     if (cartResult.rows.length === 0) {
       cart_id = uuidv4();
+      console.log('Cart POST: Creating new cart with cart_id:', cart_id);
       await client.query(
         'INSERT INTO carts (cart_id, customer_id, created_date, last_modified_date, status, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7)',
         [cart_id, req.user.customer_id, now, now, 'active', now, now]
       );
     } else {
       cart_id = cartResult.rows[0].cart_id;
+      console.log('Cart POST: Using existing cart with cart_id:', cart_id);
     }
 
     const existingItemResult = await client.query(
@@ -1937,6 +1967,7 @@ app.post('/api/cart/items', authenticateToken, requireCustomer, async (req: Auth
     let cartItem;
     if (existingItemResult.rows.length > 0) {
       const newQuantity = existingItemResult.rows[0].quantity + quantity;
+      console.log('Cart POST: Updating existing item quantity from', existingItemResult.rows[0].quantity, 'to', newQuantity);
       const updateResult = await client.query(
         'UPDATE cart_items SET quantity = $1, updated_at = $2 WHERE cart_item_id = $3 RETURNING *',
         [newQuantity, now, existingItemResult.rows[0].cart_item_id]
@@ -1944,6 +1975,7 @@ app.post('/api/cart/items', authenticateToken, requireCustomer, async (req: Auth
       cartItem = updateResult.rows[0];
     } else {
       const cart_item_id = uuidv4();
+      console.log('Cart POST: Creating new cart item with cart_item_id:', cart_item_id);
       const insertResult = await client.query(
         'INSERT INTO cart_items (cart_item_id, cart_id, product_id, supplier_id, quantity, price_per_unit, added_date, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *',
         [cart_item_id, cart_id, product_id, product.supplier_id, quantity, product.price_per_unit, now, now, now]
@@ -1955,8 +1987,10 @@ app.post('/api/cart/items', authenticateToken, requireCustomer, async (req: Auth
 
     await client.query('COMMIT');
 
+    console.log('Cart POST: Successfully added item to cart');
     res.status(201).json(cartItem);
   } catch (error) {
+    console.error('Cart POST error:', error);
     await client.query('ROLLBACK');
     res.status(500).json({ error: 'InternalServerError', message: error.message });
   } finally {
