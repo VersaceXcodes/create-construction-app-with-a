@@ -104,7 +104,7 @@ const fetchMyListings = async (
   params.append('sort_order', sortOrder);
   
   const response = await axios.get(
-    `${API_BASE_URL}/surplus/my-listings?${params.toString()}`,
+    `${API_BASE_URL}/api/surplus/my-listings?${params.toString()}`,
     {
       headers: {
         'Authorization': `Bearer ${authToken}`
@@ -112,10 +112,10 @@ const fetchMyListings = async (
     }
   );
   
-  // Backend returns array directly (from main.js code)
+  // Backend returns object with listings and total
   return {
-    listings: response.data || [],
-    total: response.data?.length || 0
+    listings: response.data?.listings || [],
+    total: response.data?.total || 0
   };
 };
 
@@ -126,7 +126,7 @@ const updateListingStatus = async (
   status: string
 ): Promise<SurplusListing> => {
   const response = await axios.patch(
-    `${API_BASE_URL}/surplus/${listingId}`,
+    `${API_BASE_URL}/api/surplus/${listingId}`,
     { status },
     {
       headers: {
@@ -145,7 +145,7 @@ const deleteListing = async (
   listingId: string
 ): Promise<void> => {
   await axios.delete(
-    `${API_BASE_URL}/surplus/${listingId}`,
+    `${API_BASE_URL}/api/surplus/${listingId}`,
     {
       headers: {
         'Authorization': `Bearer ${authToken}`
@@ -159,12 +159,13 @@ const acceptOffer = async (
   authToken: string,
   offerId: string
 ): Promise<void> => {
-  await axios.post(
-    `${API_BASE_URL}/surplus/offers/${offerId}/accept`,
-    {},
+  await axios.patch(
+    `${API_BASE_URL}/api/surplus/offers/${offerId}`,
+    { status: 'accepted' },
     {
       headers: {
-        'Authorization': `Bearer ${authToken}`
+        'Authorization': `Bearer ${authToken}`,
+        'Content-Type': 'application/json'
       }
     }
   );
@@ -176,9 +177,9 @@ const declineOffer = async (
   offerId: string,
   reason: string
 ): Promise<void> => {
-  await axios.post(
-    `${API_BASE_URL}/surplus/offers/${offerId}/decline`,
-    { decline_reason: reason },
+  await axios.patch(
+    `${API_BASE_URL}/api/surplus/offers/${offerId}`,
+    { status: 'declined' },
     {
       headers: {
         'Authorization': `Bearer ${authToken}`,
@@ -277,7 +278,7 @@ const UV_MySurplusListings: React.FC = () => {
       // NOTE: This endpoint doesn't exist in current backend
       // Implementing as per spec requirements
       const response = await axios.get(
-        `${API_BASE_URL}/surplus/my-offers?status=pending`,
+        `${API_BASE_URL}/api/surplus/my-offers?status=pending`,
         {
           headers: {
             'Authorization': `Bearer ${authToken}`

@@ -275,7 +275,7 @@ const UV_SurplusMarketplace_Browse: React.FC = () => {
       if (filterState.location_distance !== null) params.location_distance = filterState.location_distance;
       if (filterState.shipping_available !== null) params.shipping_available = filterState.shipping_available;
       
-      const response = await axios.get(`${API_BASE_URL}/surplus`, {
+      const response = await axios.get(`${API_BASE_URL}/api/surplus`, {
         params,
         headers: { Authorization: `Bearer ${authToken}` }
       });

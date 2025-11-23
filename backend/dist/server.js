@@ -882,7 +882,7 @@ app.get('/api/products/:product_id', async (req, res) => {
 });
 app.patch('/api/products/:product_id', authenticateToken, requireSupplier, async (req, res) => {
     try {
-        const { product_name, description, price_per_unit, stock_quantity, status, images, primary_image_url, is_featured, tags } = req.body;
+        const { product_name, description, price_per_unit, stock_quantity, low_stock_threshold, status, images, primary_image_url, is_featured, tags } = req.body;
         const now = new Date().toISOString();
         const updates = [];
         const values = [];
@@ -898,6 +898,10 @@ app.patch('/api/products/:product_id', authenticateToken, requireSupplier, async
         if (price_per_unit !== undefined) {
             updates.push(`price_per_unit = $${paramCount++}`);
             values.push(price_per_unit);
+        }
+        if (low_stock_threshold !== undefined) {
+            updates.push(`low_stock_threshold = $${paramCount++}`);
+            values.push(low_stock_threshold);
         }
         if (stock_quantity !== undefined) {
             const oldStock = await pool.query('SELECT stock_quantity, supplier_id FROM products WHERE product_id = $1', [req.params.product_id]);
@@ -1331,7 +1335,7 @@ app.get('/api/suppliers/me/analytics/dashboard', authenticateToken, requireSuppl
         // Get product count
         const productResult = await pool.query('SELECT COUNT(*) as count FROM products WHERE supplier_id = $1 AND status != \'discontinued\'', [supplier_id]);
         // Get customer count (unique customers who have ordered)
-        const customerResult = await pool.query('SELECT COUNT(DISTINCT customer_id) as count FROM orders WHERE supplier_id = $1', [supplier_id]);
+        const customerResult = await pool.query('SELECT COUNT(DISTINCT o.customer_id) as count FROM orders o INNER JOIN order_items oi ON o.order_id = oi.order_id WHERE oi.supplier_id = $1', [supplier_id]);
         const total_sales = parseFloat(supplier.total_sales) || 0;
         const total_orders = parseInt(supplier.total_orders) || 0;
         const avg_order_value = total_orders > 0 ? total_sales / total_orders : 0;
@@ -2940,186 +2944,6 @@ app.post('/api/chat/conversations/:conversation_id/messages', authenticateToken,
         client.release();
     }
 });
-app.get('/api/surplus', async (req, res) => {
-    try {
-        const { query, category_id, condition, price_min, price_max, shipping_available, status = 'active', sort_by = 'created_date', sort_order = 'desc' } = req.query;
-        // Coerce query params
-        const limit = Math.min(asNumber(req.query.limit, 50) || 50, 100);
-        const offset = asNumber(req.query.offset, 0) || 0;
-        let sqlQuery = 'SELECT * FROM surplus_listings WHERE 1=1';
-        const params = [];
-        let paramCount = 1;
-        if (query) {
-            sqlQuery += ` AND (product_name ILIKE $${paramCount} OR description ILIKE $${paramCount})`;
-            params.push(`%${query}%`);
-            paramCount++;
-        }
-        if (category_id) {
-            sqlQuery += ` AND category_id = $${paramCount}`;
-            params.push(category_id);
-            paramCount++;
-        }
-        if (condition) {
-            sqlQuery += ` AND condition = $${paramCount}`;
-            params.push(condition);
-            paramCount++;
-        }
-        if (price_min) {
-            sqlQuery += ` AND asking_price >= $${paramCount}`;
-            const priceMinStr = asString(price_min);
-            params.push(priceMinStr ? parseFloat(priceMinStr) : 0);
-            paramCount++;
-        }
-        if (price_max) {
-            sqlQuery += ` AND asking_price <= $${paramCount}`;
-            const priceMaxStr = asString(price_max);
-            params.push(priceMaxStr ? parseFloat(priceMaxStr) : 0);
-            paramCount++;
-        }
-        if (shipping_available !== undefined) {
-            sqlQuery += ` AND shipping_available = $${paramCount}`;
-            params.push(shipping_available === 'true');
-            paramCount++;
-        }
-        if (status) {
-            sqlQuery += ` AND status = $${paramCount}`;
-            params.push(status);
-            paramCount++;
-        }
-        const orderByMap = {
-            created_date: 'created_date',
-            asking_price: 'asking_price',
-            views_count: 'views_count'
-        };
-        const sortByStr = asString(sort_by) || 'created_date';
-        sqlQuery += ` ORDER BY ${orderByMap[sortByStr] || 'created_date'} ${sort_order === 'asc' ? 'ASC' : 'DESC'}`;
-        sqlQuery += ` LIMIT $${paramCount} OFFSET $${paramCount + 1}`;
-        params.push(limit);
-        params.push(offset);
-        const result = await pool.query(sqlQuery, params);
-        const countQuery = sqlQuery.substring(0, sqlQuery.indexOf('ORDER BY')).replace(/SELECT \* FROM/, 'SELECT COUNT(*) as total FROM');
-        const countResult = await pool.query(countQuery, params.slice(0, -2));
-        res.json({
-            listings: result.rows,
-            total: parseInt(countResult.rows[0].total)
-        });
-    }
-    catch (error) {
-        res.status(500).json({ error: 'InternalServerError', message: error.message });
-    }
-});
-app.post('/api/surplus', authenticateToken, requireCustomer, async (req, res) => {
-    try {
-        const { product_name, category_id, description, condition, photos, asking_price, original_price, price_type, quantity, pickup_location, pickup_instructions, shipping_available, shipping_rate, reason_for_selling } = req.body;
-        if (!product_name || !category_id || !description || !condition || !asking_price) {
-            return res.status(400).json({ error: 'ValidationError', message: 'Missing required fields' });
-        }
-        const listing_id = uuidv4();
-        const now = new Date().toISOString();
-        const result = await pool.query('INSERT INTO surplus_listings (listing_id, seller_id, product_name, category_id, description, condition, photos, asking_price, original_price, price_type, quantity, pickup_location, pickup_instructions, shipping_available, shipping_rate, status, reason_for_selling, views_count, created_date, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21) RETURNING *', [listing_id, req.user.customer_id, product_name, category_id, description, condition, JSON.stringify(photos), asking_price, original_price, price_type || 'fixed', quantity || 1, pickup_location, pickup_instructions, shipping_available || false, shipping_rate, 'active', reason_for_selling, 0, now, now, now]);
-        res.status(201).json(result.rows[0]);
-    }
-    catch (error) {
-        res.status(500).json({ error: 'InternalServerError', message: error.message });
-    }
-});
-app.get('/api/surplus/:listing_id', async (req, res) => {
-    try {
-        const result = await pool.query('SELECT * FROM surplus_listings WHERE listing_id = $1', [req.params.listing_id]);
-        if (result.rows.length === 0) {
-            return res.status(404).json({ error: 'ListingNotFound', message: 'Listing not found' });
-        }
-        res.json(result.rows[0]);
-    }
-    catch (error) {
-        res.status(500).json({ error: 'InternalServerError', message: error.message });
-    }
-});
-app.patch('/api/surplus/:listing_id', authenticateToken, requireCustomer, async (req, res) => {
-    try {
-        const { description, photos, asking_price, quantity, status } = req.body;
-        const now = new Date().toISOString();
-        const updates = [];
-        const values = [];
-        let paramCount = 1;
-        if (description !== undefined) {
-            updates.push(`description = $${paramCount++}`);
-            values.push(description);
-        }
-        if (photos !== undefined) {
-            updates.push(`photos = $${paramCount++}`);
-            values.push(JSON.stringify(photos));
-        }
-        if (asking_price !== undefined) {
-            updates.push(`asking_price = $${paramCount++}`);
-            values.push(asking_price);
-        }
-        if (quantity !== undefined) {
-            updates.push(`quantity = $${paramCount++}`);
-            values.push(quantity);
-        }
-        if (status !== undefined) {
-            updates.push(`status = $${paramCount++}`);
-            values.push(status);
-        }
-        updates.push(`updated_at = $${paramCount++}`);
-        values.push(now);
-        values.push(req.params.listing_id);
-        values.push(req.user.customer_id);
-        const result = await pool.query(`UPDATE surplus_listings SET ${updates.join(', ')} WHERE listing_id = $${paramCount} AND seller_id = $${paramCount + 1} RETURNING *`, values);
-        if (result.rows.length === 0) {
-            return res.status(404).json({ error: 'ListingNotFound', message: 'Listing not found' });
-        }
-        res.json(result.rows[0]);
-    }
-    catch (error) {
-        res.status(500).json({ error: 'InternalServerError', message: error.message });
-    }
-});
-app.delete('/api/surplus/:listing_id', authenticateToken, requireCustomer, async (req, res) => {
-    try {
-        const result = await pool.query('DELETE FROM surplus_listings WHERE listing_id = $1 AND seller_id = $2 RETURNING listing_id', [req.params.listing_id, req.user.customer_id]);
-        if (result.rows.length === 0) {
-            return res.status(404).json({ error: 'ListingNotFound', message: 'Listing not found' });
-        }
-        res.status(204).send();
-    }
-    catch (error) {
-        res.status(500).json({ error: 'InternalServerError', message: error.message });
-    }
-});
-app.get('/api/surplus/my-listings', authenticateToken, requireCustomer, async (req, res) => {
-    try {
-        const { status } = req.query;
-        let query = 'SELECT * FROM surplus_listings WHERE seller_id = $1';
-        const params = [req.user.customer_id];
-        if (status) {
-            query += ' AND status = $2';
-            params.push(asString(status));
-        }
-        query += ' ORDER BY created_date DESC';
-        const result = await pool.query(query, params);
-        res.json(result.rows);
-    }
-    catch (error) {
-        res.status(500).json({ error: 'InternalServerError', message: error.message });
-    }
-});
-app.post('/api/surplus/:listing_id/offers', authenticateToken, requireCustomer, async (req, res) => {
-    try {
-        const { offer_amount, message } = req.body;
-        if (!offer_amount) {
-            return res.status(400).json({ error: 'ValidationError', message: 'Offer amount required' });
-        }
-        const offer_id = uuidv4();
-        const now = new Date().toISOString();
-        const result = await pool.query('INSERT INTO surplus_offers (offer_id, listing_id, buyer_id, offer_amount, message, status, created_date, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *', [offer_id, req.params.listing_id, req.user.customer_id, offer_amount, message, 'pending', now, now, now]);
-        res.status(201).json(result.rows[0]);
-    }
-    catch (error) {
-        res.status(500).json({ error: 'InternalServerError', message: error.message });
-    }
-});
 app.get('/api/promotions', async (req, res) => {
     try {
         const { supplier_id, promotion_type } = req.query;
@@ -3879,6 +3703,379 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log(`User disconnected: ${socket.user.user_id}`);
     });
+});
+// ============================================================================
+// SURPLUS MARKETPLACE API ROUTES
+// ============================================================================
+// Get all surplus listings (public)
+app.get('/api/surplus', async (req, res) => {
+    try {
+        const { status, category_id, search_query, condition, price_min, price_max, shipping_available, sort_by = 'created_date', sort_order = 'desc' } = req.query;
+        const limit = Math.min(asNumber(req.query.limit, 24), 100);
+        const offset = asNumber(req.query.offset, 0);
+        let query = `
+      SELECT sl.*, c.category_name, u.first_name || ' ' || u.last_name as seller_name
+      FROM surplus_listings sl
+      INNER JOIN categories c ON sl.category_id = c.category_id
+      INNER JOIN customers cu ON sl.seller_id = cu.customer_id
+      INNER JOIN users u ON cu.user_id = u.user_id
+      WHERE 1=1
+    `;
+        const params = [];
+        let paramCount = 1;
+        if (status) {
+            query += ` AND sl.status = $${paramCount}`;
+            params.push(asString(status));
+            paramCount++;
+        }
+        else {
+            query += ` AND sl.status = 'active'`;
+        }
+        if (category_id) {
+            query += ` AND sl.category_id = $${paramCount}`;
+            params.push(asString(category_id));
+            paramCount++;
+        }
+        if (search_query) {
+            query += ` AND (sl.product_name ILIKE $${paramCount} OR sl.description ILIKE $${paramCount})`;
+            params.push(`%${search_query}%`);
+            paramCount++;
+        }
+        if (condition) {
+            query += ` AND sl.condition = $${paramCount}`;
+            params.push(asString(condition));
+            paramCount++;
+        }
+        if (price_min) {
+            query += ` AND sl.asking_price >= $${paramCount}`;
+            params.push(parseFloat(asString(price_min) || '0'));
+            paramCount++;
+        }
+        if (price_max) {
+            query += ` AND sl.asking_price <= $${paramCount}`;
+            params.push(parseFloat(asString(price_max) || '0'));
+            paramCount++;
+        }
+        if (shipping_available === 'true') {
+            query += ` AND sl.shipping_available = true`;
+        }
+        const orderByMap = {
+            created_date: 'sl.created_date',
+            asking_price: 'sl.asking_price',
+            views_count: 'sl.views_count'
+        };
+        const orderBy = orderByMap[asString(sort_by) || 'created_date'] || 'sl.created_date';
+        query += ` ORDER BY ${orderBy} ${asString(sort_order) === 'asc' ? 'ASC' : 'DESC'}`;
+        query += ` LIMIT $${paramCount} OFFSET $${paramCount + 1}`;
+        params.push(String(limit));
+        params.push(String(offset));
+        const result = await pool.query(query, params);
+        const countQuery = query.substring(0, query.indexOf('ORDER BY')).replace(/SELECT .* FROM/, 'SELECT COUNT(*) as total FROM');
+        const countResult = await pool.query(countQuery, params.slice(0, -2));
+        res.json({
+            listings: result.rows,
+            total: parseInt(countResult.rows[0].total),
+            limit,
+            offset
+        });
+    }
+    catch (error) {
+        console.error('Surplus listings error:', error);
+        res.status(500).json({ error: 'InternalServerError', message: error.message });
+    }
+});
+// Get user's surplus listings
+app.get('/api/surplus/my-listings', authenticateToken, requireCustomer, async (req, res) => {
+    try {
+        const { status, sort_by = 'created_date', sort_order = 'desc' } = req.query;
+        const limit = Math.min(asNumber(req.query.limit, 20), 100);
+        const offset = asNumber(req.query.offset, 0);
+        let query = `
+      SELECT sl.*, c.category_name
+      FROM surplus_listings sl
+      INNER JOIN categories c ON sl.category_id = c.category_id
+      WHERE sl.seller_id = $1
+    `;
+        const params = [req.user.customer_id];
+        let paramCount = 2;
+        if (status && status !== 'all') {
+            query += ` AND sl.status = $${paramCount}`;
+            params.push(asString(status));
+            paramCount++;
+        }
+        const orderByMap = {
+            created_date: 'sl.created_date',
+            asking_price: 'sl.asking_price',
+            views_count: 'sl.views_count'
+        };
+        const orderBy = orderByMap[asString(sort_by) || 'created_date'] || 'sl.created_date';
+        query += ` ORDER BY ${orderBy} ${asString(sort_order) === 'asc' ? 'ASC' : 'DESC'}`;
+        query += ` LIMIT $${paramCount} OFFSET $${paramCount + 1}`;
+        params.push(String(limit));
+        params.push(String(offset));
+        const result = await pool.query(query, params);
+        const countQuery = query.substring(0, query.indexOf('ORDER BY')).replace(/SELECT .* FROM/, 'SELECT COUNT(*) as total FROM');
+        const countResult = await pool.query(countQuery, params.slice(0, -2));
+        res.json({
+            listings: result.rows,
+            total: parseInt(countResult.rows[0].total),
+            limit,
+            offset
+        });
+    }
+    catch (error) {
+        console.error('My surplus listings error:', error);
+        res.status(500).json({ error: 'InternalServerError', message: error.message });
+    }
+});
+// Get single surplus listing
+app.get('/api/surplus/:listing_id', async (req, res) => {
+    try {
+        const result = await pool.query(`SELECT sl.*, c.category_name, u.first_name || ' ' || u.last_name as seller_name, u.profile_photo_url as seller_photo
+       FROM surplus_listings sl
+       INNER JOIN categories c ON sl.category_id = c.category_id
+       INNER JOIN customers cu ON sl.seller_id = cu.customer_id
+       INNER JOIN users u ON cu.user_id = u.user_id
+       WHERE sl.listing_id = $1`, [req.params.listing_id]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'ListingNotFound', message: 'Listing not found' });
+        }
+        // Increment views
+        const now = new Date().toISOString();
+        await pool.query('UPDATE surplus_listings SET views_count = views_count + 1, updated_at = $1 WHERE listing_id = $2', [now, req.params.listing_id]);
+        res.json(result.rows[0]);
+    }
+    catch (error) {
+        res.status(500).json({ error: 'InternalServerError', message: error.message });
+    }
+});
+// Create surplus listing
+app.post('/api/surplus', authenticateToken, requireCustomer, async (req, res) => {
+    try {
+        const { product_name, category_id, description, condition, photos, asking_price, original_price, price_type, quantity, pickup_location, pickup_instructions, shipping_available, shipping_rate, reason_for_selling } = req.body;
+        if (!product_name || !category_id || !description || !condition || !asking_price || !quantity) {
+            return res.status(400).json({ error: 'ValidationError', message: 'Missing required fields' });
+        }
+        const listing_id = uuidv4();
+        const now = new Date().toISOString();
+        const result = await pool.query(`INSERT INTO surplus_listings (
+        listing_id, seller_id, product_name, category_id, description, condition,
+        photos, asking_price, original_price, price_type, quantity, pickup_location,
+        pickup_instructions, shipping_available, shipping_rate, status, reason_for_selling,
+        views_count, created_date, created_at, updated_at
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)
+      RETURNING *`, [
+            listing_id,
+            req.user.customer_id,
+            product_name,
+            category_id,
+            description,
+            condition,
+            JSON.stringify(photos || []),
+            asking_price,
+            original_price || null,
+            price_type || 'fixed',
+            quantity,
+            pickup_location || null,
+            pickup_instructions || null,
+            shipping_available || false,
+            shipping_rate || null,
+            'active',
+            reason_for_selling || null,
+            0,
+            now,
+            now,
+            now
+        ]);
+        res.status(201).json(result.rows[0]);
+    }
+    catch (error) {
+        console.error('Create surplus listing error:', error);
+        res.status(500).json({ error: 'InternalServerError', message: error.message });
+    }
+});
+// Update surplus listing
+app.patch('/api/surplus/:listing_id', authenticateToken, requireCustomer, async (req, res) => {
+    try {
+        const { product_name, description, condition, photos, asking_price, original_price, price_type, quantity, pickup_location, pickup_instructions, shipping_available, shipping_rate, status, reason_for_selling } = req.body;
+        const now = new Date().toISOString();
+        const updates = [];
+        const values = [];
+        let paramCount = 1;
+        if (product_name !== undefined) {
+            updates.push(`product_name = $${paramCount++}`);
+            values.push(product_name);
+        }
+        if (description !== undefined) {
+            updates.push(`description = $${paramCount++}`);
+            values.push(description);
+        }
+        if (condition !== undefined) {
+            updates.push(`condition = $${paramCount++}`);
+            values.push(condition);
+        }
+        if (photos !== undefined) {
+            updates.push(`photos = $${paramCount++}`);
+            values.push(JSON.stringify(photos));
+        }
+        if (asking_price !== undefined) {
+            updates.push(`asking_price = $${paramCount++}`);
+            values.push(asking_price);
+        }
+        if (original_price !== undefined) {
+            updates.push(`original_price = $${paramCount++}`);
+            values.push(original_price);
+        }
+        if (price_type !== undefined) {
+            updates.push(`price_type = $${paramCount++}`);
+            values.push(price_type);
+        }
+        if (quantity !== undefined) {
+            updates.push(`quantity = $${paramCount++}`);
+            values.push(quantity);
+        }
+        if (pickup_location !== undefined) {
+            updates.push(`pickup_location = $${paramCount++}`);
+            values.push(pickup_location);
+        }
+        if (pickup_instructions !== undefined) {
+            updates.push(`pickup_instructions = $${paramCount++}`);
+            values.push(pickup_instructions);
+        }
+        if (shipping_available !== undefined) {
+            updates.push(`shipping_available = $${paramCount++}`);
+            values.push(shipping_available);
+        }
+        if (shipping_rate !== undefined) {
+            updates.push(`shipping_rate = $${paramCount++}`);
+            values.push(shipping_rate);
+        }
+        if (status !== undefined) {
+            updates.push(`status = $${paramCount++}`);
+            values.push(status);
+        }
+        if (reason_for_selling !== undefined) {
+            updates.push(`reason_for_selling = $${paramCount++}`);
+            values.push(reason_for_selling);
+        }
+        if (updates.length === 0) {
+            return res.status(400).json({ error: 'ValidationError', message: 'No fields to update' });
+        }
+        updates.push(`updated_at = $${paramCount++}`);
+        values.push(now);
+        values.push(req.params.listing_id);
+        values.push(req.user.customer_id);
+        const result = await pool.query(`UPDATE surplus_listings SET ${updates.join(', ')} WHERE listing_id = $${paramCount} AND seller_id = $${paramCount + 1} RETURNING *`, values);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'ListingNotFound', message: 'Listing not found or access denied' });
+        }
+        res.json(result.rows[0]);
+    }
+    catch (error) {
+        console.error('Update surplus listing error:', error);
+        res.status(500).json({ error: 'InternalServerError', message: error.message });
+    }
+});
+// Delete surplus listing
+app.delete('/api/surplus/:listing_id', authenticateToken, requireCustomer, async (req, res) => {
+    try {
+        const result = await pool.query('DELETE FROM surplus_listings WHERE listing_id = $1 AND seller_id = $2 RETURNING listing_id', [req.params.listing_id, req.user.customer_id]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'ListingNotFound', message: 'Listing not found or access denied' });
+        }
+        res.status(204).send();
+    }
+    catch (error) {
+        console.error('Delete surplus listing error:', error);
+        res.status(500).json({ error: 'InternalServerError', message: error.message });
+    }
+});
+// Get offers for a listing
+app.get('/api/surplus/:listing_id/offers', authenticateToken, requireCustomer, async (req, res) => {
+    try {
+        const result = await pool.query(`SELECT so.*, u.first_name || ' ' || u.last_name as buyer_name, u.profile_photo_url as buyer_photo
+       FROM surplus_offers so
+       INNER JOIN customers c ON so.buyer_id = c.customer_id
+       INNER JOIN users u ON c.user_id = u.user_id
+       INNER JOIN surplus_listings sl ON so.listing_id = sl.listing_id
+       WHERE so.listing_id = $1 AND sl.seller_id = $2
+       ORDER BY so.created_date DESC`, [req.params.listing_id, req.user.customer_id]);
+        res.json(result.rows);
+    }
+    catch (error) {
+        console.error('Get offers error:', error);
+        res.status(500).json({ error: 'InternalServerError', message: error.message });
+    }
+});
+// Create offer for a listing
+app.post('/api/surplus/:listing_id/offers', authenticateToken, requireCustomer, async (req, res) => {
+    try {
+        const { offer_amount, message } = req.body;
+        if (!offer_amount || offer_amount <= 0) {
+            return res.status(400).json({ error: 'ValidationError', message: 'Valid offer amount required' });
+        }
+        // Check listing exists and is active
+        const listingResult = await pool.query('SELECT listing_id, seller_id, status FROM surplus_listings WHERE listing_id = $1', [req.params.listing_id]);
+        if (listingResult.rows.length === 0) {
+            return res.status(404).json({ error: 'ListingNotFound', message: 'Listing not found' });
+        }
+        const listing = listingResult.rows[0];
+        if (listing.status !== 'active') {
+            return res.status(400).json({ error: 'ListingNotActive', message: 'Listing is not active' });
+        }
+        if (listing.seller_id === req.user.customer_id) {
+            return res.status(400).json({ error: 'ValidationError', message: 'Cannot make offer on your own listing' });
+        }
+        const offer_id = uuidv4();
+        const now = new Date().toISOString();
+        const result = await pool.query(`INSERT INTO surplus_offers (
+        offer_id, listing_id, buyer_id, offer_amount, message, status, created_date, created_at, updated_at
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      RETURNING *`, [offer_id, req.params.listing_id, req.user.customer_id, offer_amount, message || null, 'pending', now, now, now]);
+        res.status(201).json(result.rows[0]);
+    }
+    catch (error) {
+        console.error('Create offer error:', error);
+        res.status(500).json({ error: 'InternalServerError', message: error.message });
+    }
+});
+// Update offer status
+app.patch('/api/surplus/offers/:offer_id', authenticateToken, requireCustomer, async (req, res) => {
+    try {
+        const { status, counter_offer_amount } = req.body;
+        if (!status) {
+            return res.status(400).json({ error: 'ValidationError', message: 'Status required' });
+        }
+        const now = new Date().toISOString();
+        const updates = [];
+        const values = [];
+        let paramCount = 1;
+        updates.push(`status = $${paramCount++}`);
+        values.push(status);
+        if (counter_offer_amount !== undefined) {
+            updates.push(`counter_offer_amount = $${paramCount++}`);
+            values.push(counter_offer_amount);
+        }
+        updates.push(`updated_at = $${paramCount++}`);
+        values.push(now);
+        values.push(req.params.offer_id);
+        // Verify user is the seller of the listing
+        const result = await pool.query(`UPDATE surplus_offers so
+       SET ${updates.join(', ')}
+       FROM surplus_listings sl
+       WHERE so.offer_id = $${paramCount}
+         AND so.listing_id = sl.listing_id
+         AND sl.seller_id = $${paramCount + 1}
+       RETURNING so.*`, [...values, req.user.customer_id]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'OfferNotFound', message: 'Offer not found or access denied' });
+        }
+        res.json(result.rows[0]);
+    }
+    catch (error) {
+        console.error('Update offer error:', error);
+        res.status(500).json({ error: 'InternalServerError', message: error.message });
+    }
 });
 // Serve static files (must come after API routes)
 app.use(express.static(publicDir));
