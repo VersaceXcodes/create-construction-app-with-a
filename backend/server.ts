@@ -1045,7 +1045,7 @@ app.get('/api/products/:product_id', async (req, res) => {
 
 app.patch('/api/products/:product_id', authenticateToken, requireSupplier, async (req: AuthRequest, res: Response) => {
   try {
-    const { product_name, description, price_per_unit, stock_quantity, status, images, primary_image_url, is_featured, tags } = req.body;
+    const { product_name, description, price_per_unit, stock_quantity, low_stock_threshold, status, images, primary_image_url, is_featured, tags } = req.body;
     const now = new Date().toISOString();
 
     const updates = [];
@@ -1055,6 +1055,7 @@ app.patch('/api/products/:product_id', authenticateToken, requireSupplier, async
     if (product_name !== undefined) { updates.push(`product_name = $${paramCount++}`); values.push(product_name); }
     if (description !== undefined) { updates.push(`description = $${paramCount++}`); values.push(description); }
     if (price_per_unit !== undefined) { updates.push(`price_per_unit = $${paramCount++}`); values.push(price_per_unit); }
+    if (low_stock_threshold !== undefined) { updates.push(`low_stock_threshold = $${paramCount++}`); values.push(low_stock_threshold); }
     if (stock_quantity !== undefined) {
       const oldStock = await pool.query('SELECT stock_quantity, supplier_id FROM products WHERE product_id = $1', [req.params.product_id]);
       if (oldStock.rows.length > 0) {
@@ -1529,7 +1530,7 @@ app.get('/api/suppliers/me/analytics/dashboard', authenticateToken, requireSuppl
     
     // Get customer count (unique customers who have ordered)
     const customerResult = await pool.query(
-      'SELECT COUNT(DISTINCT customer_id) as count FROM orders WHERE supplier_id = $1',
+      'SELECT COUNT(DISTINCT o.customer_id) as count FROM orders o INNER JOIN order_items oi ON o.order_id = oi.order_id WHERE oi.supplier_id = $1',
       [supplier_id]
     );
     
