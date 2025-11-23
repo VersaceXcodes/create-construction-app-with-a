@@ -870,11 +870,13 @@ const UV_AdminDisputeManagement: React.FC = () => {
                             {selected_dispute.status === 'resolved' || selected_dispute.status === 'closed' ? (
                               <div className="bg-green-50 border border-green-200 rounded-lg p-6">
                                 <h3 className="text-lg font-semibold text-green-800 mb-2">Dispute Resolved</h3>
-                                {selected_dispute.resolution_offered && (
+                                 {selected_dispute.resolution_offered && (
                                   <div className="space-y-2 text-sm text-green-700">
                                     <p><strong>Resolution:</strong> {selected_dispute.resolution_offered}</p>
                                     {selected_dispute.resolution_amount && (
-                                      <p><strong>Amount:</strong> ${selected_dispute.resolution_amount.toFixed(2)}</p>
+                                      <p><strong>Amount:</strong> ${typeof selected_dispute.resolution_amount === 'number' 
+                                        ? selected_dispute.resolution_amount.toFixed(2) 
+                                        : parseFloat(selected_dispute.resolution_amount as any).toFixed(2)}</p>
                                     )}
                                     {selected_dispute.resolved_date && (
                                       <p><strong>Resolved on:</strong> {format_date(selected_dispute.resolved_date)}</p>
