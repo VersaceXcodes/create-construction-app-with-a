@@ -26,11 +26,11 @@ interface Order {
   customer_id: string;
   order_date: string;
   status: string;
-  subtotal_amount: number;
-  delivery_fee_total: number;
-  tax_amount: number;
-  discount_amount: number;
-  total_amount: number;
+  subtotal_amount: number | string;
+  delivery_fee_total: number | string;
+  tax_amount: number | string;
+  discount_amount: number | string;
+  total_amount: number | string;
   delivery_address_id: string;
   payment_method: string;
   payment_status: string;
@@ -46,9 +46,9 @@ interface OrderItem {
   supplier_id: string;
   product_name: string;
   sku: string;
-  quantity: number;
-  price_per_unit: number;
-  line_total: number;
+  quantity: number | string;
+  price_per_unit: number | string;
+  line_total: number | string;
 }
 
 interface Delivery {
@@ -58,7 +58,7 @@ interface Delivery {
   delivery_window_start: string;
   delivery_window_end: string;
   delivery_method: string;
-  delivery_fee: number;
+  delivery_fee: number | string;
   delivery_status: string;
 }
 
@@ -78,9 +78,9 @@ interface OrderItemsBySupplier {
       product_id: string;
       product_name: string;
       sku: string;
-      quantity: number;
-      price_per_unit: number;
-      line_total: number;
+      quantity: number | string;
+      price_per_unit: number | string;
+      line_total: number | string;
     }>;
   };
 }
@@ -493,7 +493,7 @@ const UV_OrderConfirmation: React.FC = () => {
                             </div>
                             <div className="text-right">
                               <p className="font-semibold text-gray-900">
-                                ${item.line_total.toFixed(2)}
+                                ${Number(item.line_total || 0).toFixed(2)}
                               </p>
                             </div>
                           </div>
