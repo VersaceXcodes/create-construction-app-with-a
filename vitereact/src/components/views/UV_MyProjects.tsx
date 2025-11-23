@@ -144,6 +144,9 @@ const UV_MyProjects: React.FC = () => {
   // Local UI state
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [newProjectName, setNewProjectName] = useState('');
+  const [newProjectDescription, setNewProjectDescription] = useState('');
   const [toastMessage, setToastMessage] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   // ============================================================================
@@ -260,6 +263,39 @@ const UV_MyProjects: React.FC = () => {
   });
 
   // ============================================================================
+  // REACT QUERY - CREATE PROJECT MUTATION
+  // ============================================================================
+  
+  const createProjectMutation = useMutation({
+    mutationFn: ({ project_name, description }: { project_name: string; description: string | null }) => 
+      createProject({ project_name, description }, authToken!),
+    onSuccess: (data) => {
+      // Invalidate projects query to refresh list
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
+      
+      // Close modal and reset form
+      setShowCreateModal(false);
+      setNewProjectName('');
+      setNewProjectDescription('');
+      
+      // Show success message
+      setToastMessage({
+        type: 'success',
+        message: 'Project created successfully'
+      });
+      
+      // Navigate to the new project detail page
+      navigate(`/projects/${data.project_id}`);
+    },
+    onError: (error: any) => {
+      setToastMessage({
+        type: 'error',
+        message: error.response?.data?.message || 'Failed to create project'
+      });
+    }
+  });
+
+  // ============================================================================
   // EVENT HANDLERS
   // ============================================================================
   
@@ -291,8 +327,30 @@ const UV_MyProjects: React.FC = () => {
   };
 
   const handleCreateNew = () => {
-    // Navigate to cart to save current cart as project
-    navigate('/cart');
+    // Show modal to create new project
+    setShowCreateModal(true);
+  };
+
+  const handleCreateProjectSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newProjectName.trim()) {
+      setToastMessage({
+        type: 'error',
+        message: 'Project name is required'
+      });
+      return;
+    }
+    
+    createProjectMutation.mutate({
+      project_name: newProjectName.trim(),
+      description: newProjectDescription.trim() || null
+    });
+  };
+
+  const handleCreateModalCancel = () => {
+    setShowCreateModal(false);
+    setNewProjectName('');
+    setNewProjectDescription('');
   };
 
   // Auto-dismiss toast after 5 seconds
@@ -624,6 +682,86 @@ const UV_MyProjects: React.FC = () => {
                     )}
                   </button>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* ============================================================ */}
+          {/* CREATE PROJECT MODAL */}
+          {/* ============================================================ */}
+          
+          {showCreateModal && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+              <div className="bg-white rounded-xl shadow-2xl max-w-lg w-full p-6">
+                <div className="mb-4">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">
+                    Create New Project
+                  </h3>
+                  <p className="text-base text-gray-600 leading-relaxed">
+                    Create an empty project that you can add products to later.
+                  </p>
+                </div>
+
+                <form onSubmit={handleCreateProjectSubmit} className="space-y-4">
+                  <div>
+                    <label htmlFor="new_project_name" className="block text-sm font-medium text-gray-700 mb-2">
+                      Project Name <span className="text-red-600">*</span>
+                    </label>
+                    <input
+                      id="new_project_name"
+                      type="text"
+                      value={newProjectName}
+                      onChange={(e) => setNewProjectName(e.target.value)}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all"
+                      placeholder="e.g., Office Renovation 2024"
+                      autoFocus
+                      disabled={createProjectMutation.isPending}
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="new_project_description" className="block text-sm font-medium text-gray-700 mb-2">
+                      Description (Optional)
+                    </label>
+                    <textarea
+                      id="new_project_description"
+                      value={newProjectDescription}
+                      onChange={(e) => setNewProjectDescription(e.target.value)}
+                      rows={3}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all"
+                      placeholder="Add a description for this project"
+                      disabled={createProjectMutation.isPending}
+                    />
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={handleCreateModalCancel}
+                      disabled={createProjectMutation.isPending}
+                      className="flex-1 px-6 py-3 rounded-lg font-medium text-gray-900 bg-gray-100 hover:bg-gray-200 border border-gray-300 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-4 focus:ring-gray-100"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={createProjectMutation.isPending || !newProjectName.trim()}
+                      className="flex-1 px-6 py-3 rounded-lg font-medium text-white bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-4 focus:ring-blue-100"
+                    >
+                      {createProjectMutation.isPending ? (
+                        <span className="flex items-center justify-center">
+                          <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          Creating...
+                        </span>
+                      ) : (
+                        'Create Project'
+                      )}
+                    </button>
+                  </div>
+                </form>
               </div>
             </div>
           )}
