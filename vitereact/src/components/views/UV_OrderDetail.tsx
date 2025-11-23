@@ -770,7 +770,12 @@ const UV_OrderDetail: React.FC = () => {
                               </p>
                               {canReview && (
                                 <button
-                                  onClick={() => handleOpenReviewModal(item.supplier_id, item.product_id)}
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    handleOpenReviewModal(item.supplier_id, item.product_id);
+                                  }}
                                   className="mt-2 text-xs text-blue-600 hover:text-blue-700 font-medium"
                                 >
                                   Review Product
@@ -952,7 +957,10 @@ const UV_OrderDetail: React.FC = () => {
                     
                     {canReview && (
                       <button
-                        onClick={() => {
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
                           // Use the first supplier from items
                           const firstItem = items[0];
                           if (firstItem) {

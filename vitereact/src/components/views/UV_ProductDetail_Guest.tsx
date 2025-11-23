@@ -195,12 +195,14 @@ const UV_ProductDetail_Guest: React.FC = () => {
 
   // Format Price
   const formatPrice = (price: number) => {
+    const numPrice = Number(price);
+    if (isNaN(numPrice)) return '$0.00';
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
-    }).format(price);
+    }).format(numPrice);
   };
 
   // Format Date

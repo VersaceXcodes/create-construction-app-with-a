@@ -634,7 +634,7 @@ export const useAppStore = create<AppStore>()(
         });
 
         try {
-          const response = await axios.get('/api/cart');
+          const response = await axios.get('/cart');
           const { items = [], subtotal = 0 } = response.data;
 
           set({
@@ -659,7 +659,7 @@ export const useAppStore = create<AppStore>()(
 
       add_to_cart: async (product_id: string, quantity: number) => {
         try {
-          await axios.post('/api/cart/items', { product_id, quantity });
+          await axios.post('/cart/items', { product_id, quantity });
           await get().fetch_cart();
         } catch (error) {
           console.error('Add to cart error:', error);
@@ -669,7 +669,7 @@ export const useAppStore = create<AppStore>()(
 
       update_cart_item: async (cart_item_id: string, quantity: number) => {
         try {
-          await axios.patch(`/api/cart/items/${cart_item_id}`, { quantity });
+          await axios.patch(`/cart/items/${cart_item_id}`, { quantity });
           await get().fetch_cart();
         } catch (error) {
           console.error('Update cart item error:', error);
@@ -679,7 +679,7 @@ export const useAppStore = create<AppStore>()(
 
       remove_from_cart: async (cart_item_id: string) => {
         try {
-          await axios.delete(`/api/cart/items/${cart_item_id}`);
+          await axios.delete(`/cart/items/${cart_item_id}`);
           await get().fetch_cart();
         } catch (error) {
           console.error('Remove from cart error:', error);
@@ -689,7 +689,7 @@ export const useAppStore = create<AppStore>()(
 
       clear_cart: async () => {
         try {
-          await axios.delete('/api/cart');
+          await axios.delete('/cart');
           set({
             cart_state: {
               items: [],

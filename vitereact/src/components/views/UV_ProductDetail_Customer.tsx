@@ -389,18 +389,23 @@ const UV_ProductDetail_Customer: React.FC = () => {
     return entries;
   };
 
-  const getCurrentPrice = () => {
+  const getCurrentPrice = (): number => {
     if (!product) return 0;
     const bulkPrices = getBulkPriceInfo();
-    if (!bulkPrices) return Number(product.price_per_unit) || 0;
+    if (!bulkPrices) {
+      const price = Number(product.price_per_unit);
+      return isNaN(price) ? 0 : price;
+    }
     
     for (let i = bulkPrices.length - 1; i >= 0; i--) {
       const [minQty, price] = bulkPrices[i];
       if (selectedQuantity >= parseInt(minQty)) {
-        return Number(price) || 0;
+        const numPrice = Number(price);
+        return isNaN(numPrice) ? 0 : numPrice;
       }
     }
-    return Number(product.price_per_unit) || 0;
+    const price = Number(product.price_per_unit);
+    return isNaN(price) ? 0 : price;
   };
 
   // Loading state
