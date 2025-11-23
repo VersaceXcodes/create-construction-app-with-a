@@ -395,11 +395,11 @@ const UV_SurplusListing_Create: React.FC = () => {
               </div>
               
               {/* Form Card */}
-              <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+              <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden" data-current-step={currentStep}>
                 <div className="p-8">
                   {/* Step 1: Item Information */}
                   {currentStep === 1 && (
-                    <div className="space-y-6">
+                    <div className="space-y-6" data-testid="step-1-item-info">
                       <div className="flex items-center space-x-3 mb-6">
                         <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                           <Package className="w-6 h-6 text-blue-600" />
@@ -547,7 +547,7 @@ const UV_SurplusListing_Create: React.FC = () => {
                   
                   {/* Step 2: Photos */}
                   {currentStep === 2 && (
-                    <div className="space-y-6">
+                    <div className="space-y-6" data-testid="step-2-photos">
                       <div className="flex items-center space-x-3 mb-6">
                         <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                           <Camera className="w-6 h-6 text-blue-600" />
@@ -636,7 +636,7 @@ const UV_SurplusListing_Create: React.FC = () => {
                   
                   {/* Step 3: Pricing */}
                   {currentStep === 3 && (
-                    <div className="space-y-6">
+                    <div className="space-y-6" data-testid="step-3-pricing">
                       <div className="flex items-center space-x-3 mb-6">
                         <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                           <DollarSign className="w-6 h-6 text-blue-600" />
@@ -657,6 +657,8 @@ const UV_SurplusListing_Create: React.FC = () => {
                           <input
                             type="number"
                             id="asking_price"
+                            data-testid="asking-price-input"
+                            name="asking_price"
                             value={listingFormData.asking_price || ''}
                             onChange={(e) => handleFieldChange('asking_price', parseFloat(e.target.value) || 0)}
                             min="0"
@@ -687,6 +689,8 @@ const UV_SurplusListing_Create: React.FC = () => {
                           <input
                             type="number"
                             id="original_price"
+                            data-testid="original-price-input"
+                            name="original_price"
                             value={listingFormData.original_price || ''}
                             onChange={(e) => handleFieldChange('original_price', parseFloat(e.target.value) || 0)}
                             min="0"
@@ -755,7 +759,7 @@ const UV_SurplusListing_Create: React.FC = () => {
                   
                   {/* Step 4: Availability */}
                   {currentStep === 4 && (
-                    <div className="space-y-6">
+                    <div className="space-y-6" data-testid="step-4-availability">
                       <div className="flex items-center space-x-3 mb-6">
                         <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                           <MapPin className="w-6 h-6 text-blue-600" />
@@ -895,6 +899,7 @@ const UV_SurplusListing_Create: React.FC = () => {
                         <button
                           type="button"
                           onClick={handlePreviousStep}
+                          data-testid="previous-step-button"
                           className="inline-flex items-center px-6 py-3 border-2 border-gray-300 rounded-lg font-medium text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-400 transition-all duration-200"
                         >
                           <ChevronLeft className="w-5 h-5 mr-2" />
@@ -908,6 +913,7 @@ const UV_SurplusListing_Create: React.FC = () => {
                         <button
                           type="button"
                           onClick={handleNextStep}
+                          data-testid="next-step-button"
                           className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all duration-200"
                         >
                           Next
@@ -917,6 +923,7 @@ const UV_SurplusListing_Create: React.FC = () => {
                         <button
                           type="button"
                           onClick={handleShowPreview}
+                          data-testid="preview-listing-button"
                           className="inline-flex items-center px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 shadow-lg hover:shadow-xl transition-all duration-200"
                         >
                           <Check className="w-5 h-5 mr-2" />

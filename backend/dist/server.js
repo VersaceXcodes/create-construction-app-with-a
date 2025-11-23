@@ -851,13 +851,66 @@ app.get('/api/products', async (req, res) => {
         params.push(limit);
         params.push(offset);
         const result = await pool.query(query, params);
-        const countQuery = query.substring(0, query.indexOf('ORDER BY')).replace(/SELECT .* FROM/, 'SELECT COUNT(*) as total FROM');
-        const countResult = await pool.query(countQuery, params.slice(0, -2));
+        // Build a proper count query with same filters
+        let countQuery = `
+      SELECT COUNT(*) as total
+      FROM surplus_listings sl
+      INNER JOIN categories c ON sl.category_id = c.category_id
+      INNER JOIN customers cu ON sl.seller_id = cu.customer_id
+      INNER JOIN users u ON cu.user_id = u.user_id
+      WHERE 1=1
+    `;
+        const countParams = [];
+        let countParamCount = 1;
+        const statusFilter = req.query.status;
+        const categoryFilter = req.query.category_id;
+        const searchFilter = req.query.search_query;
+        const conditionFilter = req.query.condition;
+        const priceMinFilter = req.query.price_min;
+        const priceMaxFilter = req.query.price_max;
+        const shippingFilter = req.query.shipping_available;
+        if (statusFilter) {
+            countQuery += ` AND sl.status = $${countParamCount}`;
+            countParams.push(asString(statusFilter));
+            countParamCount++;
+        }
+        else {
+            countQuery += ` AND sl.status = 'active'`;
+        }
+        if (categoryFilter) {
+            countQuery += ` AND sl.category_id = $${countParamCount}`;
+            countParams.push(asString(categoryFilter));
+            countParamCount++;
+        }
+        if (searchFilter) {
+            countQuery += ` AND (sl.product_name ILIKE $${countParamCount} OR sl.description ILIKE $${countParamCount})`;
+            countParams.push(`%${searchFilter}%`);
+            countParamCount++;
+        }
+        if (conditionFilter) {
+            countQuery += ` AND sl.condition = $${countParamCount}`;
+            countParams.push(asString(conditionFilter));
+            countParamCount++;
+        }
+        if (priceMinFilter) {
+            countQuery += ` AND sl.asking_price >= $${countParamCount}`;
+            countParams.push(parseFloat(asString(priceMinFilter) || '0'));
+            countParamCount++;
+        }
+        if (priceMaxFilter) {
+            countQuery += ` AND sl.asking_price <= $${countParamCount}`;
+            countParams.push(parseFloat(asString(priceMaxFilter) || '0'));
+            countParamCount++;
+        }
+        if (shippingFilter === 'true') {
+            countQuery += ` AND sl.shipping_available = true`;
+        }
+        const countResult = await pool.query(countQuery, countParams);
         res.json({
-            products: result.rows,
-            total: parseInt(countResult.rows[0].total),
-            limit: asNumber(limit, 50),
-            offset: asNumber(offset, 0)
+            listings: result.rows,
+            total: countResult.rows[0]?.total ? parseInt(countResult.rows[0].total) : 0,
+            limit,
+            offset
         });
     }
     catch (error) {
