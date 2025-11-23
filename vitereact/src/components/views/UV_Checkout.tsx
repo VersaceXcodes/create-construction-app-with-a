@@ -55,8 +55,8 @@ interface CartItem {
   cart_item_id: string;
   product_id: string;
   supplier_id: string;
-  quantity: number;
-  price_per_unit: number;
+  quantity: number | string;
+  price_per_unit: number | string;
   product_name?: string;
   primary_image_url?: string;
   supplier_name?: string;
@@ -309,7 +309,10 @@ const UV_Checkout: React.FC = () => {
       }
       
       grouped[item.supplier_id].items.push(item);
-      grouped[item.supplier_id].supplier_subtotal += item.quantity * item.price_per_unit;
+      // Ensure values are numbers before calculation
+      const quantity = Number(item.quantity) || 0;
+      const price = Number(item.price_per_unit) || 0;
+      grouped[item.supplier_id].supplier_subtotal += quantity * price;
     });
     
     return Object.values(grouped);
@@ -317,18 +320,18 @@ const UV_Checkout: React.FC = () => {
 
   // Calculate order totals
   const orderTotals = useMemo(() => {
-    const subtotal = supplierGroups.reduce((sum, group) => sum + group.supplier_subtotal, 0);
+    const subtotal = Number(supplierGroups.reduce((sum, group) => sum + Number(group.supplier_subtotal || 0), 0));
     
     // Delivery fee: $50 per supplier (simplified)
-    const deliveryFeeTotal = supplierGroups.length * 50;
+    const deliveryFeeTotal = Number(supplierGroups.length * 50);
     
     // Tax: 8% (simplified)
-    const taxAmount = (subtotal + deliveryFeeTotal) * 0.08;
+    const taxAmount = Number((subtotal + deliveryFeeTotal) * 0.08);
     
     // Discount from promo (if any in cart)
     const discountAmount = 0;
     
-    const totalAmount = subtotal + deliveryFeeTotal + taxAmount - discountAmount;
+    const totalAmount = Number(subtotal + deliveryFeeTotal + taxAmount - discountAmount);
     
     return {
       subtotal_amount: subtotal,
@@ -543,7 +546,7 @@ const UV_Checkout: React.FC = () => {
 
   const selectedAddress = addresses.find((a: Address) => a.address_id === selectedAddressId);
   // const selectedPaymentMethod = paymentMethods.find((pm: PaymentMethod) => pm.payment_method_id === selectedPaymentMethodId);
-  const tradeCreditAvailable = customerProfile?.trade_credit_balance || 0;
+  const tradeCreditAvailable = Number(customerProfile?.trade_credit_balance || 0);
 
   // ============================================================================
   // RENDER
@@ -954,9 +957,9 @@ const UV_Checkout: React.FC = () => {
                       <div className="ml-3 flex-1">
                         <div className="font-semibold text-green-900">Use Trade Credit</div>
                         <div className="text-sm text-green-700 mt-1">
-                          Available: ${tradeCreditAvailable.toFixed(2)} | Terms: Net 30 Days
+                          Available: ${Number(tradeCreditAvailable).toFixed(2)} | Terms: Net 30 Days
                         </div>
-                        {orderTotals.total_amount > tradeCreditAvailable && (
+                        {Number(orderTotals.total_amount) > Number(tradeCreditAvailable) && (
                           <div className="text-xs text-green-600 mt-2">
                             ${Number(orderTotals.total_amount).toFixed(2)} exceeds available credit. Additional payment required.
                           </div>
