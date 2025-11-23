@@ -2496,6 +2496,43 @@ app.post('/api/reviews', authenticateToken, requireCustomer, async (req, res) =>
         client.release();
     }
 });
+// Check if customer can review a product (must be before :review_id route)
+app.get('/api/reviews/can-review/:product_id', authenticateToken, requireCustomer, async (req, res) => {
+    try {
+        const { product_id } = req.params;
+        // Find delivered orders that contain this product and belong to the customer
+        const result = await pool.query(`SELECT DISTINCT o.order_id, o.order_number, o.order_date, oi.supplier_id
+       FROM orders o
+       JOIN order_items oi ON o.order_id = oi.order_id
+       WHERE o.customer_id = $1 
+         AND oi.product_id = $2 
+         AND o.status = 'delivered'
+       ORDER BY o.order_date DESC
+       LIMIT 1`, [req.user.customer_id, product_id]);
+        if (result.rows.length === 0) {
+            return res.json({ can_review: false, message: 'You must have received this product to write a review' });
+        }
+        const order = result.rows[0];
+        // Check if already reviewed this product from this order
+        const existingReview = await pool.query('SELECT review_id FROM reviews WHERE customer_id = $1 AND product_id = $2 AND order_id = $3', [req.user.customer_id, product_id, order.order_id]);
+        if (existingReview.rows.length > 0) {
+            return res.json({
+                can_review: false,
+                message: 'You have already reviewed this product',
+                existing_review_id: existingReview.rows[0].review_id
+            });
+        }
+        res.json({
+            can_review: true,
+            order_id: order.order_id,
+            order_number: order.order_number,
+            supplier_id: order.supplier_id
+        });
+    }
+    catch (error) {
+        res.status(500).json({ error: 'InternalServerError', message: error.message });
+    }
+});
 app.get('/api/reviews/:review_id', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM reviews WHERE review_id = $1', [req.params.review_id]);
@@ -2592,43 +2629,6 @@ app.post('/api/reviews/:review_id/response', authenticateToken, requireSupplier,
             return res.status(404).json({ error: 'ReviewNotFound', message: 'Review not found' });
         }
         res.json(result.rows[0]);
-    }
-    catch (error) {
-        res.status(500).json({ error: 'InternalServerError', message: error.message });
-    }
-});
-// Check if customer can review a product
-app.get('/api/reviews/can-review/:product_id', authenticateToken, requireCustomer, async (req, res) => {
-    try {
-        const { product_id } = req.params;
-        // Find delivered orders that contain this product and belong to the customer
-        const result = await pool.query(`SELECT DISTINCT o.order_id, o.order_number, o.order_date, oi.supplier_id
-       FROM orders o
-       JOIN order_items oi ON o.order_id = oi.order_id
-       WHERE o.customer_id = $1 
-         AND oi.product_id = $2 
-         AND o.status = 'delivered'
-       ORDER BY o.order_date DESC
-       LIMIT 1`, [req.user.customer_id, product_id]);
-        if (result.rows.length === 0) {
-            return res.json({ can_review: false, message: 'You must have received this product to write a review' });
-        }
-        const order = result.rows[0];
-        // Check if already reviewed this product from this order
-        const existingReview = await pool.query('SELECT review_id FROM reviews WHERE customer_id = $1 AND product_id = $2 AND order_id = $3', [req.user.customer_id, product_id, order.order_id]);
-        if (existingReview.rows.length > 0) {
-            return res.json({
-                can_review: false,
-                message: 'You have already reviewed this product',
-                existing_review_id: existingReview.rows[0].review_id
-            });
-        }
-        res.json({
-            can_review: true,
-            order_id: order.order_id,
-            order_number: order.order_number,
-            supplier_id: order.supplier_id
-        });
     }
     catch (error) {
         res.status(500).json({ error: 'InternalServerError', message: error.message });
