@@ -251,7 +251,13 @@ const UV_AccountSettings: React.FC = () => {
     queryKey: ['customerProfile'],
     queryFn: () => fetchCustomerProfile(authToken),
     enabled: !!authToken,
-    staleTime: 60000
+    staleTime: 60000,
+    select: (data) => ({
+      ...data,
+      trade_credit_limit: data.trade_credit_limit ? Number(data.trade_credit_limit) : undefined,
+      trade_credit_balance: data.trade_credit_balance ? Number(data.trade_credit_balance) : undefined,
+      trade_credit_used: data.trade_credit_used ? Number(data.trade_credit_used) : undefined
+    })
   });
 
   const { data: addresses = [], isLoading: addressesLoading } = useQuery({

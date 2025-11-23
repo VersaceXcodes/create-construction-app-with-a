@@ -206,7 +206,9 @@ const UV_TradeCredit_Dashboard: React.FC = () => {
       ...data,
       trade_credit_limit: Number(data.trade_credit_limit || 0),
       trade_credit_balance: Number(data.trade_credit_balance || 0),
-      trade_credit_used: Number(data.trade_credit_used || 0)
+      trade_credit_used: Number(data.trade_credit_used || 0),
+      available_credit: Number(data.available_credit || 0),
+      credit_utilization_percentage: Number(data.credit_utilization_percentage || 0)
     })
   });
 

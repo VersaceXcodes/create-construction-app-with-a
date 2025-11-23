@@ -1047,19 +1047,19 @@ const UV_AdminUserManagement_Suppliers: React.FC = () => {
                           <div>
                             <p className="text-xs text-blue-700 uppercase tracking-wide">Credit Limit</p>
                             <p className="mt-1 text-lg font-bold text-blue-900">
-                              ${(selectedSupplier.trade_credit_limit || 0).toFixed(2)}
+                              ${(parseFloat(selectedSupplier.trade_credit_limit) || 0).toFixed(2)}
                             </p>
                           </div>
                           <div>
                             <p className="text-xs text-blue-700 uppercase tracking-wide">Used</p>
                             <p className="mt-1 text-lg font-bold text-blue-900">
-                              ${(selectedSupplier.trade_credit_used || 0).toFixed(2)}
+                              ${(parseFloat(selectedSupplier.trade_credit_used) || 0).toFixed(2)}
                             </p>
                           </div>
                           <div>
                             <p className="text-xs text-blue-700 uppercase tracking-wide">Available</p>
                             <p className="mt-1 text-lg font-bold text-green-700">
-                              ${(selectedSupplier.trade_credit_balance || 0).toFixed(2)}
+                              ${(parseFloat(selectedSupplier.trade_credit_balance) || 0).toFixed(2)}
                             </p>
                           </div>
                         </div>
