@@ -448,8 +448,8 @@ const UV_ProductDetail_Customer: React.FC = () => {
   };
 
   // Calculate current stock (real-time or fallback)
-  const currentStock = realTimeStock.stock_quantity ?? product?.stock_quantity ?? 0;
-  const stockStatus = currentStock === 0 ? 'out_of_stock' : currentStock <= (product?.low_stock_threshold || 10) ? 'low_stock' : 'in_stock';
+  const currentStock = Number(realTimeStock.stock_quantity ?? product?.stock_quantity ?? 0);
+  const stockStatus = currentStock === 0 ? 'out_of_stock' : currentStock <= Number(product?.low_stock_threshold || 10) ? 'low_stock' : 'in_stock';
 
   // Bulk pricing display
   const getBulkPriceInfo = () => {

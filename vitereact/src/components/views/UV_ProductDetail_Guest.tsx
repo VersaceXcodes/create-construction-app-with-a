@@ -150,7 +150,7 @@ const UV_ProductDetail_Guest: React.FC = () => {
       return { status: 'Out of Stock', color: 'red', icon: X };
     }
     
-    if (product.stock_quantity <= product.low_stock_threshold) {
+    if (Number(product.stock_quantity) <= Number(product.low_stock_threshold)) {
       return { status: 'Low Stock', color: 'amber', icon: Package };
     }
     

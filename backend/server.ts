@@ -1516,6 +1516,11 @@ app.get('/api/suppliers/me/analytics/dashboard', authenticateToken, requireSuppl
     );
     const supplier = supplierResult.rows[0];
     
+    // Handle case where supplier is not found
+    if (!supplier) {
+      return res.status(404).json({ error: 'NotFound', message: 'Supplier not found' });
+    }
+    
     // Get product count
     const productResult = await pool.query(
       'SELECT COUNT(*) as count FROM products WHERE supplier_id = $1 AND status != \'discontinued\'',
@@ -1528,11 +1533,13 @@ app.get('/api/suppliers/me/analytics/dashboard', authenticateToken, requireSuppl
       [supplier_id]
     );
     
-    const avg_order_value = supplier.total_orders > 0 ? supplier.total_sales / supplier.total_orders : 0;
+    const total_sales = parseFloat(supplier.total_sales) || 0;
+    const total_orders = parseInt(supplier.total_orders) || 0;
+    const avg_order_value = total_orders > 0 ? total_sales / total_orders : 0;
     
     res.json({
-      total_sales: parseFloat(supplier.total_sales) || 0,
-      total_orders: parseInt(supplier.total_orders) || 0,
+      total_sales: total_sales,
+      total_orders: total_orders,
       avg_order_value: avg_order_value,
       fulfillment_rate: parseFloat(supplier.fulfillment_rate) || 0,
       customer_count: parseInt(customerResult.rows[0].count) || 0,
@@ -1540,6 +1547,7 @@ app.get('/api/suppliers/me/analytics/dashboard', authenticateToken, requireSuppl
       rating_average: parseFloat(supplier.rating_average) || 0
     });
   } catch (error) {
+    console.error('Analytics dashboard error:', error);
     res.status(500).json({ error: 'InternalServerError', message: error.message });
   }
 });

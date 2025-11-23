@@ -247,11 +247,11 @@ const UV_InventoryManagement_Supplier: React.FC = () => {
     
     // Apply client-side filters for immediate feedback
     if (filterState.low_stock_only) {
-      items = items.filter(p => p.stock_quantity <= p.low_stock_threshold && p.stock_quantity > 0);
+      items = items.filter(p => Number(p.stock_quantity) <= Number(p.low_stock_threshold) && Number(p.stock_quantity) > 0);
     }
     
     if (filterState.out_of_stock_only) {
-      items = items.filter(p => p.stock_quantity === 0);
+      items = items.filter(p => Number(p.stock_quantity) === 0);
     }
     
     return items;
@@ -272,13 +272,13 @@ const UV_InventoryManagement_Supplier: React.FC = () => {
     return {
       total_products: products.length,
       total_stock_value: products.reduce(
-        (sum, p) => sum + ((p.stock_quantity || 0) * (p.cost_price || p.price_per_unit || 0)),
+        (sum, p) => sum + ((Number(p.stock_quantity) || 0) * (Number(p.cost_price) || Number(p.price_per_unit) || 0)),
         0
       ),
       low_stock_count: products.filter(
-        p => p.stock_quantity <= p.low_stock_threshold && p.stock_quantity > 0
+        p => Number(p.stock_quantity) <= Number(p.low_stock_threshold) && Number(p.stock_quantity) > 0
       ).length,
-      out_of_stock_count: products.filter(p => p.stock_quantity === 0).length,
+      out_of_stock_count: products.filter(p => Number(p.stock_quantity) === 0).length,
     };
   }, [inventoryData]);
   
@@ -386,7 +386,7 @@ const UV_InventoryManagement_Supplier: React.FC = () => {
       );
     }
     
-    if (product.stock_quantity <= product.low_stock_threshold) {
+    if (Number(product.stock_quantity) <= Number(product.low_stock_threshold)) {
       return (
         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
           Low Stock
@@ -794,9 +794,9 @@ const UV_InventoryManagement_Supplier: React.FC = () => {
                               className="group flex items-center space-x-2 hover:bg-gray-100 rounded px-2 py-1 transition-colors"
                             >
                               <span className={`text-sm font-semibold ${
-                                product.stock_quantity === 0 
+                                Number(product.stock_quantity) === 0 
                                   ? 'text-red-600' 
-                                  : product.stock_quantity <= product.low_stock_threshold
+                                  : Number(product.stock_quantity) <= Number(product.low_stock_threshold)
                                   ? 'text-yellow-600'
                                   : 'text-gray-900'
                               }`}>

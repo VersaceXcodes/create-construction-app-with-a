@@ -156,7 +156,7 @@ const fetchLowStockProducts = async (token: string): Promise<Product[]> => {
   });
   
   const products = response.data.products || [];
-  return products.filter((p: Product) => p.stock_quantity <= p.low_stock_threshold);
+  return products.filter((p: Product) => Number(p.stock_quantity) <= Number(p.low_stock_threshold));
 };
 
 const acceptOrder = async (orderId: string, token: string): Promise<void> => {

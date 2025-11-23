@@ -85,7 +85,7 @@ const fetchLowStockCount = async (token: string): Promise<number> => {
   );
   
   const products: Product[] = response.data.products || [];
-  return products.filter(p => p.stock_quantity <= p.low_stock_threshold).length;
+  return products.filter(p => Number(p.stock_quantity) <= Number(p.low_stock_threshold)).length;
 };
 
 const fetchPendingOrdersCount = async (token: string): Promise<number> => {
