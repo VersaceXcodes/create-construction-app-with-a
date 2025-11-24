@@ -189,8 +189,43 @@ const GV_ChatWidget: React.FC = () => {
   // API QUERIES
   // ============================================================================
   
+  // Fetch existing conversations for the user
+  const { data: existingConversations } = useQuery({
+    queryKey: ['chat-conversations', currentUser?.user_id],
+    queryFn: async () => {
+      if (!authToken) return [];
+      
+      const response = await axios.get(
+        `${API_BASE_URL}/api/chat/conversations`,
+        {
+          headers: {
+            'Authorization': `Bearer ${authToken}`,
+          },
+          params: {
+            conversation_type: currentUser?.user_type === 'customer' ? 'customer_supplier' : undefined,
+            status: 'active'
+          }
+        }
+      );
+      
+      return response.data as ConversationResponse[];
+    },
+    enabled: !!authToken && !!currentUser && is_widget_open,
+    staleTime: 0
+  });
+  
+  // Auto-load the most recent conversation when widget opens
+  useEffect(() => {
+    if (is_widget_open && !conversation_id && existingConversations && existingConversations.length > 0) {
+      const mostRecent = existingConversations[0];
+      setConversationId(mostRecent.conversation_id);
+      setConversationType(mostRecent.conversation_type);
+      setShowConversationSelector(false);
+    }
+  }, [is_widget_open, conversation_id, existingConversations]);
+  
   // Fetch conversation messages
-  const { data: conversationMessages, isLoading: isLoadingMessages } = useQuery({
+  const { data: conversationMessages, isLoading: isLoadingMessages, refetch: refetchMessages } = useQuery({
     queryKey: ['chat-messages', conversation_id],
     queryFn: async () => {
       if (!conversation_id || !authToken) return [];
@@ -211,12 +246,12 @@ const GV_ChatWidget: React.FC = () => {
       return response.data as ChatMessage[];
     },
     enabled: !!conversation_id && !!authToken && is_widget_open,
-    staleTime: 60000, // 1 minute
+    staleTime: 0, // Always refetch when widget opens
     refetchOnWindowFocus: false
   });
   
   useEffect(() => {
-    if (conversationMessages && conversationMessages.length > 0) {
+    if (conversationMessages) {
       setMessages(conversationMessages);
     }
   }, [conversationMessages]);
@@ -257,6 +292,9 @@ const GV_ChatWidget: React.FC = () => {
       if (websocketConnection) {
         websocketConnection.emit('join_conversation', { conversation_id: data.conversation_id });
       }
+      
+      // Explicitly fetch messages for the new conversation
+      queryClient.invalidateQueries({ queryKey: ['chat-messages', data.conversation_id] });
     },
     onError: (error: any) => {
       console.error('Failed to start conversation:', error);
@@ -330,6 +368,9 @@ const GV_ChatWidget: React.FC = () => {
     if (!conversation_id) {
       setShowConversationSelector(true);
     } else {
+      // Refetch messages when reopening widget with existing conversation
+      refetchMessages();
+      
       // Mark messages as read
       if (unread_count > 0) {
         setUnreadCount(0);
@@ -345,7 +386,7 @@ const GV_ChatWidget: React.FC = () => {
     
     // Focus input
     setTimeout(() => inputRef.current?.focus(), 100);
-  }, [conversation_id, messages, currentUser, unread_count, websocketConnection]);
+  }, [conversation_id, messages, currentUser, unread_count, websocketConnection, refetchMessages]);
   
   const handleCloseWidget = useCallback(() => {
     setIsWidgetOpen(false);
