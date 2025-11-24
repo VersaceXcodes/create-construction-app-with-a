@@ -796,6 +796,13 @@ app.patch('/api/addresses/:address_id', authenticateToken, async (req: AuthReque
 
 app.delete('/api/addresses/:address_id', authenticateToken, async (req: AuthRequest, res: Response) => {
   try {
+    // First, nullify references to this address in orders to avoid foreign key constraint violations
+    await pool.query(
+      'UPDATE orders SET delivery_address_id = NULL WHERE delivery_address_id = $1',
+      [req.params.address_id]
+    );
+    
+    // Now delete the address
     const result = await pool.query('DELETE FROM addresses WHERE address_id = $1 AND user_id = $2 RETURNING address_id', [req.params.address_id, req.user.user_id]);
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'AddressNotFound', message: 'Address not found' });
@@ -1011,69 +1018,78 @@ app.get('/api/products', async (req, res) => {
     // Build a proper count query with same filters
     let countQuery = `
       SELECT COUNT(*) as total
-      FROM surplus_listings sl
-      INNER JOIN categories c ON sl.category_id = c.category_id
-      INNER JOIN customers cu ON sl.seller_id = cu.customer_id
-      INNER JOIN users u ON cu.user_id = u.user_id
-      WHERE 1=1
+      FROM products p
+      INNER JOIN suppliers s ON p.supplier_id = s.supplier_id
+      INNER JOIN categories c ON p.category_id = c.category_id
+      WHERE p.status = 'active'
+        AND p.searchable = true
+        AND s.status = 'active'
+        AND s.verification_status = 'verified'
     `;
     
     const countParams = [];
     let countParamCount = 1;
-    const statusFilter = req.query.status;
-    const categoryFilter = req.query.category_id;
-    const searchFilter = req.query.search_query;
-    const conditionFilter = req.query.condition;
-    const priceMinFilter = req.query.price_min;
-    const priceMaxFilter = req.query.price_max;
-    const shippingFilter = req.query.shipping_available;
 
-    if (statusFilter) {
-      countQuery += ` AND sl.status = $${countParamCount}`;
-      countParams.push(asString(statusFilter));
-      countParamCount++;
-    } else {
-      countQuery += ` AND sl.status = 'active'`;
-    }
-
-    if (categoryFilter) {
-      countQuery += ` AND sl.category_id = $${countParamCount}`;
-      countParams.push(asString(categoryFilter));
+    if (search_query) {
+      countQuery += ` AND (p.product_name ILIKE $${countParamCount} OR p.description ILIKE $${countParamCount} OR p.tags::text ILIKE $${countParamCount})`;
+      countParams.push(`%${search_query}%`);
       countParamCount++;
     }
 
-    if (searchFilter) {
-      countQuery += ` AND (sl.product_name ILIKE $${countParamCount} OR sl.description ILIKE $${countParamCount})`;
-      countParams.push(`%${searchFilter}%`);
+    if (category) {
+      countQuery += ` AND p.category_id = $${countParamCount}`;
+      countParams.push(category);
       countParamCount++;
     }
 
-    if (conditionFilter) {
-      countQuery += ` AND sl.condition = $${countParamCount}`;
-      countParams.push(asString(conditionFilter));
+    if (supplier_id) {
+      countQuery += ` AND p.supplier_id = $${countParamCount}`;
+      countParams.push(supplier_id);
       countParamCount++;
     }
 
-    if (priceMinFilter) {
-      countQuery += ` AND sl.asking_price >= $${countParamCount}`;
-      countParams.push(parseFloat(asString(priceMinFilter) || '0'));
+    if (brand) {
+      countQuery += ` AND p.brand = $${countParamCount}`;
+      countParams.push(brand);
       countParamCount++;
     }
 
-    if (priceMaxFilter) {
-      countQuery += ` AND sl.asking_price <= $${countParamCount}`;
-      countParams.push(parseFloat(asString(priceMaxFilter) || '0'));
+    if (price_min) {
+      countQuery += ` AND p.price_per_unit >= $${countParamCount}`;
+      countParams.push(parseFloat(price_min));
       countParamCount++;
     }
 
-    if (shippingFilter === 'true') {
-      countQuery += ` AND sl.shipping_available = true`;
+    if (price_max) {
+      countQuery += ` AND p.price_per_unit <= $${countParamCount}`;
+      countParams.push(parseFloat(price_max));
+      countParamCount++;
+    }
+
+    if (in_stock_only === 'true') {
+      countQuery += ` AND p.stock_quantity > 0`;
+    }
+
+    if (supplier_rating_min) {
+      countQuery += ` AND s.rating_average >= $${countParamCount}`;
+      countParams.push(parseFloat(supplier_rating_min));
+      countParamCount++;
+    }
+
+    if (is_featured === 'true') {
+      countQuery += ` AND p.is_featured = true`;
+    }
+
+    if (customer_type_availability && customer_type_availability !== 'all') {
+      countQuery += ` AND (p.customer_type_availability = $${countParamCount} OR p.customer_type_availability = 'all')`;
+      countParams.push(customer_type_availability);
+      countParamCount++;
     }
 
     const countResult = await pool.query(countQuery, countParams);
 
     res.json({
-      listings: result.rows,
+      products: result.rows,
       total: countResult.rows[0]?.total ? parseInt(countResult.rows[0].total) : 0,
       limit,
       offset
