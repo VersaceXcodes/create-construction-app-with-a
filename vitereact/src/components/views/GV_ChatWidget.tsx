@@ -196,7 +196,7 @@ const GV_ChatWidget: React.FC = () => {
       if (!conversation_id || !authToken) return [];
       
       const response = await axios.get(
-        `${API_BASE_URL}/chat/conversations/${conversation_id}/messages`,
+        `${API_BASE_URL}/api/chat/conversations/${conversation_id}/messages`,
         {
           headers: {
             'Authorization': `Bearer ${authToken}`,
@@ -234,7 +234,7 @@ const GV_ChatWidget: React.FC = () => {
       related_entity_id?: string;
     }) => {
       const response = await axios.post(
-        `${API_BASE_URL}/chat/conversations`,
+        `${API_BASE_URL}/api/chat/conversations`,
         params,
         {
           headers: {
@@ -270,7 +270,7 @@ const GV_ChatWidget: React.FC = () => {
       if (!conversation_id) throw new Error('No active conversation');
       
       const response = await axios.post(
-        `${API_BASE_URL}/chat/conversations/${conversation_id}/messages`,
+        `${API_BASE_URL}/api/chat/conversations/${conversation_id}/messages`,
         params,
         {
           headers: {

@@ -193,7 +193,7 @@ const createChatConversation = async (
 ): Promise<{ conversation_id: string }> => {
   // Use relative URL - axios baseURL already includes /api prefix and auth header is set globally
   const { data } = await axios.post(
-    '/chat/conversations',
+    '/api/chat/conversations',
     {
       conversation_type: 'customer_supplier',
       supplier_id
