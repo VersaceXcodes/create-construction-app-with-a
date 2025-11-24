@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Validation Functions Test</title>
+</head>
+<body>
+    <h1>Input Validation Tests</h1>
+    <div id="results"></div>
+    
+    <script>
+        // Copy the validation functions
+        const sanitizeTextInput = (value) => {
+            return value
+                .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+                .replace(/<[^>]*>/g, '')
+                .replace(/[<>]/g, '')
+                .replace(/javascript:/gi, '')
+                .replace(/on\w+\s*=/gi, '')
+                .trim();
+        };
+
+        const containsDangerousPatterns = (value) => {
+            const dangerousPatterns = [
+                /<script/i,
+                /<\/script>/i,
+                /javascript:/i,
+                /on\w+\s*=/i,
+                /'.*OR.*'/i,
+                /".*OR.*"/i,
+                /--/,
+                /;.*DROP/i,
+                /;.*DELETE/i,
+                /;.*INSERT/i,
+                /;.*UPDATE/i,
+                /UNION.*SELECT/i,
+                /EXEC\s*\(/i,
+                /EXECUTE\s*\(/i,
+            ];
+            return dangerousPatterns.some(pattern => pattern.test(value));
+        };
+
+        const validateNameInput = (value) => {
+            const nameRegex = /^[a-zA-ZÀ-ÿ\s'-]+$/;
+            return nameRegex.test(value) || value === '';
+        };
+
+        // Test cases
+        const tests = [
+            { name: "XSS Script Tag", input: "<script>alert('XSS')</script>", shouldFail: true },
+            { name: "SQL Injection OR", input: "' OR 1=1 --", shouldFail: true },
+            { name: "SQL Injection DROP", input: "; DROP TABLE users", shouldFail: true },
+            { name: "Valid Name", input: "John", shouldFail: false },
+            { name: "Name with Hyphen", input: "Jean-Pierre", shouldFail: false },
+            { name: "Name with Apostrophe", input: "O'Connor", shouldFail: false },
+            { name: "Name with Spaces", input: "Mary Jane", shouldFail: false },
+            { name: "Invalid Characters", input: "John123", shouldFail: true },
+            { name: "HTML Tag", input: "<div>test</div>", shouldFail: true },
+            { name: "JavaScript Protocol", input: "javascript:alert(1)", shouldFail: true },
+        ];
+
+        let results = '<table border="1"><tr><th>Test</th><th>Input</th><th>Dangerous?</th><th>Valid Name?</th><th>Result</th></tr>';
+        
+        tests.forEach(test => {
+            const isDangerous = containsDangerousPatterns(test.input);
+            const isValidName = validateNameInput(test.input);
+            const passed = test.shouldFail ? (isDangerous || !isValidName) : (!isDangerous && isValidName);
+            
+            results += `<tr style="background-color: ${passed ? '#90EE90' : '#FFB6C6'}">
+                <td>${test.name}</td>
+                <td>${test.input}</td>
+                <td>${isDangerous}</td>
+                <td>${isValidName}</td>
+                <td>${passed ? '✓ PASS' : '✗ FAIL'}</td>
+            </tr>`;
+        });
+        
+        results += '</table>';
+        document.getElementById('results').innerHTML = results;
+    </script>
+</body>
+</html>
