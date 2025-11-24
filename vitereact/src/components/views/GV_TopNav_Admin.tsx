@@ -119,7 +119,8 @@ const GV_TopNav_Admin: React.FC = () => {
   const handleLogout = async () => {
     try {
       await logoutUser();
-      navigate('/login');
+      // Force full page reload to clear any cached state
+      window.location.href = '/login';
     } catch (error) {
       console.error('Logout error:', error);
     }

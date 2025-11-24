@@ -167,8 +167,9 @@ const GV_TopNav_Supplier: React.FC = () => {
   // Handlers
   const handleLogout = useCallback(async () => {
     await logoutUser();
-    navigate('/login');
-  }, [logoutUser, navigate]);
+    // Force full page reload to clear any cached state
+    window.location.href = '/login';
+  }, [logoutUser]);
   
   const handleSearch = useCallback((e: React.FormEvent) => {
     e.preventDefault();
@@ -465,6 +466,8 @@ const GV_TopNav_Supplier: React.FC = () => {
                         onClick={handleLogout}
                         className="w-full flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
                         role="menuitem"
+                        data-testid="supplier-signout-button"
+                        aria-label="Sign out of your account"
                       >
                         <svg className="h-4 w-4 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -599,6 +602,8 @@ const GV_TopNav_Supplier: React.FC = () => {
                     handleLogout();
                   }}
                   className="w-full mt-2 flex items-center space-x-3 px-4 py-3 text-base font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                  data-testid="supplier-signout-button-mobile"
+                  aria-label="Sign out of your account"
                 >
                   <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />

@@ -192,10 +192,11 @@ const GV_TopNav_Customer: React.FC = () => {
       if (!authToken) throw new Error('Not authenticated');
       return logoutApi(authToken);
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       // Call store logout to clear all state
-      logoutUser();
-      navigate('/');
+      await logoutUser();
+      // Force full page reload to clear any cached state
+      window.location.href = '/login';
     },
   });
 
