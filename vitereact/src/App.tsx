@@ -251,6 +251,49 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   </div>
 );
 
+// Auth-Aware Public Layout: Shows appropriate nav based on auth status and user role
+const AuthAwarePublicLayout: React.FC<{ children: React.ReactNode; showFooter?: boolean }> = ({ 
+  children, 
+  showFooter = true 
+}) => {
+  const isAuthenticated = useAppStore(state => state.authentication_state.authentication_status.is_authenticated);
+  const userType = useAppStore(state => state.authentication_state.authentication_status.user_type);
+  
+  // If authenticated, show appropriate layout based on user type
+  if (isAuthenticated) {
+    if (userType === 'customer') {
+      return (
+        <CustomerLayout showFooter={showFooter} showMiniCart={true} showChat={true}>
+          {children}
+        </CustomerLayout>
+      );
+    }
+    
+    if (userType === 'supplier') {
+      return (
+        <SupplierLayout showFooter={showFooter} showChat={true}>
+          {children}
+        </SupplierLayout>
+      );
+    }
+    
+    if (userType === 'admin') {
+      return (
+        <AdminLayout>
+          {children}
+        </AdminLayout>
+      );
+    }
+  }
+  
+  // Not authenticated - use GuestLayout
+  return (
+    <GuestLayout showFooter={showFooter}>
+      {children}
+    </GuestLayout>
+  );
+};
+
 // ============================================================================
 // ROOT REDIRECT COMPONENT
 // ============================================================================
@@ -285,30 +328,30 @@ const App: React.FC = () => {
           
           {/* Landing Page */}
           <Route path="/" element={
-            <GuestLayout>
+            <AuthAwarePublicLayout>
               <UV_Landing />
-            </GuestLayout>
+            </AuthAwarePublicLayout>
           } />
           
           {/* Product Catalog */}
           <Route path="/products" element={
-            <GuestLayout>
+            <AuthAwarePublicLayout>
               <UV_Catalog />
-            </GuestLayout>
+            </AuthAwarePublicLayout>
           } />
           
           {/* Product Detail (Auth-Aware) */}
           <Route path="/product/:product_id" element={
-            <GuestLayout>
+            <AuthAwarePublicLayout>
               <ProductDetailRoute />
-            </GuestLayout>
+            </AuthAwarePublicLayout>
           } />
           
           {/* Supplier Profile (Auth-Aware) */}
           <Route path="/supplier/:supplier_id" element={
-            <GuestLayout>
+            <AuthAwarePublicLayout>
               <SupplierProfileRoute />
-            </GuestLayout>
+            </AuthAwarePublicLayout>
           } />
           
           {/* Registration Flow */}
@@ -351,39 +394,39 @@ const App: React.FC = () => {
           
           {/* Help & Legal Pages */}
           <Route path="/help" element={
-            <GuestLayout>
+            <AuthAwarePublicLayout>
               <UV_KnowledgeBase />
-            </GuestLayout>
+            </AuthAwarePublicLayout>
           } />
           
           <Route path="/how-it-works" element={
-            <GuestLayout>
+            <AuthAwarePublicLayout>
               <UV_HowItWorks />
-            </GuestLayout>
+            </AuthAwarePublicLayout>
           } />
           
           <Route path="/contact" element={
-            <GuestLayout>
+            <AuthAwarePublicLayout>
               <UV_Contact />
-            </GuestLayout>
+            </AuthAwarePublicLayout>
           } />
           
           <Route path="/about" element={
-            <GuestLayout>
+            <AuthAwarePublicLayout>
               <UV_About />
-            </GuestLayout>
+            </AuthAwarePublicLayout>
           } />
           
           <Route path="/terms" element={
-            <GuestLayout>
+            <AuthAwarePublicLayout>
               <UV_TermsOfService />
-            </GuestLayout>
+            </AuthAwarePublicLayout>
           } />
           
           <Route path="/privacy" element={
-            <GuestLayout>
+            <AuthAwarePublicLayout>
               <UV_PrivacyPolicy />
-            </GuestLayout>
+            </AuthAwarePublicLayout>
           } />
           
           {/* ============================================ */}
