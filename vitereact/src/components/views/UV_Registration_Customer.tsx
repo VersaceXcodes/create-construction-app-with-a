@@ -294,14 +294,32 @@ const UV_Registration_Customer: React.FC = () => {
   const handleEmailChange = (value: string) => {
     setFormData(prev => ({ ...prev, email: value }));
     
-    // Validate email in real-time
-    if (value && !validateEmail(value)) {
-      setValidationErrors(prev => ({
-        ...prev,
-        email: 'Please enter a valid email address',
-      }));
+    // Validate email in real-time - show error after user has typed something substantial
+    if (value.length > 0) {
+      // If it looks like they're trying to enter an email (contains @ or .), validate
+      if (value.includes('@') || value.includes('.')) {
+        if (!validateEmail(value)) {
+          setValidationErrors(prev => ({
+            ...prev,
+            email: 'Please enter a valid email address (e.g., name@example.com)',
+          }));
+        } else {
+          // Clear email error
+          setValidationErrors(prev => {
+            const updated = { ...prev };
+            delete updated.email;
+            return updated;
+          });
+        }
+      } else if (value.length >= 3) {
+        // If they've typed 3+ chars but no @ or ., show a hint
+        setValidationErrors(prev => ({
+          ...prev,
+          email: 'Email should contain @ and domain (e.g., name@example.com)',
+        }));
+      }
     } else {
-      // Clear email error
+      // Clear error when empty
       setValidationErrors(prev => {
         const updated = { ...prev };
         delete updated.email;
@@ -514,15 +532,22 @@ const UV_Registration_Customer: React.FC = () => {
                         onChange={(e) => {
                           const value = e.target.value;
                           
-                          // Check for dangerous patterns first
+                          // Check max length (client-side enforcement) - prevent typing beyond limit
+                          if (value.length > 50) {
+                            setValidationErrors(prev => ({
+                              ...prev,
+                              first_name: 'First name must be 50 characters or less',
+                            }));
+                            return; // Don't update the field
+                          }
+                          
+                          // Check for dangerous patterns first - BLOCK immediately
                           if (containsDangerousPatterns(value)) {
                             setValidationErrors(prev => ({
                               ...prev,
                               first_name: 'Invalid characters detected. Please use only letters, spaces, hyphens, and apostrophes.',
                             }));
-                            // Don't update the field if it contains dangerous patterns
-                            e.preventDefault();
-                            return;
+                            return; // Don't update the field if it contains dangerous patterns
                           }
                           
                           // Validate name format - prevent invalid input
@@ -531,23 +556,14 @@ const UV_Registration_Customer: React.FC = () => {
                               ...prev,
                               first_name: 'Please use only letters, spaces, hyphens, and apostrophes.',
                             }));
-                            // Don't update the field if it's invalid
-                            e.preventDefault();
-                            return;
-                          }
-                          
-                          // Check max length (client-side enforcement)
-                          if (value.length > 50) {
-                            setValidationErrors(prev => ({
-                              ...prev,
-                              first_name: 'First name must be 50 characters or less',
-                            }));
-                            return;
+                            return; // Don't update the field if it's invalid
                           }
                           
                           // Sanitize and set value
                           const sanitized = sanitizeTextInput(value);
                           setFormData(prev => ({ ...prev, first_name: sanitized }));
+                          
+                          // Clear error if value is valid
                           setValidationErrors(prev => {
                             const updated = { ...prev };
                             delete updated.first_name;
@@ -614,15 +630,22 @@ const UV_Registration_Customer: React.FC = () => {
                         onChange={(e) => {
                           const value = e.target.value;
                           
-                          // Check for dangerous patterns first
+                          // Check max length (client-side enforcement) - prevent typing beyond limit
+                          if (value.length > 50) {
+                            setValidationErrors(prev => ({
+                              ...prev,
+                              last_name: 'Last name must be 50 characters or less',
+                            }));
+                            return; // Don't update the field
+                          }
+                          
+                          // Check for dangerous patterns first - BLOCK immediately
                           if (containsDangerousPatterns(value)) {
                             setValidationErrors(prev => ({
                               ...prev,
                               last_name: 'Invalid characters detected. Please use only letters, spaces, hyphens, and apostrophes.',
                             }));
-                            // Don't update the field if it contains dangerous patterns
-                            e.preventDefault();
-                            return;
+                            return; // Don't update the field if it contains dangerous patterns
                           }
                           
                           // Validate name format - prevent invalid input
@@ -631,23 +654,14 @@ const UV_Registration_Customer: React.FC = () => {
                               ...prev,
                               last_name: 'Please use only letters, spaces, hyphens, and apostrophes.',
                             }));
-                            // Don't update the field if it's invalid
-                            e.preventDefault();
-                            return;
-                          }
-                          
-                          // Check max length (client-side enforcement)
-                          if (value.length > 50) {
-                            setValidationErrors(prev => ({
-                              ...prev,
-                              last_name: 'Last name must be 50 characters or less',
-                            }));
-                            return;
+                            return; // Don't update the field if it's invalid
                           }
                           
                           // Sanitize and set value
                           const sanitized = sanitizeTextInput(value);
                           setFormData(prev => ({ ...prev, last_name: sanitized }));
+                          
+                          // Clear error if value is valid
                           setValidationErrors(prev => {
                             const updated = { ...prev };
                             delete updated.last_name;
@@ -713,12 +727,21 @@ const UV_Registration_Customer: React.FC = () => {
                       value={formData.email}
                        onChange={(e) => handleEmailChange(e.target.value)}
                       onBlur={() => {
-                        // Validate email format on blur
-                        if (formData.email && !validateEmail(formData.email)) {
-                          setValidationErrors(prev => ({
-                            ...prev,
-                            email: 'Please enter a valid email address',
-                          }));
+                        // Validate email format on blur - always show error if invalid
+                        if (formData.email.trim()) {
+                          if (!validateEmail(formData.email.trim())) {
+                            setValidationErrors(prev => ({
+                              ...prev,
+                              email: 'Please enter a valid email address (e.g., name@example.com)',
+                            }));
+                          }
+                        } else {
+                          // Clear error if empty on blur (will be caught by form validation)
+                          setValidationErrors(prev => {
+                            const updated = { ...prev };
+                            delete updated.email;
+                            return updated;
+                          });
                         }
                       }}
                       disabled={registrationMutation.isPending}

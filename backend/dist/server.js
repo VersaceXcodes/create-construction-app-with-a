@@ -127,14 +127,102 @@ const asNumber = (value, defaultValue = 0) => {
     const num = parseInt(str, 10);
     return isNaN(num) ? defaultValue : num;
 };
+// Validation helper functions for registration
+const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+};
+const validatePhoneNumber = (phone) => {
+    // Should be exactly 10 digits (US phone numbers)
+    const digits = phone.replace(/\D/g, '');
+    return digits.length === 10;
+};
+const sanitizeTextInput = (value) => {
+    // Remove any HTML tags, script tags, and SQL injection patterns
+    return value
+        .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+        .replace(/<[^>]*>/g, '')
+        .replace(/[<>]/g, '')
+        .replace(/javascript:/gi, '')
+        .replace(/on\w+\s*=/gi, '')
+        .trim();
+};
+const containsDangerousPatterns = (value) => {
+    const dangerousPatterns = [
+        /<script/i,
+        /<\/script>/i,
+        /javascript:/i,
+        /on\w+\s*=/i,
+        /'.*OR.*'/i,
+        /".*OR.*"/i,
+        /'\s*OR\s*'/i,
+        /"\s*OR\s*"/i,
+        /'\s*OR\s*\d+\s*=\s*\d+/i,
+        /--/,
+        /;.*DROP/i,
+        /;.*DELETE/i,
+        /;.*INSERT/i,
+        /;.*UPDATE/i,
+        /UNION.*SELECT/i,
+        /EXEC\s*\(/i,
+        /EXECUTE\s*\(/i,
+        /<iframe/i,
+        /<embed/i,
+        /<object/i,
+        /eval\s*\(/i,
+        /alert\s*\(/i,
+    ];
+    return dangerousPatterns.some(pattern => pattern.test(value));
+};
+const validateNameInput = (value) => {
+    // Allow letters (including international), spaces, hyphens, and apostrophes
+    const nameRegex = /^[a-zA-ZÀ-ÿ\s'-]+$/;
+    return nameRegex.test(value) || value === '';
+};
 app.post('/api/auth/register/customer', async (req, res) => {
     const client = await pool.connect();
     try {
         await client.query('BEGIN');
         const { email, password, first_name, last_name, phone_number, account_type, default_delivery_address } = req.body;
+        // Check for missing required fields
         if (!email || !password || !first_name || !last_name || !phone_number || !account_type) {
             await client.query('ROLLBACK');
             return res.status(400).json({ error: 'ValidationError', message: 'Missing required fields' });
+        }
+        // Validate email format
+        if (!validateEmail(email)) {
+            await client.query('ROLLBACK');
+            return res.status(400).json({ error: 'ValidationError', message: 'Invalid email address format' });
+        }
+        // Sanitize and validate first name
+        const sanitizedFirstName = sanitizeTextInput(first_name);
+        if (containsDangerousPatterns(sanitizedFirstName) || !validateNameInput(sanitizedFirstName)) {
+            await client.query('ROLLBACK');
+            return res.status(400).json({ error: 'ValidationError', message: 'Invalid characters in first name. Please use only letters, spaces, hyphens, and apostrophes.' });
+        }
+        if (sanitizedFirstName.length > 50) {
+            await client.query('ROLLBACK');
+            return res.status(400).json({ error: 'ValidationError', message: 'First name must be 50 characters or less' });
+        }
+        // Sanitize and validate last name
+        const sanitizedLastName = sanitizeTextInput(last_name);
+        if (containsDangerousPatterns(sanitizedLastName) || !validateNameInput(sanitizedLastName)) {
+            await client.query('ROLLBACK');
+            return res.status(400).json({ error: 'ValidationError', message: 'Invalid characters in last name. Please use only letters, spaces, hyphens, and apostrophes.' });
+        }
+        if (sanitizedLastName.length > 50) {
+            await client.query('ROLLBACK');
+            return res.status(400).json({ error: 'ValidationError', message: 'Last name must be 50 characters or less' });
+        }
+        // Validate phone number
+        if (!validatePhoneNumber(phone_number)) {
+            await client.query('ROLLBACK');
+            return res.status(400).json({ error: 'ValidationError', message: 'Please enter a valid 10-digit phone number' });
+        }
+        // Validate password length
+        if (password.length < 8) {
+            await client.query('ROLLBACK');
+            return res.status(400).json({ error: 'ValidationError', message: 'Password must be at least 8 characters long' });
         }
         const existingUser = await client.query('SELECT user_id FROM users WHERE email = $1', [email.toLowerCase()]);
         if (existingUser.rows.length > 0) {
@@ -145,7 +233,7 @@ app.post('/api/auth/register/customer', async (req, res) => {
         const customer_id = uuidv4();
         const email_verification_token = uuidv4();
         const now = new Date().toISOString();
-        await client.query('INSERT INTO users (user_id, email, password_hash, user_type, first_name, last_name, phone_number, registration_date, status, email_verified, email_verification_token, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)', [user_id, email.toLowerCase(), password, 'customer', first_name, last_name, phone_number, now, 'active', false, email_verification_token, now, now]);
+        await client.query('INSERT INTO users (user_id, email, password_hash, user_type, first_name, last_name, phone_number, registration_date, status, email_verified, email_verification_token, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)', [user_id, email.toLowerCase(), password, 'customer', sanitizedFirstName, sanitizedLastName, phone_number, now, 'active', false, email_verification_token, now, now]);
         const notification_preferences = JSON.stringify({
             email: true,
             sms: true,
@@ -156,7 +244,7 @@ app.post('/api/auth/register/customer', async (req, res) => {
         let default_address_id = null;
         if (default_delivery_address && default_delivery_address.street_address) {
             const address_id = uuidv4();
-            await client.query('INSERT INTO addresses (address_id, user_id, full_name, phone_number, street_address, city, state, postal_code, country, is_default, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)', [address_id, user_id, `${first_name} ${last_name}`, phone_number, default_delivery_address.street_address, default_delivery_address.city || '', default_delivery_address.state || '', default_delivery_address.postal_code || '', 'USA', true, now, now]);
+            await client.query('INSERT INTO addresses (address_id, user_id, full_name, phone_number, street_address, city, state, postal_code, country, is_default, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)', [address_id, user_id, `${sanitizedFirstName} ${sanitizedLastName}`, phone_number, default_delivery_address.street_address, default_delivery_address.city || '', default_delivery_address.state || '', default_delivery_address.postal_code || '', 'USA', true, now, now]);
             default_address_id = address_id;
         }
         await client.query('INSERT INTO customers (customer_id, user_id, account_type, default_delivery_address_id, trade_credit_limit, trade_credit_balance, trade_credit_used, notification_preferences, onboarding_completed, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)', [customer_id, user_id, account_type, default_address_id, 0, 0, 0, notification_preferences, false, now, now]);
@@ -168,8 +256,8 @@ app.post('/api/auth/register/customer', async (req, res) => {
                 user_id,
                 email: email.toLowerCase(),
                 user_type: 'customer',
-                first_name,
-                last_name,
+                first_name: sanitizedFirstName,
+                last_name: sanitizedLastName,
                 status: 'active',
                 email_verified: false
             },
