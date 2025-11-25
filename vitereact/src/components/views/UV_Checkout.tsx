@@ -276,6 +276,7 @@ const UV_Checkout: React.FC = () => {
     mutationFn: (orderData: any) => createOrder(authToken!, orderData),
     onSuccess: (order) => {
       queryClient.invalidateQueries({ queryKey: ['cart'] });
+      queryClient.invalidateQueries({ queryKey: ['cart-summary'] });
       queryClient.invalidateQueries({ queryKey: ['orders'] });
       navigate(`/order-confirmation?order_id=${order.order_id}`);
     },

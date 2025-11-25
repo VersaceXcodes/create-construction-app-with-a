@@ -201,6 +201,7 @@ const GV_MiniCart_Customer: React.FC = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cart'] });
+      queryClient.invalidateQueries({ queryKey: ['cart-summary'] });
       if (fetchCartGlobal) {
         fetchCartGlobal();
       }
@@ -228,6 +229,7 @@ const GV_MiniCart_Customer: React.FC = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cart'] });
+      queryClient.invalidateQueries({ queryKey: ['cart-summary'] });
       if (fetchCartGlobal) {
         fetchCartGlobal();
       }

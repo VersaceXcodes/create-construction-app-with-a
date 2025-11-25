@@ -209,6 +209,7 @@ const UV_ProjectDetail: React.FC = () => {
       // Refresh cart state
       await fetchCart();
       queryClient.invalidateQueries({ queryKey: ['cart'] });
+      queryClient.invalidateQueries({ queryKey: ['cart-summary'] });
       
       // Show success message
       if (response.unavailable_items && response.unavailable_items.length > 0) {

@@ -286,6 +286,7 @@ const UV_ProductDetail_Customer: React.FC = () => {
     onSuccess: () => {
       fetchCart();
       queryClient.invalidateQueries({ queryKey: ['cart'] });
+      queryClient.invalidateQueries({ queryKey: ['cart-summary'] });
       alert('Added to cart successfully!');
     },
     onError: (error: any) => {

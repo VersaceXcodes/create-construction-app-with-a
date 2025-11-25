@@ -141,6 +141,7 @@ const UV_ProductComparison: React.FC = () => {
     onSuccess: () => {
       fetchCart(); // Update global cart state
       queryClient.invalidateQueries({ queryKey: ['cart'] });
+      queryClient.invalidateQueries({ queryKey: ['cart-summary'] });
     }
   });
   

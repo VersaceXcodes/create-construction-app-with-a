@@ -168,6 +168,7 @@ const UV_Wishlist: React.FC = () => {
     onSuccess: () => {
       fetchCart(); // Update global cart state
       queryClient.invalidateQueries({ queryKey: ['cart'] });
+      queryClient.invalidateQueries({ queryKey: ['cart-summary'] });
     },
   });
   
@@ -322,6 +323,7 @@ const UV_Wishlist: React.FC = () => {
       fetchCart(); // Update global cart
       setSelectedItems([]);
       queryClient.invalidateQueries({ queryKey: ['cart'] });
+      queryClient.invalidateQueries({ queryKey: ['cart-summary'] });
       
       // Use a non-blocking notification instead of alert
       const notification = document.createElement('div');

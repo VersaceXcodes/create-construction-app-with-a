@@ -176,8 +176,9 @@ const UV_MyProjects: React.FC = () => {
   const loadToCartMutation = useMutation({
     mutationFn: (project_id: string) => loadProjectToCart(project_id, authToken!),
     onSuccess: (data) => {
-      // Invalidate cart query to refresh cart count
+      // Invalidate cart queries to refresh cart count in nav and everywhere
       queryClient.invalidateQueries({ queryKey: ['cart'] });
+      queryClient.invalidateQueries({ queryKey: ['cart-summary'] });
       
       // Fetch updated cart state
       fetchCart();

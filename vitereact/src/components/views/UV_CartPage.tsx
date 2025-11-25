@@ -218,6 +218,7 @@ const UV_CartPage: React.FC = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cart'] });
+      queryClient.invalidateQueries({ queryKey: ['cart-summary'] });
       fetchGlobalCart(); // Sync with global state
     },
     onError: (error: any) => {
@@ -241,6 +242,7 @@ const UV_CartPage: React.FC = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cart'] });
+      queryClient.invalidateQueries({ queryKey: ['cart-summary'] });
       fetchGlobalCart();
     },
     onError: (error: any, cart_item_id) => {
@@ -263,6 +265,7 @@ const UV_CartPage: React.FC = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cart'] });
+      queryClient.invalidateQueries({ queryKey: ['cart-summary'] });
       fetchGlobalCart();
     }
   });
