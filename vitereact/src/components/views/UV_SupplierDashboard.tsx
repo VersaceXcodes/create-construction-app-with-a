@@ -73,6 +73,23 @@ interface LowStockAlert {
   suggested_reorder_quantity: number;
 }
 
+interface DashboardAnalyticsResponse {
+  total_sales: number;
+  total_orders: number;
+  avg_order_value: number;
+  fulfillment_rate: number;
+  customer_count: number;
+  product_count: number;
+  rating_average: number;
+  orders_today: number;
+  orders_this_week: number;
+  orders_this_month: number;
+  orders_pending: number;
+  sales_today: number;
+  sales_this_week: number;
+  sales_this_month: number;
+}
+
 interface DashboardMetrics {
   sales: {
     today: number;
@@ -116,6 +133,13 @@ const safeToLocaleString = (value: any, options?: Intl.NumberFormatOptions): str
 // ============================================================================
 
 const API_BASE = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api`;
+
+const fetchDashboardAnalytics = async (token: string): Promise<DashboardAnalyticsResponse> => {
+  const response = await axios.get(`${API_BASE}/suppliers/me/analytics/dashboard`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return response.data;
+};
 
 const fetchSupplierProfile = async (token: string): Promise<SupplierProfile> => {
   try {
@@ -230,6 +254,19 @@ const UV_SupplierDashboard: React.FC = () => {
     retry: 1
   });
 
+  // Dashboard Analytics Query
+  const { 
+    data: analytics,
+    isLoading: isLoadingAnalytics 
+  } = useQuery({
+    queryKey: ['supplier', 'analytics', 'dashboard', supplier_id],
+    queryFn: () => fetchDashboardAnalytics(authToken!),
+    enabled: !!authToken && !!supplier_id,
+    staleTime: 60 * 1000, // 1 minute
+    refetchInterval: 2 * 60 * 1000, // Refetch every 2 minutes
+    retry: 1
+  });
+
   // ============================================================================
   // MUTATIONS
   // ============================================================================
@@ -281,36 +318,26 @@ const UV_SupplierDashboard: React.FC = () => {
     });
   }, [pending_orders, supplier_id]);
 
-  // Calculate metrics from available data
+  // Calculate metrics from analytics API data
   const dashboard_metrics: DashboardMetrics = useMemo(() => {
-  // const now = new Date();
-    // const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    // const weekStart = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    // const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-    // const yearStart = new Date(now.getFullYear(), 0, 1);
-
-    // Use profile data for aggregates - ensure they are numbers
-    const total_sales = Number(profile?.total_sales) || 0;
-    const total_orders_count = Number(profile?.total_orders) || 0;
-
     return {
       sales: {
-        today: 0, // Would need order data filtered by today
-        this_week: 0,
-        this_month: 0,
-        year_to_date: total_sales
+        today: analytics?.sales_today || 0,
+        this_week: analytics?.sales_this_week || 0,
+        this_month: analytics?.sales_this_month || 0,
+        year_to_date: analytics?.total_sales || 0
       },
       orders: {
-        today: 0,
-        this_week: 0,
-        this_month: 0,
-        pending_acceptance: pending_orders_data.length
+        today: analytics?.orders_today || 0,
+        this_week: analytics?.orders_this_week || 0,
+        this_month: analytics?.orders_this_month || 0,
+        pending_acceptance: analytics?.orders_pending || pending_orders_data.length
       },
-      average_order_value: total_orders_count > 0 ? total_sales / total_orders_count : 0
+      average_order_value: analytics?.avg_order_value || 0
     };
-  }, [profile, pending_orders_data]);
+  }, [analytics, pending_orders_data]);
 
-  const isLoading = isLoadingProfile || isLoadingOrders || isLoadingStock;
+  const isLoading = isLoadingProfile || isLoadingOrders || isLoadingStock || isLoadingAnalytics;
 
   // ============================================================================
   // EVENT HANDLERS

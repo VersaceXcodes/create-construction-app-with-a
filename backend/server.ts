@@ -1710,6 +1710,48 @@ app.get('/api/suppliers/me/analytics/dashboard', authenticateToken, requireSuppl
       [supplier_id]
     );
     
+    // Get orders/sales by time period (today, this week, this month)
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
+    const weekStart = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+    
+    // Orders and sales today
+    const todayResult = await pool.query(
+      `SELECT COUNT(DISTINCT o.order_id) as order_count, COALESCE(SUM(oi.line_total), 0) as sales_total
+       FROM orders o 
+       INNER JOIN order_items oi ON o.order_id = oi.order_id 
+       WHERE oi.supplier_id = $1 AND o.order_date >= $2`,
+      [supplier_id, todayStart]
+    );
+    
+    // Orders and sales this week
+    const weekResult = await pool.query(
+      `SELECT COUNT(DISTINCT o.order_id) as order_count, COALESCE(SUM(oi.line_total), 0) as sales_total
+       FROM orders o 
+       INNER JOIN order_items oi ON o.order_id = oi.order_id 
+       WHERE oi.supplier_id = $1 AND o.order_date >= $2`,
+      [supplier_id, weekStart]
+    );
+    
+    // Orders and sales this month
+    const monthResult = await pool.query(
+      `SELECT COUNT(DISTINCT o.order_id) as order_count, COALESCE(SUM(oi.line_total), 0) as sales_total
+       FROM orders o 
+       INNER JOIN order_items oi ON o.order_id = oi.order_id 
+       WHERE oi.supplier_id = $1 AND o.order_date >= $2`,
+      [supplier_id, monthStart]
+    );
+    
+    // Pending orders count
+    const pendingResult = await pool.query(
+      `SELECT COUNT(DISTINCT o.order_id) as count
+       FROM orders o 
+       INNER JOIN order_items oi ON o.order_id = oi.order_id 
+       WHERE oi.supplier_id = $1 AND o.status = 'pending'`,
+      [supplier_id]
+    );
+    
     const total_sales = parseFloat(supplier.total_sales) || 0;
     const total_orders = parseInt(supplier.total_orders) || 0;
     const avg_order_value = total_orders > 0 ? total_sales / total_orders : 0;
@@ -1721,7 +1763,15 @@ app.get('/api/suppliers/me/analytics/dashboard', authenticateToken, requireSuppl
       fulfillment_rate: parseFloat(supplier.fulfillment_rate) || 0,
       customer_count: parseInt(customerResult.rows[0].count) || 0,
       product_count: parseInt(productResult.rows[0].count) || 0,
-      rating_average: parseFloat(supplier.rating_average) || 0
+      rating_average: parseFloat(supplier.rating_average) || 0,
+      // Time-based metrics
+      orders_today: parseInt(todayResult.rows[0].order_count) || 0,
+      orders_this_week: parseInt(weekResult.rows[0].order_count) || 0,
+      orders_this_month: parseInt(monthResult.rows[0].order_count) || 0,
+      orders_pending: parseInt(pendingResult.rows[0].count) || 0,
+      sales_today: parseFloat(todayResult.rows[0].sales_total) || 0,
+      sales_this_week: parseFloat(weekResult.rows[0].sales_total) || 0,
+      sales_this_month: parseFloat(monthResult.rows[0].sales_total) || 0
     });
   } catch (error) {
     console.error('Analytics dashboard error:', error);
