@@ -145,6 +145,9 @@ const containsDangerousPatterns = (value: string): boolean => {
     /on\w+\s*=/i,
     /'.*OR.*'/i,
     /".*OR.*"/i,
+    /'\s*OR\s*'/i,
+    /"\s*OR\s*"/i,
+    /'\s*OR\s*\d+\s*=\s*\d+/i,
     /--/,
     /;.*DROP/i,
     /;.*DELETE/i,
@@ -153,6 +156,11 @@ const containsDangerousPatterns = (value: string): boolean => {
     /UNION.*SELECT/i,
     /EXEC\s*\(/i,
     /EXECUTE\s*\(/i,
+    /<iframe/i,
+    /<embed/i,
+    /<object/i,
+    /eval\s*\(/i,
+    /alert\s*\(/i,
   ];
   
   return dangerousPatterns.some(pattern => pattern.test(value));
@@ -303,15 +311,26 @@ const UV_Registration_Customer: React.FC = () => {
   };
   
   const handlePhoneChange = (value: string) => {
-    const formatted = formatPhoneNumber(value);
+    // Only allow digits, spaces, parentheses, and hyphens
+    const cleanedValue = value.replace(/[^\d\s()-]/g, '');
+    const formatted = formatPhoneNumber(cleanedValue);
     setFormData(prev => ({ ...prev, phone_number: formatted }));
     
-    // Clear phone error
-    setValidationErrors(prev => {
-      const updated = { ...prev };
-      delete updated.phone_number;
-      return updated;
-    });
+    // Validate in real-time
+    const digits = formatted.replace(/\D/g, '');
+    if (digits.length > 0 && digits.length !== 10) {
+      setValidationErrors(prev => ({
+        ...prev,
+        phone_number: 'Please enter a valid 10-digit phone number',
+      }));
+    } else {
+      // Clear phone error
+      setValidationErrors(prev => {
+        const updated = { ...prev };
+        delete updated.phone_number;
+        return updated;
+      });
+    }
   };
   
   const validateForm = useCallback((): boolean => {
@@ -501,14 +520,27 @@ const UV_Registration_Customer: React.FC = () => {
                               ...prev,
                               first_name: 'Invalid characters detected. Please use only letters, spaces, hyphens, and apostrophes.',
                             }));
+                            // Don't update the field if it contains dangerous patterns
+                            e.preventDefault();
                             return;
                           }
                           
-                          // Validate name format
+                          // Validate name format - prevent invalid input
                           if (!validateNameInput(value) && value !== '') {
                             setValidationErrors(prev => ({
                               ...prev,
                               first_name: 'Please use only letters, spaces, hyphens, and apostrophes.',
+                            }));
+                            // Don't update the field if it's invalid
+                            e.preventDefault();
+                            return;
+                          }
+                          
+                          // Check max length (client-side enforcement)
+                          if (value.length > 50) {
+                            setValidationErrors(prev => ({
+                              ...prev,
+                              first_name: 'First name must be 50 characters or less',
                             }));
                             return;
                           }
@@ -521,6 +553,20 @@ const UV_Registration_Customer: React.FC = () => {
                             delete updated.first_name;
                             return updated;
                           });
+                        }}
+                        onBlur={() => {
+                          // Validate on blur
+                          if (formData.first_name && !validateNameInput(formData.first_name)) {
+                            setValidationErrors(prev => ({
+                              ...prev,
+                              first_name: 'Please use only letters, spaces, hyphens, and apostrophes.',
+                            }));
+                          } else if (formData.first_name && containsDangerousPatterns(formData.first_name)) {
+                            setValidationErrors(prev => ({
+                              ...prev,
+                              first_name: 'Invalid characters detected. Please use only letters, spaces, hyphens, and apostrophes.',
+                            }));
+                          }
                         }}
                         disabled={registrationMutation.isPending}
                         className={`w-full px-4 py-3 rounded-lg border-2 transition-all duration-200 ${
@@ -537,7 +583,19 @@ const UV_Registration_Customer: React.FC = () => {
                           <span>{validationErrors.first_name}</span>
                         </p>
                       )}
-                      <p className="mt-1 text-xs text-gray-500">
+                      {!validationErrors.first_name && formData.first_name.trim().length >= 2 && (
+                        <p className="mt-2 text-sm text-green-600 flex items-center space-x-1">
+                          <Check className="h-4 w-4" />
+                          <span>Valid name format</span>
+                        </p>
+                      )}
+                      <p className={`mt-1 text-xs ${
+                        formData.first_name.length >= 45 
+                          ? 'text-orange-600 font-medium' 
+                          : formData.first_name.length >= 50 
+                          ? 'text-red-600 font-bold' 
+                          : 'text-gray-500'
+                      }`}>
                         {formData.first_name.length}/50 characters
                       </p>
                     </div>
@@ -562,14 +620,27 @@ const UV_Registration_Customer: React.FC = () => {
                               ...prev,
                               last_name: 'Invalid characters detected. Please use only letters, spaces, hyphens, and apostrophes.',
                             }));
+                            // Don't update the field if it contains dangerous patterns
+                            e.preventDefault();
                             return;
                           }
                           
-                          // Validate name format
+                          // Validate name format - prevent invalid input
                           if (!validateNameInput(value) && value !== '') {
                             setValidationErrors(prev => ({
                               ...prev,
                               last_name: 'Please use only letters, spaces, hyphens, and apostrophes.',
+                            }));
+                            // Don't update the field if it's invalid
+                            e.preventDefault();
+                            return;
+                          }
+                          
+                          // Check max length (client-side enforcement)
+                          if (value.length > 50) {
+                            setValidationErrors(prev => ({
+                              ...prev,
+                              last_name: 'Last name must be 50 characters or less',
                             }));
                             return;
                           }
@@ -582,6 +653,20 @@ const UV_Registration_Customer: React.FC = () => {
                             delete updated.last_name;
                             return updated;
                           });
+                        }}
+                        onBlur={() => {
+                          // Validate on blur
+                          if (formData.last_name && !validateNameInput(formData.last_name)) {
+                            setValidationErrors(prev => ({
+                              ...prev,
+                              last_name: 'Please use only letters, spaces, hyphens, and apostrophes.',
+                            }));
+                          } else if (formData.last_name && containsDangerousPatterns(formData.last_name)) {
+                            setValidationErrors(prev => ({
+                              ...prev,
+                              last_name: 'Invalid characters detected. Please use only letters, spaces, hyphens, and apostrophes.',
+                            }));
+                          }
                         }}
                         disabled={registrationMutation.isPending}
                         className={`w-full px-4 py-3 rounded-lg border-2 transition-all duration-200 ${
@@ -598,7 +683,19 @@ const UV_Registration_Customer: React.FC = () => {
                           <span>{validationErrors.last_name}</span>
                         </p>
                       )}
-                      <p className="mt-1 text-xs text-gray-500">
+                      {!validationErrors.last_name && formData.last_name.trim().length >= 2 && (
+                        <p className="mt-2 text-sm text-green-600 flex items-center space-x-1">
+                          <Check className="h-4 w-4" />
+                          <span>Valid name format</span>
+                        </p>
+                      )}
+                      <p className={`mt-1 text-xs ${
+                        formData.last_name.length >= 45 
+                          ? 'text-orange-600 font-medium' 
+                          : formData.last_name.length >= 50 
+                          ? 'text-red-600 font-bold' 
+                          : 'text-gray-500'
+                      }`}>
                         {formData.last_name.length}/50 characters
                       </p>
                     </div>
@@ -614,7 +711,16 @@ const UV_Registration_Customer: React.FC = () => {
                       id="email"
                       name="email"
                       value={formData.email}
-                      onChange={(e) => handleEmailChange(e.target.value)}
+                       onChange={(e) => handleEmailChange(e.target.value)}
+                      onBlur={() => {
+                        // Validate email format on blur
+                        if (formData.email && !validateEmail(formData.email)) {
+                          setValidationErrors(prev => ({
+                            ...prev,
+                            email: 'Please enter a valid email address',
+                          }));
+                        }
+                      }}
                       disabled={registrationMutation.isPending}
                       className={`w-full px-4 py-3 rounded-lg border-2 transition-all duration-200 ${
                         validationErrors.email
@@ -648,7 +754,16 @@ const UV_Registration_Customer: React.FC = () => {
                       id="phone_number"
                       name="phone_number"
                       value={formData.phone_number}
-                      onChange={(e) => handlePhoneChange(e.target.value)}
+                       onChange={(e) => handlePhoneChange(e.target.value)}
+                      onBlur={() => {
+                        // Validate phone on blur
+                        if (formData.phone_number && !validatePhoneNumber(formData.phone_number)) {
+                          setValidationErrors(prev => ({
+                            ...prev,
+                            phone_number: 'Please enter a valid 10-digit phone number',
+                          }));
+                        }
+                      }}
                       disabled={registrationMutation.isPending}
                       className={`w-full px-4 py-3 rounded-lg border-2 transition-all duration-200 ${
                         validationErrors.phone_number
@@ -662,6 +777,12 @@ const UV_Registration_Customer: React.FC = () => {
                       <p className="mt-2 text-sm text-red-600 flex items-center space-x-1">
                         <X className="h-4 w-4" />
                         <span>{validationErrors.phone_number}</span>
+                      </p>
+                    )}
+                    {!validationErrors.phone_number && formData.phone_number && validatePhoneNumber(formData.phone_number) && (
+                      <p className="mt-2 text-sm text-green-600 flex items-center space-x-1">
+                        <Check className="h-4 w-4" />
+                        <span>Valid phone number</span>
                       </p>
                     )}
                     <p className="mt-2 text-sm text-gray-500">

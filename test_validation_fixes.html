@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Input Validation Test Cases</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-case {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-case h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .test-input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .pass {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .fail {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Customer Registration - Input Validation Test Cases</h1>
+    <p>This page simulates the validation logic from UV_Registration_Customer.tsx</p>
+
+    <!-- Test Case 1: XSS Prevention -->
+    <div class="test-case">
+        <h3>Test 1: XSS Prevention</h3>
+        <p>Try entering: <code>&lt;script&gt;alert('XSS')&lt;/script&gt;</code></p>
+        <input type="text" id="xss-input" class="test-input" placeholder="Enter XSS payload..." maxlength="50">
+        <button onclick="testXSS()">Test XSS Prevention</button>
+        <div id="xss-result"></div>
+    </div>
+
+    <!-- Test Case 2: SQL Injection Prevention -->
+    <div class="test-case">
+        <h3>Test 2: SQL Injection Prevention</h3>
+        <p>Try entering: <code>' OR 1=1 --</code></p>
+        <input type="text" id="sqli-input" class="test-input" placeholder="Enter SQL injection payload..." maxlength="50">
+        <button onclick="testSQLi()">Test SQL Injection Prevention</button>
+        <div id="sqli-result"></div>
+    </div>
+
+    <!-- Test Case 3: Character Limit -->
+    <div class="test-case">
+        <h3>Test 3: Character Limit (50 chars)</h3>
+        <p>Try entering 100 characters (50 'a's should be max)</p>
+        <input type="text" id="length-input" class="test-input" placeholder="Type many characters..." maxlength="50">
+        <span id="char-count">0/50 characters</span>
+        <button onclick="testLength()">Test Character Limit</button>
+        <div id="length-result"></div>
+    </div>
+
+    <!-- Test Case 4: Email Validation -->
+    <div class="test-case">
+        <h3>Test 4: Email Validation</h3>
+        <p>Try entering: <code>invalid-email</code></p>
+        <input type="email" id="email-input" class="test-input" placeholder="Enter email address...">
+        <button onclick="testEmail()">Test Email Validation</button>
+        <div id="email-result"></div>
+    </div>
+
+    <!-- Test Case 5: Phone Number Validation -->
+    <div class="test-case">
+        <h3>Test 5: Phone Number Validation</h3>
+        <p>Try entering: <code>555-1234</code> (incomplete) or <code>5551234567</code> (valid)</p>
+        <input type="tel" id="phone-input" class="test-input" placeholder="Enter phone number...">
+        <button onclick="testPhone()">Test Phone Validation</button>
+        <div id="phone-result"></div>
+    </div>
+
+    <script>
+        // Validation functions from UV_Registration_Customer.tsx
+        
+        const containsDangerousPatterns = (value) => {
+            const dangerousPatterns = [
+                /<script/i, /<\/script>/i, /javascript:/i, /on\w+\s*=/i,
+                /'.*OR.*'/i, /".*OR.*"/i, /'s*ORs*'/i, /"s*ORs*"/i,
+                /'s*ORs*d+s*=s*d+/i, /--/, /;.*DROP/i, /;.*DELETE/i,
+                /;.*INSERT/i, /;.*UPDATE/i, /UNION.*SELECT/i, /EXEC\s*\(/i,
+                /EXECUTE\s*\(/i, /<iframe/i, /<embed/i, /<object/i,
+                /eval\s*\(/i, /alert\s*\(/i,
+            ];
+            return dangerousPatterns.some(pattern => pattern.test(value));
+        };
+
+        const validateNameInput = (value) => {
+            const nameRegex = /^[a-zA-ZÀ-ÿ\s'-]+$/;
+            return nameRegex.test(value) || value === '';
+        };
+
+        const validateEmail = (email) => {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        };
+
+        const validatePhoneNumber = (phone) => {
+            const digits = phone.replace(/\D/g, '');
+            return digits.length === 10;
+        };
+
+        function testXSS() {
+            const input = document.getElementById('xss-input').value;
+            const result = document.getElementById('xss-result');
+            
+            if (containsDangerousPatterns(input)) {
+                result.className = 'result pass';
+                result.textContent = '✓ PASS: Dangerous XSS pattern detected and blocked!';
+            } else if (input === '') {
+                result.className = 'result';
+                result.textContent = 'Please enter a test value';
+            } else {
+                result.className = 'result fail';
+                result.textContent = '✗ FAIL: XSS pattern not detected (input would be allowed)';
+            }
+        }
+
+        function testSQLi() {
+            const input = document.getElementById('sqli-input').value;
+            const result = document.getElementById('sqli-result');
+            
+            if (containsDangerousPatterns(input)) {
+                result.className = 'result pass';
+                result.textContent = '✓ PASS: SQL injection pattern detected and blocked!';
+            } else if (input === '') {
+                result.className = 'result';
+                result.textContent = 'Please enter a test value';
+            } else {
+                result.className = 'result fail';
+                result.textContent = '✗ FAIL: SQL injection pattern not detected (input would be allowed)';
+            }
+        }
+
+        function testLength() {
+            const input = document.getElementById('length-input').value;
+            const result = document.getElementById('length-result');
+            
+            if (input.length > 50) {
+                result.className = 'result fail';
+                result.textContent = `✗ FAIL: Input length is ${input.length} (exceeds 50 character limit)`;
+            } else if (input.length === 50) {
+                result.className = 'result pass';
+                result.textContent = '✓ PASS: Input at exactly 50 characters (maximum enforced)';
+            } else if (input.length > 0) {
+                result.className = 'result pass';
+                result.textContent = `✓ PASS: Input length is ${input.length} (within limit)`;
+            } else {
+                result.className = 'result';
+                result.textContent = 'Please enter some text';
+            }
+        }
+
+        function testEmail() {
+            const input = document.getElementById('email-input').value;
+            const result = document.getElementById('email-result');
+            
+            if (validateEmail(input)) {
+                result.className = 'result pass';
+                result.textContent = '✓ PASS: Valid email format';
+            } else if (input === '') {
+                result.className = 'result';
+                result.textContent = 'Please enter an email address';
+            } else {
+                result.className = 'result fail';
+                result.textContent = '✗ FAIL: Invalid email format (should show error)';
+            }
+        }
+
+        function testPhone() {
+            const input = document.getElementById('phone-input').value;
+            const result = document.getElementById('phone-result');
+            
+            if (validatePhoneNumber(input)) {
+                result.className = 'result pass';
+                result.textContent = '✓ PASS: Valid 10-digit phone number';
+            } else if (input === '') {
+                result.className = 'result';
+                result.textContent = 'Please enter a phone number';
+            } else {
+                const digits = input.replace(/\D/g, '');
+                result.className = 'result fail';
+                result.textContent = `✗ FAIL: Invalid phone number (${digits.length} digits, needs 10)`;
+            }
+        }
+
+        // Character counter for length test
+        document.getElementById('length-input').addEventListener('input', (e) => {
+            const count = e.target.value.length;
+            const counter = document.getElementById('char-count');
+            counter.textContent = `${count}/50 characters`;
+            
+            if (count >= 45) {
+                counter.style.color = '#ff9800';
+                counter.style.fontWeight = 'bold';
+            } else {
+                counter.style.color = '#666';
+                counter.style.fontWeight = 'normal';
+            }
+        });
+    </script>
+</body>
+</html>
