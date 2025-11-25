@@ -2118,10 +2118,11 @@ app.post('/api/cart/items', authenticateToken, requireCustomer, async (req: Auth
     }
 
     const product = productResult.rows[0];
+    const availableStock = Number(product.stock_quantity);
 
-    if (product.stock_quantity < quantity) {
+    if (availableStock < quantity) {
       await client.query('ROLLBACK');
-      return res.status(400).json({ error: 'InsufficientStock', message: 'Insufficient stock', details: { available_stock: product.stock_quantity, requested_quantity: quantity } });
+      return res.status(400).json({ error: 'InsufficientStock', message: 'Insufficient stock', details: { available_stock: availableStock, requested_quantity: quantity } });
     }
 
     let cartResult = await client.query(
@@ -2515,12 +2516,12 @@ app.post('/api/projects/:project_id/load-to-cart', authenticateToken, requireCus
         [item.product_id]
       );
 
-      if (productResult.rows.length === 0 || productResult.rows[0].status !== 'active' || productResult.rows[0].stock_quantity < item.quantity) {
+      const product = productResult.rows[0];
+      if (!product || product.status !== 'active' || Number(product.stock_quantity) < Number(item.quantity)) {
         unavailable.push(item.product_id);
         continue;
       }
 
-      const product = productResult.rows[0];
       const cart_item_id = uuidv4();
       await client.query(
         'INSERT INTO cart_items (cart_item_id, cart_id, product_id, supplier_id, quantity, price_per_unit, added_date, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
@@ -2650,9 +2651,12 @@ app.post('/api/orders', authenticateToken, requireCustomer, async (req: AuthRequ
     }
 
     for (const item of itemsResult.rows) {
-      if (item.status !== 'active' || item.stock_quantity < item.quantity) {
+      // Convert to numbers to avoid string comparison issues (e.g., "100" < "3" is true in string comparison)
+      const stockQty = Number(item.stock_quantity);
+      const requestedQty = Number(item.quantity);
+      if (item.status !== 'active' || stockQty < requestedQty) {
         await client.query('ROLLBACK');
-        return res.status(400).json({ error: 'StockValidationError', message: 'Some items are no longer available', details: { product_id: item.product_id, available: item.stock_quantity, requested: item.quantity } });
+        return res.status(400).json({ error: 'StockValidationError', message: 'Some items are no longer available', details: { product_id: item.product_id, available: stockQty, requested: requestedQty } });
       }
     }
 
@@ -2897,12 +2901,12 @@ app.post('/api/orders/:order_id/reorder', authenticateToken, requireCustomer, as
         [item.product_id]
       );
 
-      if (productResult.rows.length === 0 || productResult.rows[0].status !== 'active' || productResult.rows[0].stock_quantity < item.quantity) {
+      const product = productResult.rows[0];
+      if (!product || product.status !== 'active' || Number(product.stock_quantity) < Number(item.quantity)) {
         unavailable.push({ product_id: item.product_id });
         continue;
       }
 
-      const product = productResult.rows[0];
       const cart_item_id = uuidv4();
       await client.query(
         'INSERT INTO cart_items (cart_item_id, cart_id, product_id, supplier_id, quantity, price_per_unit, added_date, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
