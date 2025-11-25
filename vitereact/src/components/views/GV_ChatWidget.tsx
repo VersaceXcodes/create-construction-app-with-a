@@ -412,7 +412,7 @@ const GV_ChatWidget: React.FC = () => {
     }
   }, [unread_count, messages, currentUser, websocketConnection]);
   
-  const handleStartConversation = useCallback((type: 'customer_support' | 'customer_supplier') => {
+  const handleStartConversation = useCallback((type: 'customer_support' | 'customer_supplier', supplier_id?: string, related_entity_type?: string, related_entity_id?: string) => {
     if (!isAuthenticated) {
       setLocalError('Please sign in to start a conversation');
       return;
@@ -420,11 +420,28 @@ const GV_ChatWidget: React.FC = () => {
     
     startConversationMutation.mutate({
       conversation_type: type,
-      // Include context if available (from URL params or page context)
-      related_entity_type: undefined, // Can be enriched from page context
-      related_entity_id: undefined
+      supplier_id,
+      related_entity_type,
+      related_entity_id
     });
   }, [isAuthenticated, startConversationMutation]);
+
+  // Listen for external events to open chat with a specific supplier
+  useEffect(() => {
+    const handleOpenChatWithSupplier = (event: CustomEvent<{ supplier_id: string; product_id?: string }>) => {
+      const { supplier_id, product_id } = event.detail;
+      setIsWidgetOpen(true);
+      setIsMinimized(false);
+      setShowConversationSelector(false);
+      // Start conversation with supplier
+      handleStartConversation('customer_supplier', supplier_id, product_id ? 'product' : undefined, product_id);
+    };
+
+    window.addEventListener('openChatWithSupplier', handleOpenChatWithSupplier as EventListener);
+    return () => {
+      window.removeEventListener('openChatWithSupplier', handleOpenChatWithSupplier as EventListener);
+    };
+  }, [handleStartConversation]);
   
   const handleSendMessage = useCallback((e?: React.FormEvent) => {
     e?.preventDefault();

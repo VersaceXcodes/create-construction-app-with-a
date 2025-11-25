@@ -190,6 +190,24 @@ const checkCanReview = async (product_id: string, token: string): Promise<CanRev
   return response.data;
 };
 
+const createChatConversation = async (
+  supplier_id: string,
+  product_id: string,
+  token: string
+): Promise<{ conversation_id: string }> => {
+  const response = await axios.post(
+    `${API_BASE_URL}/chat/conversations`,
+    {
+      conversation_type: 'customer_supplier',
+      supplier_id,
+      related_entity_type: 'product',
+      related_entity_id: product_id
+    },
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+  return response.data;
+};
+
 // ============================================================================
 // MAIN COMPONENT
 // ============================================================================
@@ -291,6 +309,21 @@ const UV_ProductDetail_Customer: React.FC = () => {
     },
     onError: (error: any) => {
       alert(error.response?.data?.message || 'Failed to add to cart');
+    },
+  });
+
+  // Contact supplier mutation
+  const contactSupplierMutation = useMutation({
+    mutationFn: () => createChatConversation(product!.supplier_id, product_id!, authToken!),
+    onSuccess: () => {
+      // Dispatch custom event to open chat widget
+      window.dispatchEvent(new CustomEvent('openChatWithSupplier', {
+        detail: { supplier_id: product!.supplier_id, product_id: product_id }
+      }));
+      alert('Chat started! Check the chat widget.');
+    },
+    onError: (error: any) => {
+      alert(error.response?.data?.message || 'Failed to start conversation');
     },
   });
 
@@ -826,8 +859,12 @@ const UV_ProductDetail_Customer: React.FC = () => {
                           View Shop
                         </Link>
                         <span className="text-gray-300">|</span>
-                        <button className="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors">
-                          Contact Supplier
+                        <button 
+                          onClick={() => contactSupplierMutation.mutate()}
+                          disabled={contactSupplierMutation.isPending}
+                          className="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors disabled:opacity-50"
+                        >
+                          {contactSupplierMutation.isPending ? 'Starting Chat...' : 'Contact Supplier'}
                         </button>
                       </div>
                     </div>
