@@ -36,7 +36,7 @@ interface SearchSuggestion {
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 
 const fetchCategories = async (): Promise<Category[]> => {
-  const response = await axios.get(`${API_BASE_URL}/categories`, {
+  const response = await axios.get(`${API_BASE_URL}/api/categories`, {
     params: {
       is_active: 'true',
       limit: 100,
@@ -44,7 +44,8 @@ const fetchCategories = async (): Promise<Category[]> => {
       sort_order: 'asc'
     }
   });
-  return response.data;
+  // Ensure we return an array
+  return Array.isArray(response.data) ? response.data : [];
 };
 
 const fetchSearchSuggestions = async (query: string): Promise<SearchSuggestion> => {
@@ -52,7 +53,7 @@ const fetchSearchSuggestions = async (query: string): Promise<SearchSuggestion> 
     return { products: [], suppliers: [], categories: [] };
   }
 
-  const response = await axios.get(`${API_BASE_URL}/products`, {
+  const response = await axios.get(`${API_BASE_URL}/api/products`, {
     params: {
       search_query: query,
       limit: 5,
