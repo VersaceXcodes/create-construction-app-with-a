@@ -183,10 +183,16 @@ const UV_AdminSupplierApplications: React.FC = () => {
     ),
     enabled: !!authToken,
     staleTime: 30000,
-    select: (data) => ({
-      ...data,
-      applications: data.applications || []
-    })
+    select: (data) => {
+      // API returns array directly, transform to expected format
+      const applications = Array.isArray(data) ? data : (data.applications || []);
+      return {
+        applications,
+        total: applications.length,
+        limit: limit,
+        offset: (current_page - 1) * limit
+      };
+    }
   });
   
   // Fetch selected application details
