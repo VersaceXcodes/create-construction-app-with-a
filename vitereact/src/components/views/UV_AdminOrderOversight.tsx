@@ -294,9 +294,9 @@ const UV_AdminOrderOversight: React.FC = () => {
     staleTime: 120000,
     select: (data) => ({
       total_orders: data.total_orders,
-      completion_rate: Number(data.completion_rate.toFixed(1)),
-      avg_fulfillment_time: Number(data.avg_fulfillment_time.toFixed(1)),
-      issue_rate: Number(data.issue_rate.toFixed(1))
+      completion_rate: Number(Number(data.completion_rate || 0).toFixed(1)),
+      avg_fulfillment_time: Number(Number(data.avg_fulfillment_time || 0).toFixed(1)),
+      issue_rate: Number(Number(data.issue_rate || 0).toFixed(1))
     })
   });
   
@@ -800,7 +800,7 @@ const UV_AdminOrderOversight: React.FC = () => {
                                 <p className="text-sm text-gray-600">Quantity: {item.quantity}</p>
                               </div>
                               <div className="text-right">
-                                <p className="font-semibold text-gray-900">${item.line_total.toFixed(2)}</p>
+                                <p className="font-semibold text-gray-900">${Number(item.line_total || 0).toFixed(2)}</p>
                                 <p className="text-sm text-gray-600">${Number(item.price_per_unit || 0).toFixed(2)} each</p>
                               </div>
                             </div>
