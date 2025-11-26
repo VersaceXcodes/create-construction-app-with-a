@@ -1172,7 +1172,7 @@ const UV_SupplierProfile_Customer: React.FC = () => {
                   <h3 className="text-xl font-bold text-gray-900 mb-4">Minimum Order</h3>
                   <p className="text-gray-700">
                     Minimum order value: <span className="font-bold text-gray-900">
-                      ${supplierProfile.minimum_order_value.toFixed(2)}
+                      ${Number(supplierProfile.minimum_order_value || 0).toFixed(2)}
                     </span>
                   </p>
                 </div>

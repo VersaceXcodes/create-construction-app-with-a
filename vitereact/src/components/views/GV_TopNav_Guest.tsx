@@ -197,8 +197,8 @@ const GV_TopNav_Guest: React.FC = () => {
   };
   
   // Handle category click
-  const handleCategoryClick = (categorySlug: string) => {
-    navigate(`/products?category=${categorySlug}`);
+  const handleCategoryClick = (categoryId: string) => {
+    navigate(`/products?category=${categoryId}`);
     setIsMegaMenuOpen(false);
   };
   
@@ -270,7 +270,7 @@ const GV_TopNav_Guest: React.FC = () => {
                           {categories.slice(0, 12).map((category) => (
                             <button
                               key={category.category_id}
-                              onClick={() => handleCategoryClick(category.category_slug)}
+                              onClick={() => handleCategoryClick(category.category_id)}
                               className="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-50 transition-colors duration-200 text-left"
                             >
                               {category.icon_url ? (
@@ -515,7 +515,7 @@ const GV_TopNav_Guest: React.FC = () => {
                       <button
                         key={category.category_id}
                         onClick={() => {
-                          handleCategoryClick(category.category_slug);
+                          handleCategoryClick(category.category_id);
                           setIsMobileMenuOpen(false);
                         }}
                         className="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-50 transition-colors duration-200 text-left"
