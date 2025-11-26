@@ -2616,11 +2616,22 @@ app.get('/api/orders', authenticateToken, async (req: AuthRequest, res: Response
       paramCount = 2;
 
       if (status_filter) {
-        const statusClause = ` AND status = $${paramCount}`;
-        query += statusClause;
-        countQuery += statusClause;
-        params.push(asString(status_filter));
-        paramCount++;
+        // Support comma-separated status values (e.g., 'pending,processing,shipped')
+        const statuses = asString(status_filter).split(',').map(s => s.trim()).filter(s => s);
+        if (statuses.length === 1) {
+          const statusClause = ` AND status = $${paramCount}`;
+          query += statusClause;
+          countQuery += statusClause;
+          params.push(statuses[0]);
+          paramCount++;
+        } else if (statuses.length > 1) {
+          const placeholders = statuses.map((_, i) => `$${paramCount + i}`).join(', ');
+          const statusClause = ` AND status IN (${placeholders})`;
+          query += statusClause;
+          countQuery += statusClause;
+          params.push(...statuses);
+          paramCount += statuses.length;
+        }
       }
     } else if (req.user?.user_type === 'supplier') {
       // For suppliers, get orders that contain their products
@@ -2634,11 +2645,22 @@ app.get('/api/orders', authenticateToken, async (req: AuthRequest, res: Response
       paramCount = 2;
 
       if (status_filter) {
-        const statusClause = ` AND o.status = $${paramCount}`;
-        query += statusClause;
-        countQuery += statusClause;
-        params.push(asString(status_filter));
-        paramCount++;
+        // Support comma-separated status values (e.g., 'pending,processing,shipped')
+        const statuses = asString(status_filter).split(',').map(s => s.trim()).filter(s => s);
+        if (statuses.length === 1) {
+          const statusClause = ` AND o.status = $${paramCount}`;
+          query += statusClause;
+          countQuery += statusClause;
+          params.push(statuses[0]);
+          paramCount++;
+        } else if (statuses.length > 1) {
+          const placeholders = statuses.map((_, i) => `$${paramCount + i}`).join(', ');
+          const statusClause = ` AND o.status IN (${placeholders})`;
+          query += statusClause;
+          countQuery += statusClause;
+          params.push(...statuses);
+          paramCount += statuses.length;
+        }
       }
     } else {
       return res.status(403).json({ error: 'Forbidden', message: 'Customer or Supplier access required' });
