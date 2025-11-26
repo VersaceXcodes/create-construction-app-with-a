@@ -1219,13 +1219,21 @@ app.get('/api/products/:product_id', async (req, res) => {
   }
 });
 
-app.patch('/api/products/:product_id', authenticateToken, requireSupplier, async (req: AuthRequest, res: Response) => {
+app.patch('/api/products/:product_id', authenticateToken, async (req: AuthRequest, res: Response) => {
   try {
+    // Allow both suppliers (own products) and admins (any product)
+    const isAdmin = req.user?.user_type === 'admin';
+    const isSupplier = req.user?.user_type === 'supplier';
+    
+    if (!isAdmin && !isSupplier) {
+      return res.status(403).json({ error: 'Forbidden', message: 'Supplier or Admin access required' });
+    }
+
     const { product_name, description, price_per_unit, stock_quantity, low_stock_threshold, status, images, primary_image_url, is_featured, tags } = req.body;
     const now = new Date().toISOString();
 
-    const updates = [];
-    const values = [];
+    const updates: string[] = [];
+    const values: any[] = [];
     let paramCount = 1;
 
     if (product_name !== undefined) { updates.push(`product_name = $${paramCount++}`); values.push(product_name); }
@@ -1255,12 +1263,22 @@ app.patch('/api/products/:product_id', authenticateToken, requireSupplier, async
     updates.push(`updated_at = $${paramCount++}`);
     values.push(now);
     values.push(req.params.product_id);
-    values.push(req.user.supplier_id);
 
-    const result = await pool.query(
-      `UPDATE products SET ${updates.join(', ')} WHERE product_id = $${paramCount} AND supplier_id = $${paramCount + 1} RETURNING *`,
-      values
-    );
+    let result;
+    if (isAdmin) {
+      // Admin can update any product
+      result = await pool.query(
+        `UPDATE products SET ${updates.join(', ')} WHERE product_id = $${paramCount} RETURNING *`,
+        values
+      );
+    } else {
+      // Supplier can only update their own products
+      values.push(req.user.supplier_id);
+      result = await pool.query(
+        `UPDATE products SET ${updates.join(', ')} WHERE product_id = $${paramCount} AND supplier_id = $${paramCount + 1} RETURNING *`,
+        values
+      );
+    }
 
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'ProductNotFound', message: 'Product not found' });

@@ -185,12 +185,20 @@ const UV_AdminProductModeration: React.FC = () => {
   // MUTATIONS
   // ============================================================================
   
-  // Moderate product action
+  // Moderate product action - map action to product status
   const moderateProductMutation = useMutation({
     mutationFn: async ({ product_id, action, reason }: { product_id: string; action: 'approve' | 'reject' | 'flag'; reason: string }) => {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api/admin/reviews/${product_id}/moderate`,
-        { action, reason },
+      // Map moderation action to product status
+      const statusMap: Record<string, string> = {
+        approve: 'active',
+        reject: 'suspended',
+        flag: 'pending_review'
+      };
+      const status = statusMap[action] || 'pending_review';
+      
+      const response = await axios.patch(
+        `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api/products/${product_id}`,
+        { status },
         { headers: { Authorization: `Bearer ${authToken}` } }
       );
       return response.data;
