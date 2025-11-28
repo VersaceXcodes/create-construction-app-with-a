@@ -1029,8 +1029,14 @@ app.get('/api/products/:product_id', async (req, res) => {
         res.status(500).json({ error: 'InternalServerError', message: error.message });
     }
 });
-app.patch('/api/products/:product_id', authenticateToken, requireSupplier, async (req, res) => {
+app.patch('/api/products/:product_id', authenticateToken, async (req, res) => {
     try {
+        // Allow both suppliers (own products) and admins (any product)
+        const isAdmin = req.user?.user_type === 'admin';
+        const isSupplier = req.user?.user_type === 'supplier';
+        if (!isAdmin && !isSupplier) {
+            return res.status(403).json({ error: 'Forbidden', message: 'Supplier or Admin access required' });
+        }
         const { product_name, description, price_per_unit, stock_quantity, low_stock_threshold, status, images, primary_image_url, is_featured, tags } = req.body;
         const now = new Date().toISOString();
         const updates = [];
@@ -1086,8 +1092,16 @@ app.patch('/api/products/:product_id', authenticateToken, requireSupplier, async
         updates.push(`updated_at = $${paramCount++}`);
         values.push(now);
         values.push(req.params.product_id);
-        values.push(req.user.supplier_id);
-        const result = await pool.query(`UPDATE products SET ${updates.join(', ')} WHERE product_id = $${paramCount} AND supplier_id = $${paramCount + 1} RETURNING *`, values);
+        let result;
+        if (isAdmin) {
+            // Admin can update any product
+            result = await pool.query(`UPDATE products SET ${updates.join(', ')} WHERE product_id = $${paramCount} RETURNING *`, values);
+        }
+        else {
+            // Supplier can only update their own products
+            values.push(req.user.supplier_id);
+            result = await pool.query(`UPDATE products SET ${updates.join(', ')} WHERE product_id = $${paramCount} AND supplier_id = $${paramCount + 1} RETURNING *`, values);
+        }
         if (result.rows.length === 0) {
             return res.status(404).json({ error: 'ProductNotFound', message: 'Product not found' });
         }
@@ -1485,6 +1499,31 @@ app.get('/api/suppliers/me/analytics/dashboard', authenticateToken, requireSuppl
         const productResult = await pool.query('SELECT COUNT(*) as count FROM products WHERE supplier_id = $1 AND status != \'discontinued\'', [supplier_id]);
         // Get customer count (unique customers who have ordered)
         const customerResult = await pool.query('SELECT COUNT(DISTINCT o.customer_id) as count FROM orders o INNER JOIN order_items oi ON o.order_id = oi.order_id WHERE oi.supplier_id = $1', [supplier_id]);
+        // Get orders/sales by time period (today, this week, this month)
+        const now = new Date();
+        const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
+        const weekStart = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
+        const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+        // Orders and sales today
+        const todayResult = await pool.query(`SELECT COUNT(DISTINCT o.order_id) as order_count, COALESCE(SUM(oi.line_total), 0) as sales_total
+       FROM orders o 
+       INNER JOIN order_items oi ON o.order_id = oi.order_id 
+       WHERE oi.supplier_id = $1 AND o.order_date >= $2`, [supplier_id, todayStart]);
+        // Orders and sales this week
+        const weekResult = await pool.query(`SELECT COUNT(DISTINCT o.order_id) as order_count, COALESCE(SUM(oi.line_total), 0) as sales_total
+       FROM orders o 
+       INNER JOIN order_items oi ON o.order_id = oi.order_id 
+       WHERE oi.supplier_id = $1 AND o.order_date >= $2`, [supplier_id, weekStart]);
+        // Orders and sales this month
+        const monthResult = await pool.query(`SELECT COUNT(DISTINCT o.order_id) as order_count, COALESCE(SUM(oi.line_total), 0) as sales_total
+       FROM orders o 
+       INNER JOIN order_items oi ON o.order_id = oi.order_id 
+       WHERE oi.supplier_id = $1 AND o.order_date >= $2`, [supplier_id, monthStart]);
+        // Pending orders count
+        const pendingResult = await pool.query(`SELECT COUNT(DISTINCT o.order_id) as count
+       FROM orders o 
+       INNER JOIN order_items oi ON o.order_id = oi.order_id 
+       WHERE oi.supplier_id = $1 AND o.status = 'pending'`, [supplier_id]);
         const total_sales = parseFloat(supplier.total_sales) || 0;
         const total_orders = parseInt(supplier.total_orders) || 0;
         const avg_order_value = total_orders > 0 ? total_sales / total_orders : 0;
@@ -1495,7 +1534,15 @@ app.get('/api/suppliers/me/analytics/dashboard', authenticateToken, requireSuppl
             fulfillment_rate: parseFloat(supplier.fulfillment_rate) || 0,
             customer_count: parseInt(customerResult.rows[0].count) || 0,
             product_count: parseInt(productResult.rows[0].count) || 0,
-            rating_average: parseFloat(supplier.rating_average) || 0
+            rating_average: parseFloat(supplier.rating_average) || 0,
+            // Time-based metrics
+            orders_today: parseInt(todayResult.rows[0].order_count) || 0,
+            orders_this_week: parseInt(weekResult.rows[0].order_count) || 0,
+            orders_this_month: parseInt(monthResult.rows[0].order_count) || 0,
+            orders_pending: parseInt(pendingResult.rows[0].count) || 0,
+            sales_today: parseFloat(todayResult.rows[0].sales_total) || 0,
+            sales_this_week: parseFloat(weekResult.rows[0].sales_total) || 0,
+            sales_this_month: parseFloat(monthResult.rows[0].sales_total) || 0
         });
     }
     catch (error) {
@@ -1831,9 +1878,10 @@ app.post('/api/cart/items', authenticateToken, requireCustomer, async (req, res)
             return res.status(404).json({ error: 'ProductNotFound', message: 'Product not found or inactive' });
         }
         const product = productResult.rows[0];
-        if (product.stock_quantity < quantity) {
+        const availableStock = Number(product.stock_quantity);
+        if (availableStock < quantity) {
             await client.query('ROLLBACK');
-            return res.status(400).json({ error: 'InsufficientStock', message: 'Insufficient stock', details: { available_stock: product.stock_quantity, requested_quantity: quantity } });
+            return res.status(400).json({ error: 'InsufficientStock', message: 'Insufficient stock', details: { available_stock: availableStock, requested_quantity: quantity } });
         }
         let cartResult = await client.query('SELECT cart_id FROM carts WHERE customer_id = $1 AND status = \'active\' LIMIT 1', [req.user.customer_id]);
         let cart_id;
@@ -2135,11 +2183,11 @@ app.post('/api/projects/:project_id/load-to-cart', authenticateToken, requireCus
         const unavailable = [];
         for (const item of itemsResult.rows) {
             const productResult = await client.query('SELECT product_id, supplier_id, price_per_unit, stock_quantity, status FROM products WHERE product_id = $1', [item.product_id]);
-            if (productResult.rows.length === 0 || productResult.rows[0].status !== 'active' || productResult.rows[0].stock_quantity < item.quantity) {
+            const product = productResult.rows[0];
+            if (!product || product.status !== 'active' || Number(product.stock_quantity) < Number(item.quantity)) {
                 unavailable.push(item.product_id);
                 continue;
             }
-            const product = productResult.rows[0];
             const cart_item_id = uuidv4();
             await client.query('INSERT INTO cart_items (cart_item_id, cart_id, product_id, supplier_id, quantity, price_per_unit, added_date, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)', [cart_item_id, cart_id, item.product_id, product.supplier_id, item.quantity, product.price_per_unit, now, now, now]);
             added++;
@@ -2176,11 +2224,23 @@ app.get('/api/orders', authenticateToken, async (req, res) => {
             params = [req.user.customer_id];
             paramCount = 2;
             if (status_filter) {
-                const statusClause = ` AND status = $${paramCount}`;
-                query += statusClause;
-                countQuery += statusClause;
-                params.push(asString(status_filter));
-                paramCount++;
+                // Support comma-separated status values (e.g., 'pending,processing,shipped')
+                const statuses = asString(status_filter).split(',').map(s => s.trim()).filter(s => s);
+                if (statuses.length === 1) {
+                    const statusClause = ` AND status = $${paramCount}`;
+                    query += statusClause;
+                    countQuery += statusClause;
+                    params.push(statuses[0]);
+                    paramCount++;
+                }
+                else if (statuses.length > 1) {
+                    const placeholders = statuses.map((_, i) => `$${paramCount + i}`).join(', ');
+                    const statusClause = ` AND status IN (${placeholders})`;
+                    query += statusClause;
+                    countQuery += statusClause;
+                    params.push(...statuses);
+                    paramCount += statuses.length;
+                }
             }
         }
         else if (req.user?.user_type === 'supplier') {
@@ -2194,11 +2254,23 @@ app.get('/api/orders', authenticateToken, async (req, res) => {
             params = [req.user.supplier_id];
             paramCount = 2;
             if (status_filter) {
-                const statusClause = ` AND o.status = $${paramCount}`;
-                query += statusClause;
-                countQuery += statusClause;
-                params.push(asString(status_filter));
-                paramCount++;
+                // Support comma-separated status values (e.g., 'pending,processing,shipped')
+                const statuses = asString(status_filter).split(',').map(s => s.trim()).filter(s => s);
+                if (statuses.length === 1) {
+                    const statusClause = ` AND o.status = $${paramCount}`;
+                    query += statusClause;
+                    countQuery += statusClause;
+                    params.push(statuses[0]);
+                    paramCount++;
+                }
+                else if (statuses.length > 1) {
+                    const placeholders = statuses.map((_, i) => `$${paramCount + i}`).join(', ');
+                    const statusClause = ` AND o.status IN (${placeholders})`;
+                    query += statusClause;
+                    countQuery += statusClause;
+                    params.push(...statuses);
+                    paramCount += statuses.length;
+                }
             }
         }
         else {
@@ -2246,9 +2318,12 @@ app.post('/api/orders', authenticateToken, requireCustomer, async (req, res) => 
             return res.status(400).json({ error: 'CartEmpty', message: 'Cart is empty' });
         }
         for (const item of itemsResult.rows) {
-            if (item.status !== 'active' || item.stock_quantity < item.quantity) {
+            // Convert to numbers to avoid string comparison issues (e.g., "100" < "3" is true in string comparison)
+            const stockQty = Number(item.stock_quantity);
+            const requestedQty = Number(item.quantity);
+            if (item.status !== 'active' || stockQty < requestedQty) {
                 await client.query('ROLLBACK');
-                return res.status(400).json({ error: 'StockValidationError', message: 'Some items are no longer available', details: { product_id: item.product_id, available: item.stock_quantity, requested: item.quantity } });
+                return res.status(400).json({ error: 'StockValidationError', message: 'Some items are no longer available', details: { product_id: item.product_id, available: stockQty, requested: requestedQty } });
             }
         }
         const subtotal = itemsResult.rows.reduce((sum, item) => sum + (item.quantity * item.price_per_unit), 0);
@@ -2420,11 +2495,11 @@ app.post('/api/orders/:order_id/reorder', authenticateToken, requireCustomer, as
         const unavailable = [];
         for (const item of itemsResult.rows) {
             const productResult = await client.query('SELECT product_id, supplier_id, price_per_unit, stock_quantity, status FROM products WHERE product_id = $1', [item.product_id]);
-            if (productResult.rows.length === 0 || productResult.rows[0].status !== 'active' || productResult.rows[0].stock_quantity < item.quantity) {
+            const product = productResult.rows[0];
+            if (!product || product.status !== 'active' || Number(product.stock_quantity) < Number(item.quantity)) {
                 unavailable.push({ product_id: item.product_id });
                 continue;
             }
-            const product = productResult.rows[0];
             const cart_item_id = uuidv4();
             await client.query('INSERT INTO cart_items (cart_item_id, cart_id, product_id, supplier_id, quantity, price_per_unit, added_date, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)', [cart_item_id, cart_id, item.product_id, product.supplier_id, item.quantity, product.price_per_unit, now, now, now]);
             added++;
