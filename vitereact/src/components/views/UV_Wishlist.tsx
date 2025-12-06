@@ -209,13 +209,24 @@ const UV_Wishlist: React.FC = () => {
     setSearchParams(newParams);
   };
   
-  const handleAddToCart = (product_id: string, product_name: string) => {
+  const handleAddToCart = (product_id: string, product_name: string, wishlist_item_id: string) => {
     console.log(`Adding ${product_name} to cart...`);
     addToCartMut.mutate(
       { product_id, quantity: 1 },
       {
         onSuccess: () => {
           console.log(`Successfully added ${product_name} to cart`);
+          
+          // Remove from wishlist after successful add to cart
+          removeMut.mutate(wishlist_item_id, {
+            onSuccess: () => {
+              console.log(`Removed ${product_name} from wishlist after adding to cart`);
+            },
+            onError: (removeErr: any) => {
+              console.warn('Failed to remove from wishlist after add to cart:', removeErr);
+            }
+          });
+          
           // Use a non-blocking notification instead of alert
           // alert() can cause issues in automated testing
           const notification = document.createElement('div');
@@ -574,10 +585,13 @@ const UV_Wishlist: React.FC = () => {
                   <button
                     onClick={() => handleRemove(item.wishlist_item_id, item.product_name)}
                     disabled={removeMut.isPending}
-                    className="absolute bottom-3 right-3 bg-white p-2 rounded-full shadow-lg hover:bg-red-50 transition-all disabled:opacity-50"
+                    className="absolute bottom-3 right-3 bg-red-600 text-white p-2.5 rounded-lg shadow-lg hover:bg-red-700 transition-all disabled:opacity-50 flex items-center space-x-1"
                     aria-label="Remove from wishlist"
+                    data-testid={`remove-wishlist-${item.wishlist_item_id}`}
+                    title="Remove from wishlist"
                   >
-                    <Trash2 className="w-4 h-4 text-red-600" />
+                    <Trash2 className="w-4 h-4" />
+                    <span className="text-xs font-medium">Remove</span>
                   </button>
                 </div>
                 
@@ -635,6 +649,8 @@ const UV_Wishlist: React.FC = () => {
                           ? 'text-blue-600' 
                           : 'text-gray-400 hover:text-blue-600'
                       }`}
+                      data-testid={`price-alert-toggle-${item.wishlist_item_id}`}
+                      aria-label={`Toggle price drop alerts for ${item.product_name}`}
                     >
                       {item.price_drop_alert_enabled ? (
                         <Bell className="w-4 h-4" />
@@ -652,6 +668,8 @@ const UV_Wishlist: React.FC = () => {
                           ? 'text-blue-600' 
                           : 'text-gray-400 hover:text-blue-600'
                       }`}
+                      data-testid={`stock-alert-toggle-${item.wishlist_item_id}`}
+                      aria-label={`Toggle back in stock alerts for ${item.product_name}`}
                     >
                       {item.back_in_stock_alert_enabled ? (
                         <Bell className="w-4 h-4" />
@@ -664,9 +682,10 @@ const UV_Wishlist: React.FC = () => {
                   
                   {/* Add to Cart Button */}
                   <button
-                    onClick={() => handleAddToCart(item.product_id, item.product_name)}
+                    onClick={() => handleAddToCart(item.product_id, item.product_name, item.wishlist_item_id)}
                     disabled={item.stock_quantity === 0 || addToCartMut.isPending}
                     className="w-full px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                    data-testid={`add-to-cart-${item.wishlist_item_id}`}
                   >
                     <ShoppingCart className="w-5 h-5" />
                     <span>
@@ -755,6 +774,8 @@ const UV_Wishlist: React.FC = () => {
                                 ? 'text-blue-600' 
                                 : 'text-gray-400 hover:text-blue-600'
                             }`}
+                            data-testid={`price-alert-toggle-${item.wishlist_item_id}`}
+                            aria-label={`Toggle price drop alerts for ${item.product_name}`}
                           >
                             {item.price_drop_alert_enabled ? (
                               <Bell className="w-4 h-4" />
@@ -772,6 +793,8 @@ const UV_Wishlist: React.FC = () => {
                                 ? 'text-blue-600' 
                                 : 'text-gray-400 hover:text-blue-600'
                             }`}
+                            data-testid={`stock-alert-toggle-${item.wishlist_item_id}`}
+                            aria-label={`Toggle back in stock alerts for ${item.product_name}`}
                           >
                             {item.back_in_stock_alert_enabled ? (
                               <Bell className="w-4 h-4" />
@@ -805,9 +828,10 @@ const UV_Wishlist: React.FC = () => {
                         
                         <div className="space-y-2">
                           <button
-                            onClick={() => handleAddToCart(item.product_id, item.product_name)}
+                            onClick={() => handleAddToCart(item.product_id, item.product_name, item.wishlist_item_id)}
                             disabled={item.stock_quantity === 0 || addToCartMut.isPending}
                             className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                            data-testid={`add-to-cart-${item.wishlist_item_id}`}
                           >
                             <ShoppingCart className="w-5 h-5" />
                             <span>
@@ -819,6 +843,7 @@ const UV_Wishlist: React.FC = () => {
                             onClick={() => handleRemove(item.wishlist_item_id, item.product_name)}
                             disabled={removeMut.isPending}
                             className="w-full sm:w-auto px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all disabled:opacity-50 flex items-center justify-center space-x-2"
+                            data-testid={`remove-wishlist-${item.wishlist_item_id}`}
                           >
                             <Trash2 className="w-5 h-5" />
                             <span>Remove</span>

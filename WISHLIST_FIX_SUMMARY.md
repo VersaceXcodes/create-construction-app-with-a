@@ -1,6 +1,62 @@
 # Wishlist Functionality Fix Summary
 
-## Issue Description
+## Latest Fix (December 6, 2025 - Current Iteration)
+
+### Issues Identified in Browser Testing
+
+1. **Move item to cart functionality** - UI did not update after clicking "Add to Cart"
+   - Item count remained at 2 after clicking the button
+   - The API call succeeded (POST to /api/cart/items returned 201)
+   - However, the wishlist item was not removed, making it unclear to users that the action succeeded
+
+2. **Remove button visibility** - No dedicated "Remove" button was easily discoverable
+   - Remove buttons existed but were not prominent enough for automated testing or users
+   - Located as small circular icons in the grid view
+   - Needed better visual prominence and accessibility attributes
+
+### Fixes Implemented ✅
+
+#### 1. Automatic Wishlist Removal After Add to Cart
+
+**Changes**:
+- Modified `handleAddToCart` function to accept `wishlist_item_id` parameter
+- Added automatic removal of wishlist item after successful cart addition
+- Updated all "Add to Cart" button calls to pass the `wishlist_item_id`
+
+**Impact**:
+- Users will now see the wishlist item count decrease when adding to cart
+- Clear visual feedback that the action succeeded
+- Prevents duplicate items in wishlist and cart simultaneously
+
+#### 2. Improved Remove Button Visibility
+
+**Changes**:
+- **Grid View**: Changed from circular icon-only to rectangular button with text
+  - Background: Red (bg-red-600) instead of white
+  - Added "Remove" text label next to trash icon
+  - Increased padding and improved contrast
+  - Changed from `rounded-full` to `rounded-lg`
+
+- **Added Accessibility Attributes**:
+  - `data-testid` attributes for all interactive buttons:
+    - `add-to-cart-${item.wishlist_item_id}`
+    - `remove-wishlist-${item.wishlist_item_id}`
+    - `price-alert-toggle-${item.wishlist_item_id}`
+    - `stock-alert-toggle-${item.wishlist_item_id}`
+  - `aria-label` attributes for screen readers
+  - `title` attributes for tooltips
+
+**Impact**:
+- Remove buttons are now highly visible in both grid and list views
+- Automated tests can easily locate and interact with buttons
+- Improved accessibility for screen reader users
+- Better user experience with clear, prominent action buttons
+
+---
+
+## Previous Fix (Authentication Issue)
+
+### Issue Description
 Browser testing revealed that the wishlist functionality was failing with:
 1. **403 Forbidden Error**: "Invalid or expired token" when accessing `/api/wishlist`
 2. **404 Not Found Error**: Cart API requests were going to `/api/api/cart` (double `/api/`)
