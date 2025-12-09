@@ -324,7 +324,7 @@ const GV_TopNav_Guest: React.FC = () => {
                     onChange={(e) => handleSearchChange(e.target.value)}
                     onFocus={() => setIsSearchFocused(true)}
                     placeholder="Search construction materials..."
-                    className="block w-full pl-10 pr-3 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all duration-200"
+                    className="block w-full pl-10 pr-3 py-2 bg-white border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all duration-200"
                   />
                   {search_query && (
                     <button
@@ -451,7 +451,7 @@ const GV_TopNav_Guest: React.FC = () => {
                   onChange={(e) => handleSearchChange(e.target.value)}
                   onFocus={() => setIsSearchFocused(true)}
                   placeholder="Search materials..."
-                  className="block w-full pl-10 pr-3 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all duration-200 text-sm"
+                  className="block w-full pl-10 pr-3 py-2 bg-white border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all duration-200 text-sm"
                 />
               </div>
             </form>

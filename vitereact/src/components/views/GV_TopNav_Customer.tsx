@@ -339,7 +339,7 @@ const GV_TopNav_Customer: React.FC = () => {
                   value={search_query}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search construction materials..."
-                  className="w-full px-4 py-2 pl-10 pr-4 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 text-sm"
+                  className="w-full px-4 py-2 pl-10 pr-4 bg-white border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 text-sm"
                 />
                 <button
                   type="submit"
@@ -589,7 +589,7 @@ const GV_TopNav_Customer: React.FC = () => {
                   value={search_query}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search construction materials..."
-                  className="w-full px-4 py-2 pl-10 pr-4 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 text-sm"
+                  className="w-full px-4 py-2 pl-10 pr-4 bg-white border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 text-sm"
                 />
                 <button
                   type="submit"
