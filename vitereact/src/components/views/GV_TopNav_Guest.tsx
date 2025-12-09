@@ -567,13 +567,12 @@ const GV_TopNav_Guest: React.FC = () => {
                    <span className="text-sm font-medium text-gray-900">Help Center</span>
                 </Link>
               </div>
-            </div>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </>
-  );
-};
+        )}
+      </>
+    );
+  };
 
 export default GV_TopNav_Guest;
