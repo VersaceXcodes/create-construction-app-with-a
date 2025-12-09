@@ -585,7 +585,7 @@ const UV_Registration_Customer: React.FC = () => {
                           }
                         }}
                         disabled={registrationMutation.isPending}
-                        className={`w-full px-4 py-3 rounded-lg border-2 transition-all duration-200 ${
+                        className={`w-full px-4 py-3 rounded-lg border-2 transition-all duration-200 text-gray-900 bg-white ${
                           validationErrors.first_name
                             ? 'border-red-300 bg-red-50 focus:border-red-500 focus:ring-4 focus:ring-red-100'
                             : 'border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100'
@@ -683,7 +683,7 @@ const UV_Registration_Customer: React.FC = () => {
                           }
                         }}
                         disabled={registrationMutation.isPending}
-                        className={`w-full px-4 py-3 rounded-lg border-2 transition-all duration-200 ${
+                        className={`w-full px-4 py-3 rounded-lg border-2 transition-all duration-200 text-gray-900 bg-white ${
                           validationErrors.last_name
                             ? 'border-red-300 bg-red-50 focus:border-red-500 focus:ring-4 focus:ring-red-100'
                             : 'border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100'
@@ -745,7 +745,7 @@ const UV_Registration_Customer: React.FC = () => {
                         }
                       }}
                       disabled={registrationMutation.isPending}
-                      className={`w-full px-4 py-3 rounded-lg border-2 transition-all duration-200 ${
+                      className={`w-full px-4 py-3 rounded-lg border-2 transition-all duration-200 text-gray-900 bg-white ${
                         validationErrors.email
                           ? 'border-red-300 bg-red-50 focus:border-red-500 focus:ring-4 focus:ring-red-100'
                           : 'border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100'
@@ -788,7 +788,7 @@ const UV_Registration_Customer: React.FC = () => {
                         }
                       }}
                       disabled={registrationMutation.isPending}
-                      className={`w-full px-4 py-3 rounded-lg border-2 transition-all duration-200 ${
+                      className={`w-full px-4 py-3 rounded-lg border-2 transition-all duration-200 text-gray-900 bg-white ${
                         validationErrors.phone_number
                           ? 'border-red-300 bg-red-50 focus:border-red-500 focus:ring-4 focus:ring-red-100'
                           : 'border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100'
@@ -950,7 +950,7 @@ const UV_Registration_Customer: React.FC = () => {
                         value={formData.password}
                         onChange={(e) => handlePasswordChange(e.target.value)}
                         disabled={registrationMutation.isPending}
-                        className={`w-full px-4 py-3 rounded-lg border-2 transition-all duration-200 pr-12 ${
+                        className={`w-full px-4 py-3 rounded-lg border-2 transition-all duration-200 pr-12 text-gray-900 bg-white ${
                           validationErrors.password
                             ? 'border-red-300 bg-red-50 focus:border-red-500 focus:ring-4 focus:ring-red-100'
                             : 'border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100'
@@ -1041,7 +1041,7 @@ const UV_Registration_Customer: React.FC = () => {
                         value={formData.confirm_password}
                         onChange={(e) => handleConfirmPasswordChange(e.target.value)}
                         disabled={registrationMutation.isPending}
-                        className={`w-full px-4 py-3 rounded-lg border-2 transition-all duration-200 pr-12 ${
+                        className={`w-full px-4 py-3 rounded-lg border-2 transition-all duration-200 pr-12 text-gray-900 bg-white ${
                           validationErrors.confirm_password
                             ? 'border-red-300 bg-red-50 focus:border-red-500 focus:ring-4 focus:ring-red-100'
                             : formData.confirm_password && formData.password === formData.confirm_password
@@ -1115,7 +1115,7 @@ const UV_Registration_Customer: React.FC = () => {
                             }));
                           }}
                           disabled={registrationMutation.isPending}
-                          className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 disabled:opacity-50"
+                          className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 disabled:opacity-50 text-gray-900 bg-white"
                           placeholder="123 Main St"
                           autoComplete="street-address"
                         />
@@ -1143,7 +1143,7 @@ const UV_Registration_Customer: React.FC = () => {
                               }));
                             }}
                             disabled={registrationMutation.isPending}
-                            className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 disabled:opacity-50"
+                            className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 disabled:opacity-50 text-gray-900 bg-white"
                             placeholder="Austin"
                             autoComplete="address-level2"
                           />
@@ -1169,7 +1169,7 @@ const UV_Registration_Customer: React.FC = () => {
                               }));
                             }}
                             disabled={registrationMutation.isPending}
-                            className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 disabled:opacity-50"
+                            className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 disabled:opacity-50 text-gray-900 bg-white"
                             placeholder="TX"
                             maxLength={2}
                             autoComplete="address-level1"
@@ -1196,7 +1196,7 @@ const UV_Registration_Customer: React.FC = () => {
                               }));
                             }}
                             disabled={registrationMutation.isPending}
-                            className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 disabled:opacity-50"
+                            className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 disabled:opacity-50 text-gray-900 bg-white"
                             placeholder="78701"
                             maxLength={10}
                             autoComplete="postal-code"

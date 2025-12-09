@@ -798,12 +798,20 @@ const UV_Catalog: React.FC = () => {
                               </button>
                             </>
                           ) : (
-                            <Link
-                              to="/register"
-                              className="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-all font-medium text-center border-2 border-gray-300"
-                            >
-                              Sign up to purchase
-                            </Link>
+                            <div className="flex-1 flex gap-2">
+                              <Link
+                                to="/login"
+                                className="flex-1 bg-white text-gray-900 px-4 py-2 rounded-lg hover:bg-gray-50 transition-all font-medium text-center border-2 border-gray-300"
+                              >
+                                Sign In
+                              </Link>
+                              <Link
+                                to="/register"
+                                className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all font-medium text-center border-2 border-blue-600"
+                              >
+                                Sign Up
+                              </Link>
+                            </div>
                           )}
                         </div>
                       </div>

@@ -461,7 +461,7 @@ const GV_TopNav_Guest: React.FC = () => {
       
       {/* Mobile Menu Drawer */}
       {is_mobile_menu_open && (
-        <div className="fixed inset-0 z-40 md:hidden">
+        <div className="fixed inset-0 z-50 md:hidden">
           {/* Overlay */}
           <div 
             className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
@@ -470,7 +470,7 @@ const GV_TopNav_Guest: React.FC = () => {
           
           {/* Drawer */}
           <div className="fixed inset-y-0 right-0 w-full max-w-sm bg-white shadow-xl overflow-y-auto">
-            <div className="p-6">
+            <div className="p-6 pt-20">
               {/* Close Button */}
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-lg font-bold text-gray-900">Menu</h2>
