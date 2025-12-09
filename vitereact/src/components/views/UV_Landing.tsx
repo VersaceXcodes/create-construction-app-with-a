@@ -239,10 +239,6 @@ const UV_Landing: React.FC = () => {
                     <Package className="w-5 h-5 text-blue-600" />
                     <span className="font-medium">{platformStats.total_products.toLocaleString()}+ Products</span>
                   </div>
-                  <div className="flex items-center space-x-2 text-gray-600">
-                    <Star className="w-5 h-5 text-blue-600" />
-                    <span className="font-medium">{platformStats.total_reviews.toLocaleString()}+ Reviews</span>
-                  </div>
                 </div>
               )}
             </div>
