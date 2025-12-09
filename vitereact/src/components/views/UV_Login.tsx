@@ -226,7 +226,7 @@ const UV_Login: React.FC = () => {
                       className={`
                         block w-full pl-10 pr-4 py-3 
                         border-2 rounded-lg
-                        text-gray-900 placeholder-gray-400
+                        bg-white text-gray-900 placeholder-gray-400
                         focus:outline-none focus:ring-4 focus:ring-blue-100
                         transition-all duration-200
                         disabled:opacity-50 disabled:cursor-not-allowed
@@ -235,6 +235,7 @@ const UV_Login: React.FC = () => {
                           : 'border-gray-200 focus:border-blue-500'
                         }
                       `}
+                      style={{ WebkitTextFillColor: '#111827' }}
                     />
                   </div>
                   {validationErrors.email && (
@@ -277,7 +278,7 @@ const UV_Login: React.FC = () => {
                       className={`
                         block w-full pl-10 pr-12 py-3 
                         border-2 rounded-lg
-                        text-gray-900 placeholder-gray-400
+                        bg-white text-gray-900 placeholder-gray-400
                         focus:outline-none focus:ring-4 focus:ring-blue-100
                         transition-all duration-200
                         disabled:opacity-50 disabled:cursor-not-allowed
@@ -286,6 +287,7 @@ const UV_Login: React.FC = () => {
                           : 'border-gray-200 focus:border-blue-500'
                         }
                       `}
+                      style={{ WebkitTextFillColor: '#111827' }}
                     />
                     <button
                       type="button"

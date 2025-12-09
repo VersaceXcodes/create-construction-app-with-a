@@ -351,6 +351,16 @@ const UV_ProductDetail_Guest: React.FC = () => {
                 Create Free Account
               </button>
               
+              <div className="flex items-center justify-center space-x-2 mb-3">
+                <span className="text-sm text-gray-600">Already have an account?</span>
+                <Link
+                  to="/login"
+                  className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
+                >
+                  Sign In
+                </Link>
+              </div>
+              
               <button
                 onClick={() => setShowSignUpModal(false)}
                 className="text-gray-500 hover:text-gray-700 text-sm font-medium"
@@ -401,7 +411,7 @@ const UV_ProductDetail_Guest: React.FC = () => {
                 >
                   <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-white px-4 py-2 rounded-lg shadow-lg flex items-center space-x-2">
                     <ZoomIn className="h-5 w-5 text-blue-600" />
-                    <span className="text-sm font-medium text-gray-900">Sign up to zoom</span>
+                    <span className="text-sm font-medium text-gray-900">Sign up/in to zoom</span>
                   </div>
                 </div>
 
@@ -497,7 +507,7 @@ const UV_ProductDetail_Guest: React.FC = () => {
                   onClick={() => handleShowSignUpModal('purchase')}
                   className="text-sm text-gray-500 hover:text-gray-700"
                 >
-                  Sign up to see exact quantity
+                  Sign up or sign in to see exact quantity
                 </button>
               </div>
 
@@ -589,7 +599,7 @@ const UV_ProductDetail_Guest: React.FC = () => {
                   onClick={() => handleShowSignUpModal('purchase')}
                   className="text-sm text-blue-600 hover:text-blue-700 font-medium"
                 >
-                  Sign up to see exact delivery windows →
+                  Sign up or sign in to see exact delivery windows →
                 </button>
               </div>
             </div>
@@ -834,8 +844,8 @@ const UV_ProductDetail_Guest: React.FC = () => {
                                 {reviewData!.total - 3} More Reviews
                               </h3>
                               <p className="text-gray-600 mb-6">
-                                Sign up to read all {reviewData!.total} customer reviews
-                              </p>
+                                 Sign up or sign in to read all {reviewData!.total} customer reviews
+                               </p>
                               <button
                                 onClick={() => handleShowSignUpModal('reviews')}
                                 className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl w-full"
@@ -854,7 +864,7 @@ const UV_ProductDetail_Guest: React.FC = () => {
                         onClick={() => handleShowSignUpModal('purchase')}
                         className="mt-4 text-blue-600 hover:text-blue-700 font-medium"
                       >
-                        Be the first to review (Sign up required)
+                        Be the first to review (Sign up/in required)
                       </button>
                     </div>
                   )}

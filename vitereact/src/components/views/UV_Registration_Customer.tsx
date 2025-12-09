@@ -592,6 +592,7 @@ const UV_Registration_Customer: React.FC = () => {
                         } disabled:opacity-50 disabled:cursor-not-allowed`}
                         placeholder="John"
                         autoComplete="given-name"
+                        style={{ WebkitTextFillColor: '#111827' }}
                       />
                       {validationErrors.first_name && (
                         <p className="mt-2 text-sm text-red-600 flex items-center space-x-1">
@@ -690,6 +691,7 @@ const UV_Registration_Customer: React.FC = () => {
                         } disabled:opacity-50 disabled:cursor-not-allowed`}
                         placeholder="Doe"
                         autoComplete="family-name"
+                        style={{ WebkitTextFillColor: '#111827' }}
                       />
                       {validationErrors.last_name && (
                         <p className="mt-2 text-sm text-red-600 flex items-center space-x-1">
@@ -752,6 +754,7 @@ const UV_Registration_Customer: React.FC = () => {
                       } disabled:opacity-50 disabled:cursor-not-allowed`}
                       placeholder="john.doe@example.com"
                       autoComplete="email"
+                      style={{ WebkitTextFillColor: '#111827' }}
                     />
                     {validationErrors.email && (
                       <p className="mt-2 text-sm text-red-600 flex items-center space-x-1">
@@ -795,6 +798,7 @@ const UV_Registration_Customer: React.FC = () => {
                       } disabled:opacity-50 disabled:cursor-not-allowed`}
                       placeholder="(555) 123-4567"
                       autoComplete="tel"
+                      style={{ WebkitTextFillColor: '#111827' }}
                     />
                     {validationErrors.phone_number && (
                       <p className="mt-2 text-sm text-red-600 flex items-center space-x-1">
@@ -957,6 +961,7 @@ const UV_Registration_Customer: React.FC = () => {
                         } disabled:opacity-50 disabled:cursor-not-allowed`}
                         placeholder="Create a strong password"
                         autoComplete="new-password"
+                        style={{ WebkitTextFillColor: '#111827' }}
                       />
                       <button
                         type="button"
@@ -1050,6 +1055,7 @@ const UV_Registration_Customer: React.FC = () => {
                         } disabled:opacity-50 disabled:cursor-not-allowed`}
                         placeholder="Re-enter your password"
                         autoComplete="new-password"
+                        style={{ WebkitTextFillColor: '#111827' }}
                       />
                       <button
                         type="button"

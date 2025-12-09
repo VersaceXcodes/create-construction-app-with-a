@@ -469,10 +469,10 @@ const GV_TopNav_Guest: React.FC = () => {
           ></div>
           
           {/* Drawer */}
-          <div className="fixed inset-y-0 right-0 w-full max-w-sm bg-white shadow-xl overflow-y-auto">
-            <div className="p-6 pt-20">
+          <div className="fixed inset-y-0 right-0 w-full max-w-sm bg-white shadow-xl overflow-y-auto flex flex-col">
+            <div className="flex-shrink-0 p-6 pt-6 bg-white sticky top-0 z-10 border-b border-gray-200">
               {/* Close Button */}
-              <div className="flex justify-between items-center mb-6">
+              <div className="flex justify-between items-center mb-4">
                 <h2 className="text-lg font-bold text-gray-900">Menu</h2>
                 <button
                   onClick={() => setIsMobileMenuOpen(false)}
@@ -482,8 +482,8 @@ const GV_TopNav_Guest: React.FC = () => {
                 </button>
               </div>
               
-              {/* Sign In / Sign Up Buttons */}
-              <div className="space-y-3 mb-6 pb-6 border-b border-gray-200">
+              {/* Sign In / Sign Up Buttons - Fixed at top */}
+              <div className="space-y-3">
                 <Link
                   to="/login"
                   onClick={() => setIsMobileMenuOpen(false)}
@@ -499,7 +499,9 @@ const GV_TopNav_Guest: React.FC = () => {
                   Sign Up Free
                 </Link>
               </div>
-              
+            </div>
+            
+            <div className="flex-1 overflow-y-auto p-6 pt-4">{/* Scrollable content area */}
               {/* Categories */}
               <div className="mb-6">
                 <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">
@@ -562,9 +564,10 @@ const GV_TopNav_Guest: React.FC = () => {
                   className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 transition-colors duration-200"
                 >
                   <HelpCircle className="w-5 h-5 text-gray-600" />
-                  <span className="text-sm font-medium text-gray-900">Help Center</span>
+                   <span className="text-sm font-medium text-gray-900">Help Center</span>
                 </Link>
               </div>
+            </div>
             </div>
           </div>
         </div>
