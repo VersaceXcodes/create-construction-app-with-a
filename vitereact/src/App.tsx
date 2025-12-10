@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useAppStore } from '@/store/main';
 
-// Global Views
+// Global Views - Keep these as regular imports since they're used frequently
 import GV_TopNav_Guest from '@/components/views/GV_TopNav_Guest';
 import GV_TopNav_Customer from '@/components/views/GV_TopNav_Customer';
 import GV_TopNav_Supplier from '@/components/views/GV_TopNav_Supplier';
@@ -12,88 +12,89 @@ import GV_Footer from '@/components/views/GV_Footer';
 import GV_MiniCart_Customer from '@/components/views/GV_MiniCart_Customer';
 import GV_ChatWidget from '@/components/views/GV_ChatWidget';
 
+// Lazy load all page components for code splitting
 // Unique Views - Guest/Public
-import UV_Landing from '@/components/views/UV_Landing';
-import UV_Catalog from '@/components/views/UV_Catalog';
-import UV_ProductDetail_Guest from '@/components/views/UV_ProductDetail_Guest';
-import UV_ProductDetail_Customer from '@/components/views/UV_ProductDetail_Customer';
-import UV_SupplierProfile_Guest from '@/components/views/UV_SupplierProfile_Guest';
-import UV_SupplierProfile_Customer from '@/components/views/UV_SupplierProfile_Customer';
-import UV_Registration_AccountTypeSelect from '@/components/views/UV_Registration_AccountTypeSelect';
-import UV_Registration_Customer from '@/components/views/UV_Registration_Customer';
-import UV_Registration_Supplier from '@/components/views/UV_Registration_Supplier';
-import UV_Login from '@/components/views/UV_Login';
-import UV_ForgotPassword from '@/components/views/UV_ForgotPassword';
-import UV_ResetPassword from '@/components/views/UV_ResetPassword';
+const UV_Landing = lazy(() => import('@/components/views/UV_Landing'));
+const UV_Catalog = lazy(() => import('@/components/views/UV_Catalog'));
+const UV_ProductDetail_Guest = lazy(() => import('@/components/views/UV_ProductDetail_Guest'));
+const UV_ProductDetail_Customer = lazy(() => import('@/components/views/UV_ProductDetail_Customer'));
+const UV_SupplierProfile_Guest = lazy(() => import('@/components/views/UV_SupplierProfile_Guest'));
+const UV_SupplierProfile_Customer = lazy(() => import('@/components/views/UV_SupplierProfile_Customer'));
+const UV_Registration_AccountTypeSelect = lazy(() => import('@/components/views/UV_Registration_AccountTypeSelect'));
+const UV_Registration_Customer = lazy(() => import('@/components/views/UV_Registration_Customer'));
+const UV_Registration_Supplier = lazy(() => import('@/components/views/UV_Registration_Supplier'));
+const UV_Login = lazy(() => import('@/components/views/UV_Login'));
+const UV_ForgotPassword = lazy(() => import('@/components/views/UV_ForgotPassword'));
+const UV_ResetPassword = lazy(() => import('@/components/views/UV_ResetPassword'));
 
 // Unique Views - Customer
-import UV_CustomerOnboarding from '@/components/views/UV_CustomerOnboarding';
-import UV_CustomerDashboard from '@/components/views/UV_CustomerDashboard';
-import UV_ProductComparison from '@/components/views/UV_ProductComparison';
-import UV_CartPage from '@/components/views/UV_CartPage';
-import UV_Wishlist from '@/components/views/UV_Wishlist';
-import UV_MyProjects from '@/components/views/UV_MyProjects';
-import UV_ProjectDetail from '@/components/views/UV_ProjectDetail';
-import UV_Checkout from '@/components/views/UV_Checkout';
-import UV_OrderConfirmation from '@/components/views/UV_OrderConfirmation';
-import UV_OrderDashboard from '@/components/views/UV_OrderDashboard';
-import UV_OrderDetail from '@/components/views/UV_OrderDetail';
-import UV_NotificationCenter from '@/components/views/UV_NotificationCenter';
-import UV_AccountSettings from '@/components/views/UV_AccountSettings';
-import UV_MyReviews from '@/components/views/UV_MyReviews';
-import UV_IssueSubmit from '@/components/views/UV_IssueSubmit';
-import UV_IssueDetail from '@/components/views/UV_IssueDetail';
-import UV_SupportContact from '@/components/views/UV_SupportContact';
-import UV_SurplusMarketplace_Browse from '@/components/views/UV_SurplusMarketplace_Browse';
-import UV_SurplusListing_Detail from '@/components/views/UV_SurplusListing_Detail';
-import UV_SurplusListing_Create from '@/components/views/UV_SurplusListing_Create';
-import UV_MySurplusListings from '@/components/views/UV_MySurplusListings';
-import UV_TradeCredit_Application from '@/components/views/UV_TradeCredit_Application';
-import UV_TradeCredit_Dashboard from '@/components/views/UV_TradeCredit_Dashboard';
+const UV_CustomerOnboarding = lazy(() => import('@/components/views/UV_CustomerOnboarding'));
+const UV_CustomerDashboard = lazy(() => import('@/components/views/UV_CustomerDashboard'));
+const UV_ProductComparison = lazy(() => import('@/components/views/UV_ProductComparison'));
+const UV_CartPage = lazy(() => import('@/components/views/UV_CartPage'));
+const UV_Wishlist = lazy(() => import('@/components/views/UV_Wishlist'));
+const UV_MyProjects = lazy(() => import('@/components/views/UV_MyProjects'));
+const UV_ProjectDetail = lazy(() => import('@/components/views/UV_ProjectDetail'));
+const UV_Checkout = lazy(() => import('@/components/views/UV_Checkout'));
+const UV_OrderConfirmation = lazy(() => import('@/components/views/UV_OrderConfirmation'));
+const UV_OrderDashboard = lazy(() => import('@/components/views/UV_OrderDashboard'));
+const UV_OrderDetail = lazy(() => import('@/components/views/UV_OrderDetail'));
+const UV_NotificationCenter = lazy(() => import('@/components/views/UV_NotificationCenter'));
+const UV_AccountSettings = lazy(() => import('@/components/views/UV_AccountSettings'));
+const UV_MyReviews = lazy(() => import('@/components/views/UV_MyReviews'));
+const UV_IssueSubmit = lazy(() => import('@/components/views/UV_IssueSubmit'));
+const UV_IssueDetail = lazy(() => import('@/components/views/UV_IssueDetail'));
+const UV_SupportContact = lazy(() => import('@/components/views/UV_SupportContact'));
+const UV_SurplusMarketplace_Browse = lazy(() => import('@/components/views/UV_SurplusMarketplace_Browse'));
+const UV_SurplusListing_Detail = lazy(() => import('@/components/views/UV_SurplusListing_Detail'));
+const UV_SurplusListing_Create = lazy(() => import('@/components/views/UV_SurplusListing_Create'));
+const UV_MySurplusListings = lazy(() => import('@/components/views/UV_MySurplusListings'));
+const UV_TradeCredit_Application = lazy(() => import('@/components/views/UV_TradeCredit_Application'));
+const UV_TradeCredit_Dashboard = lazy(() => import('@/components/views/UV_TradeCredit_Dashboard'));
 
 // Unique Views - Supplier
-import UV_SupplierOnboarding from '@/components/views/UV_SupplierOnboarding';
-import UV_SupplierDashboard from '@/components/views/UV_SupplierDashboard';
-import UV_ProductManagement_Supplier from '@/components/views/UV_ProductManagement_Supplier';
-import UV_ProductAdd_Supplier from '@/components/views/UV_ProductAdd_Supplier';
-import UV_ProductEdit_Supplier from '@/components/views/UV_ProductEdit_Supplier';
-import UV_ProductBulkUpload_Supplier from '@/components/views/UV_ProductBulkUpload_Supplier';
-import UV_InventoryManagement_Supplier from '@/components/views/UV_InventoryManagement_Supplier';
-import UV_OrderManagement_Supplier from '@/components/views/UV_OrderManagement_Supplier';
-import UV_OrderDetail_Supplier from '@/components/views/UV_OrderDetail_Supplier';
-import UV_DeliveryManagement_Supplier from '@/components/views/UV_DeliveryManagement_Supplier';
-import UV_PricingPromotions_Supplier from '@/components/views/UV_PricingPromotions_Supplier';
-import UV_SupplierMessages from '@/components/views/UV_SupplierMessages';
-import UV_ReviewsManagement_Supplier from '@/components/views/UV_ReviewsManagement_Supplier';
-import UV_SupplierAnalytics from '@/components/views/UV_SupplierAnalytics';
-import UV_SupplierFinancials from '@/components/views/UV_SupplierFinancials';
-import UV_SupplierSettings from '@/components/views/UV_SupplierSettings';
-import UV_SupplierEducation from '@/components/views/UV_SupplierEducation';
+const UV_SupplierOnboarding = lazy(() => import('@/components/views/UV_SupplierOnboarding'));
+const UV_SupplierDashboard = lazy(() => import('@/components/views/UV_SupplierDashboard'));
+const UV_ProductManagement_Supplier = lazy(() => import('@/components/views/UV_ProductManagement_Supplier'));
+const UV_ProductAdd_Supplier = lazy(() => import('@/components/views/UV_ProductAdd_Supplier'));
+const UV_ProductEdit_Supplier = lazy(() => import('@/components/views/UV_ProductEdit_Supplier'));
+const UV_ProductBulkUpload_Supplier = lazy(() => import('@/components/views/UV_ProductBulkUpload_Supplier'));
+const UV_InventoryManagement_Supplier = lazy(() => import('@/components/views/UV_InventoryManagement_Supplier'));
+const UV_OrderManagement_Supplier = lazy(() => import('@/components/views/UV_OrderManagement_Supplier'));
+const UV_OrderDetail_Supplier = lazy(() => import('@/components/views/UV_OrderDetail_Supplier'));
+const UV_DeliveryManagement_Supplier = lazy(() => import('@/components/views/UV_DeliveryManagement_Supplier'));
+const UV_PricingPromotions_Supplier = lazy(() => import('@/components/views/UV_PricingPromotions_Supplier'));
+const UV_SupplierMessages = lazy(() => import('@/components/views/UV_SupplierMessages'));
+const UV_ReviewsManagement_Supplier = lazy(() => import('@/components/views/UV_ReviewsManagement_Supplier'));
+const UV_SupplierAnalytics = lazy(() => import('@/components/views/UV_SupplierAnalytics'));
+const UV_SupplierFinancials = lazy(() => import('@/components/views/UV_SupplierFinancials'));
+const UV_SupplierSettings = lazy(() => import('@/components/views/UV_SupplierSettings'));
+const UV_SupplierEducation = lazy(() => import('@/components/views/UV_SupplierEducation'));
 
 // Unique Views - Admin
-import UV_AdminDashboard from '@/components/views/UV_AdminDashboard';
-import UV_AdminUserManagement_Customers from '@/components/views/UV_AdminUserManagement_Customers';
-import UV_AdminUserManagement_Suppliers from '@/components/views/UV_AdminUserManagement_Suppliers';
-import UV_AdminSupplierApplications from '@/components/views/UV_AdminSupplierApplications';
-import UV_AdminProductModeration from '@/components/views/UV_AdminProductModeration';
-import UV_AdminOrderOversight from '@/components/views/UV_AdminOrderOversight';
-import UV_AdminDisputeManagement from '@/components/views/UV_AdminDisputeManagement';
-import UV_AdminReviewModeration from '@/components/views/UV_AdminReviewModeration';
-import UV_AdminFinancials from '@/components/views/UV_AdminFinancials';
-import UV_AdminPlatformSettings from '@/components/views/UV_AdminPlatformSettings';
-import UV_AdminAnalytics from '@/components/views/UV_AdminAnalytics';
-import UV_AdminCommunication from '@/components/views/UV_AdminCommunication';
-import UV_AdminTeamManagement from '@/components/views/UV_AdminTeamManagement';
-import UV_AdminSystemLogs from '@/components/views/UV_AdminSystemLogs';
-import UV_AdminMaintenanceMode from '@/components/views/UV_AdminMaintenanceMode';
+const UV_AdminDashboard = lazy(() => import('@/components/views/UV_AdminDashboard'));
+const UV_AdminUserManagement_Customers = lazy(() => import('@/components/views/UV_AdminUserManagement_Customers'));
+const UV_AdminUserManagement_Suppliers = lazy(() => import('@/components/views/UV_AdminUserManagement_Suppliers'));
+const UV_AdminSupplierApplications = lazy(() => import('@/components/views/UV_AdminSupplierApplications'));
+const UV_AdminProductModeration = lazy(() => import('@/components/views/UV_AdminProductModeration'));
+const UV_AdminOrderOversight = lazy(() => import('@/components/views/UV_AdminOrderOversight'));
+const UV_AdminDisputeManagement = lazy(() => import('@/components/views/UV_AdminDisputeManagement'));
+const UV_AdminReviewModeration = lazy(() => import('@/components/views/UV_AdminReviewModeration'));
+const UV_AdminFinancials = lazy(() => import('@/components/views/UV_AdminFinancials'));
+const UV_AdminPlatformSettings = lazy(() => import('@/components/views/UV_AdminPlatformSettings'));
+const UV_AdminAnalytics = lazy(() => import('@/components/views/UV_AdminAnalytics'));
+const UV_AdminCommunication = lazy(() => import('@/components/views/UV_AdminCommunication'));
+const UV_AdminTeamManagement = lazy(() => import('@/components/views/UV_AdminTeamManagement'));
+const UV_AdminSystemLogs = lazy(() => import('@/components/views/UV_AdminSystemLogs'));
+const UV_AdminMaintenanceMode = lazy(() => import('@/components/views/UV_AdminMaintenanceMode'));
 
 // Unique Views - Help/Legal
-import UV_KnowledgeBase from '@/components/views/UV_KnowledgeBase';
-import UV_HowItWorks from '@/components/views/UV_HowItWorks';
-import UV_Contact from '@/components/views/UV_Contact';
-import UV_About from '@/components/views/UV_About';
-import UV_TermsOfService from '@/components/views/UV_TermsOfService';
-import UV_PrivacyPolicy from '@/components/views/UV_PrivacyPolicy';
+const UV_KnowledgeBase = lazy(() => import('@/components/views/UV_KnowledgeBase'));
+const UV_HowItWorks = lazy(() => import('@/components/views/UV_HowItWorks'));
+const UV_Contact = lazy(() => import('@/components/views/UV_Contact'));
+const UV_About = lazy(() => import('@/components/views/UV_About'));
+const UV_TermsOfService = lazy(() => import('@/components/views/UV_TermsOfService'));
+const UV_PrivacyPolicy = lazy(() => import('@/components/views/UV_PrivacyPolicy'));
 
 // ============================================================================
 // QUERY CLIENT SETUP
