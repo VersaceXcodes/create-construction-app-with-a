@@ -44,7 +44,7 @@ export default defineConfig({
 		},
 	},
 	build: {
-		outDir: "public",
+		outDir: "dist",
 		// Performance optimizations (using esbuild for minification - faster than terser)
 		minify: 'esbuild',
 		// Code splitting for better performance
