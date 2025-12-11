@@ -322,7 +322,8 @@ const App: React.FC = () => {
   return (
     <Router>
       <QueryClientProvider client={queryClient}>
-        <Routes>
+        <Suspense fallback={<LoadingSpinner />}>
+          <Routes>
           {/* ============================================ */}
           {/* GUEST / PUBLIC ROUTES */}
           {/* ============================================ */}
@@ -926,6 +927,7 @@ const App: React.FC = () => {
           
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        </Suspense>
       </QueryClientProvider>
     </Router>
   );
