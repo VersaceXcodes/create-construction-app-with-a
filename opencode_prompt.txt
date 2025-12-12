@@ -1,45 +1,17 @@
-## BUILD FAILURE - Fix Required (Attempt 2/3)
+## BUILD FAILURE - Fix Required (Attempt 1/3)
 
 The Vite build process failed. Analyze the error output below and fix the issue.
 
 ## Build Error Output:
 ```
-23 kB │ gzip:   6.29 kB
-dist/assets/UV_AdminOrderOversight-GRJpEYkB.js              25.37 kB │ gzip:   5.43 kB
-dist/assets/UV_MySurplusListings-C1awQg2u.js                27.06 kB │ gzip:   6.28 kB
-dist/assets/UV_OrderDetail-BE3fVgxc.js                      27.60 kB │ gzip:   6.19 kB
-dist/assets/UV_SupplierProfile_Customer-CJrJ02hu.js         27.88 kB │ gzip:   6.15 kB
-dist/assets/UV_AdminCommunication-D7cs00Hn.js               27.91 kB │ gzip:   5.40 kB
-dist/assets/UV_AdminSystemLogs-BUAL0Hwk.js                  28.23 kB │ gzip:   5.81 kB
-dist/assets/UV_TradeCredit_Dashboard-BQoTtt5s.js            28.70 kB │ gzip:   5.82 kB
-dist/assets/UV_TradeCredit_Application-DC6Djj8V.js          29.12 kB │ gzip:   6.37 kB
-dist/assets/UV_ProductEdit_Supplier-DZk2OXvE.js             29.15 kB │ gzip:   5.82 kB
-dist/assets/UV_About-BtVmdo1N.js                            29.70 kB │ gzip:   6.80 kB
-dist/assets/UV_Checkout-2Jp28OYn.js                         29.78 kB │ gzip:   6.27 kB
-dist/assets/UV_Registration_Customer-DR5bbAyc.js            30.00 kB │ gzip:   6.02 kB
-dist/assets/UV_AdminFinancials-BXChkRyP.js                  30.75 kB │ gzip:   5.63 kB
-dist/assets/UV_ProductDetail_Customer-C_mw0pp5.js           30.92 kB │ gzip:   7.04 kB
-dist/assets/UV_SurplusListing_Create-BVT0UpZ9.js            31.09 kB │ gzip:   6.71 kB
-dist/assets/UV_AdminTeamManagement-Cckh80S_.js              31.35 kB │ gzip:   6.06 kB
-dist/assets/UV_Registration_Supplier-CfTAJ9aX.js            31.65 kB │ gzip:   6.23 kB
-dist/assets/UV_AdminUserManagement_Customers-DsOoVwyI.js    31.66 kB │ gzip:   6.68 kB
-dist/assets/UV_AdminUserManagement_Suppliers-yACyzDB8.js    31.66 kB │ gzip:   6.68 kB
-dist/assets/UV_SupplierAnalytics-D5WlVgov.js                31.92 kB │ gzip:   5.31 kB
-dist/assets/UV_AdminPlatformSettings-DJ3N3RP8.js            32.46 kB │ gzip:   5.71 kB
-dist/assets/UV_AdminMaintenanceMode-C8bfPAYR.js             33.41 kB │ gzip:   6.14 kB
-dist/assets/UV_SupplierOnboarding-BrcaakU1.js               35.08 kB │ gzip:   7.23 kB
-dist/assets/UV_SupplierSettings-CuIIPGHH.js                 35.32 kB │ gzip:   5.99 kB
-dist/assets/UV_TermsOfService-BM1DpSAb.js                   35.57 kB │ gzip:  10.96 kB
-dist/assets/UV_PrivacyPolicy-Ba9ZjpJE.js                    36.36 kB │ gzip:  10.75 kB
-dist/assets/UV_ProductAdd_Supplier-BL9NOmRg.js              36.66 kB │ gzip:   6.87 kB
-dist/assets/UV_DeliveryManagement_Supplier-C9ZHOnkK.js      38.31 kB │ gzip:   6.82 kB
-dist/assets/state-vendor-__gb9IU9.js                        41.91 kB │ gzip:  12.74 kB
-dist/assets/UV_AccountSettings-j26EbJfY.js                  43.27 kB │ gzip:   6.58 kB
-dist/assets/ui-vendor-CuJPReAW.js                           48.80 kB │ gzip:   9.08 kB
-dist/assets/react-vendor-QYi6USC3.js                       163.06 kB │ gzip:  53.25 kB
-dist/assets/index-CFqXVpuW.js                              218.18 kB │ gzip:  56.25 kB
-dist/assets/UV_AdminAnalytics-CJMVXqfc.js                  451.48 kB │ gzip: 121.43 kB
-✓ built in 10.72s
+
+> conductor@0.0.0 build
+> vite build
+
+vite v5.4.21 building for production...
+transforming...
+✓ 3203 modules transformed.
+rendering chunks...
 
 ```
 
