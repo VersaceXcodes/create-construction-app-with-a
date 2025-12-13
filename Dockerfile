@@ -22,6 +22,9 @@ RUN npm ci --production
 # Copy backend source
 COPY backend ./
 
+# Clear FRONTEND_URL from .env so Cloud Run env var takes precedence
+RUN sed -i 's|FRONTEND_URL=.*|FRONTEND_URL=|g' .env 2>/dev/null || true
+
 # Copy frontend build (Vite outputs to 'dist' directory)
 COPY --from=frontend-build /app/vitereact/dist ./public
 
