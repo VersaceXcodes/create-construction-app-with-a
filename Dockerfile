@@ -4,11 +4,10 @@ WORKDIR /app/vitereact
 COPY vitereact/package*.json ./
 RUN npm ci --legacy-peer-deps
 COPY vitereact ./
-# Override .env to use relative API paths for production
-# Clear all API URL variables so frontend uses relative paths
-RUN sed -i 's|VITE_API_BASE_URL=.*|VITE_API_BASE_URL=|g' .env 2>/dev/null || true
-RUN sed -i 's|VITE_BACKEND_URL=.*|VITE_BACKEND_URL=|g' .env 2>/dev/null || true
-RUN echo 'VITE_API_BASE_URL=' > .env.production.local && echo 'VITE_BACKEND_URL=' >> .env.production.local
+# Set production API URL for the launchpulse.ai subdomain
+RUN sed -i 's|VITE_API_BASE_URL=.*|VITE_API_BASE_URL=https://create-construction-app-with-a.launchpulse.ai|g' .env 2>/dev/null || true
+RUN sed -i 's|VITE_BACKEND_URL=.*|VITE_BACKEND_URL=https://create-construction-app-with-a.launchpulse.ai|g' .env 2>/dev/null || true
+RUN echo 'VITE_API_BASE_URL=https://create-construction-app-with-a.launchpulse.ai' > .env.production.local && echo 'VITE_BACKEND_URL=https://create-construction-app-with-a.launchpulse.ai' >> .env.production.local
 RUN npm run build
 
 # Stage 2: Production image with backend
