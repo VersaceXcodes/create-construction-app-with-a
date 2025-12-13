@@ -4,8 +4,8 @@ WORKDIR /app/vitereact
 COPY vitereact/package*.json ./
 RUN npm ci --legacy-peer-deps
 COPY vitereact ./
-# Set empty API URL so frontend uses relative paths (same-origin requests)
-ENV VITE_API_URL=""
+# Override .env to use relative API paths for production
+RUN echo 'VITE_API_URL=' > .env.production.local
 RUN npm run build
 
 # Stage 2: Production image with backend
