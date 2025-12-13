@@ -8,8 +8,7 @@ COPY vitereact ./
 # Clear all API URL variables so frontend uses relative paths
 RUN sed -i 's|VITE_API_BASE_URL=.*|VITE_API_BASE_URL=|g' .env 2>/dev/null || true
 RUN sed -i 's|VITE_BACKEND_URL=.*|VITE_BACKEND_URL=|g' .env 2>/dev/null || true
-RUN echo -e 'VITE_API_BASE_URL=
-VITE_BACKEND_URL=' > .env.production.local
+RUN echo 'VITE_API_BASE_URL=' > .env.production.local && echo 'VITE_BACKEND_URL=' >> .env.production.local
 RUN npm run build
 
 # Stage 2: Production image with backend
