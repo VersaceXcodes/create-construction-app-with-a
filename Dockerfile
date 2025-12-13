@@ -5,6 +5,8 @@ COPY vitereact/package*.json ./
 RUN npm ci --legacy-peer-deps
 COPY vitereact ./
 # Override .env to use relative API paths for production
+# Remove any existing VITE_API_URL and set empty value
+RUN sed -i 's|VITE_API_URL=.*|VITE_API_URL=|g' .env 2>/dev/null || true
 RUN echo 'VITE_API_URL=' > .env.production.local
 RUN npm run build
 
