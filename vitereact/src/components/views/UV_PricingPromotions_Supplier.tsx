@@ -231,7 +231,7 @@ const UV_PricingPromotions_Supplier: React.FC = () => {
 
   // Expose promotion form setter for test automation
   useEffect(() => {
-    // @ts-ignore - Exposing for test automation
+    // @ts-expect-error - Exposing for test automation
     window.__setPromotionFormData = (data: Partial<PromotionFormData>) => {
       setPromotionForm(prev => {
         const updates: Partial<PromotionFormData> = { ...data };
@@ -266,7 +266,7 @@ const UV_PricingPromotions_Supplier: React.FC = () => {
     };
     
     return () => {
-      // @ts-ignore
+      // @ts-expect-error - Cleanup test helper
       delete window.__setPromotionFormData;
     };
   }, [normalizeDateTimeValue]);

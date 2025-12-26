@@ -43,7 +43,6 @@ interface SystemHealth {
 // ============================================================================
 
 const GV_TopNav_Admin: React.FC = () => {
-  const navigate = useNavigate();
   const location = useLocation();
 
   // CRITICAL: Individual selectors to avoid infinite loops
