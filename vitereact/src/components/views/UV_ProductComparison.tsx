@@ -71,7 +71,7 @@ const fetchComparisonProducts = async (productIds: string[], token: string | nul
   return response.data.filter((p: Product | null) => p !== null);
 };
 
-const addProductToCart = async (productId: string, token: string): Promise<any> => {
+const addProductToCart = async (productId: string): Promise<any> => {
   // Use relative URL - axios baseURL already includes /api prefix and auth header is set globally
   const response = await axios.post(
     '/cart/items',
@@ -137,7 +137,7 @@ const UV_ProductComparison: React.FC = () => {
   
   // Add to cart mutation
   const addToCartMutation = useMutation({
-    mutationFn: (productId: string) => addProductToCart(productId, authToken!),
+    mutationFn: (productId: string) => addProductToCart(productId),
     onSuccess: () => {
       fetchCart(); // Update global cart state
       queryClient.invalidateQueries({ queryKey: ['cart'] });

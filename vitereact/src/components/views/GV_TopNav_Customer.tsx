@@ -112,7 +112,7 @@ const markNotificationRead = async (authToken: string, notification_id: string):
   );
 };
 
-const logoutApi = async (authToken: string): Promise<void> => {
+const logoutApi = async (): Promise<void> => {
   // Use relative URL - axios baseURL already includes /api prefix and auth header is set globally
   await axios.post('/auth/logout', {});
 };
@@ -190,7 +190,7 @@ const GV_TopNav_Customer: React.FC = () => {
   const logoutMutation = useMutation({
     mutationFn: () => {
       if (!authToken) throw new Error('Not authenticated');
-      return logoutApi(authToken);
+      return logoutApi();
     },
     onSuccess: async () => {
       // Call store logout to clear all state

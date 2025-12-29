@@ -176,8 +176,7 @@ const updatePreferredSuppliers = async (
 
 const addProductToCart = async (
   product_id: string,
-  quantity: number,
-  auth_token: string
+  quantity: number
 ): Promise<any> => {
   // Use relative URL - axios baseURL already includes /api prefix and auth header is set globally
   const { data } = await axios.post(
@@ -188,8 +187,7 @@ const addProductToCart = async (
 };
 
 const createChatConversation = async (
-  supplier_id: string,
-  auth_token: string
+  supplier_id: string
 ): Promise<{ conversation_id: string }> => {
   // Use relative URL - axios baseURL already includes /api prefix and auth header is set globally
   const { data } = await axios.post(

@@ -175,7 +175,7 @@ const acceptOffer = async (
 const declineOffer = async (
   authToken: string,
   offerId: string,
-  reason: string
+  _reason: string
 ): Promise<void> => {
   await axios.patch(
     `${API_BASE_URL}/api/surplus/offers/${offerId}`,
