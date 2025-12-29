@@ -313,7 +313,7 @@ const UV_SupplierProfile_Customer: React.FC = () => {
   // Add to cart mutation
   const addToCartMutation = useMutation({
     mutationFn: ({ product_id, quantity }: { product_id: string; quantity: number }) =>
-      addProductToCart(product_id, quantity, authToken!),
+      addProductToCart(product_id, quantity),
     onSuccess: () => {
       fetchCart();
       // Show success feedback (could add toast notification)
@@ -322,7 +322,7 @@ const UV_SupplierProfile_Customer: React.FC = () => {
 
   // Contact supplier mutation
   const contactMutation = useMutation({
-    mutationFn: () => createChatConversation(supplier_id!, authToken!),
+    mutationFn: () => createChatConversation(supplier_id!),
     onSuccess: () => {
       // Could redirect to chat or open chat widget
       setContactModalOpen(false);

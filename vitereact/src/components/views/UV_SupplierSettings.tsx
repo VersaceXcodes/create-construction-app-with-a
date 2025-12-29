@@ -217,7 +217,7 @@ const UV_SupplierSettings: React.FC = () => {
   
   const { data: teamMembers = [], isLoading: teamLoading } = useQuery({
     queryKey: ['team-members'],
-    queryFn: () => fetchTeamMembers(authToken!),
+    queryFn: () => fetchTeamMembers(),
     enabled: !!authToken && activeSection === 'team',
     staleTime: 60000
   });

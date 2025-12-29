@@ -483,7 +483,7 @@ const UV_CustomerDashboard: React.FC = () => {
                                 target.src = '/placeholder-product.png';
                               } else {
                                 // If fallback also fails, remove the error handler to stop loop
-                                target.onError = null;
+                                target.onerror = null;
                               }
                             }}
                           />

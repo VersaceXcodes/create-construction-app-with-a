@@ -520,7 +520,7 @@ const UV_OrderConfirmation: React.FC = () => {
                   <span>Taxes</span>
                   <span>${Number(orderDetails.tax_amount).toFixed(2)}</span>
                 </div>
-                {orderDetails.discount_amount > 0 && (
+                {Number(orderDetails.discount_amount) > 0 && (
                   <div className="flex justify-between text-green-600">
                     <span>Discount</span>
                     <span>-${Number(orderDetails.discount_amount).toFixed(2)}</span>

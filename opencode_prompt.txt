@@ -8,8 +8,6 @@ The Vite build process failed. Analyze the error output below and fix the issue.
 > conductor@0.0.0 build
 > vite build
 
-vite v5.4.21 building for production...
-transforming...
 
 ```
 
