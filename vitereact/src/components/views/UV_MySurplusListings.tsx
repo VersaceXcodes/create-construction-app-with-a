@@ -174,8 +174,7 @@ const acceptOffer = async (
 // Decline offer (inferred endpoint from spec)
 const declineOffer = async (
   authToken: string,
-  offerId: string,
-  _reason: string
+  offerId: string
 ): Promise<void> => {
   await axios.patch(
     `${API_BASE_URL}/api/surplus/offers/${offerId}`,
@@ -311,8 +310,8 @@ const UV_MySurplusListings: React.FC = () => {
 
   // Decline offer mutation
   const declineOfferMutation = useMutation({
-    mutationFn: ({ offerId, reason }: { offerId: string; reason: string }) => 
-      declineOffer(authToken!, offerId, reason),
+    mutationFn: ({ offerId }: { offerId: string; reason: string }) => 
+      declineOffer(authToken!, offerId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['surplus-offers'] });
       setDeclineOfferModal({ open: false, offerId: null, reason: '' });

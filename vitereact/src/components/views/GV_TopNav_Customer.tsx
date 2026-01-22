@@ -104,7 +104,7 @@ const fetchNotificationsSummary = async (authToken: string | null): Promise<Noti
   return response.data;
 };
 
-const markNotificationRead = async (authToken: string, notification_id: string): Promise<void> => {
+const markNotificationRead = async (notification_id: string): Promise<void> => {
   // Use relative URL - axios baseURL already includes /api prefix and auth header is set globally
   await axios.patch(
     `/notifications/${notification_id}`,
@@ -178,7 +178,7 @@ const GV_TopNav_Customer: React.FC = () => {
   const markReadMutation = useMutation({
     mutationFn: (notification_id: string) => {
       if (!authToken) throw new Error('Not authenticated');
-      return markNotificationRead(authToken, notification_id);
+      return markNotificationRead(notification_id);
     },
     onSuccess: () => {
       // Invalidate notifications query to refetch

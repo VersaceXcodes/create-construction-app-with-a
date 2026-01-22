@@ -187,7 +187,7 @@ const UV_AdminProductModeration: React.FC = () => {
   
   // Moderate product action - map action to product status
   const moderateProductMutation = useMutation({
-    mutationFn: async ({ product_id, action, reason: _reason }: { product_id: string; action: 'approve' | 'reject' | 'flag'; reason: string }) => {
+    mutationFn: async ({ product_id, action }: { product_id: string; action: 'approve' | 'reject' | 'flag'; reason: string }) => {
       // Map moderation action to product status
       const statusMap: Record<string, string> = {
         approve: 'active',
