@@ -63,7 +63,7 @@ describe('Authentication E2E (Real API)', () => {
     const testPassword = 'TestPassword123!';
     const firstName = 'Test';
     const lastName = 'User';
-    const phoneNumber = '+1-555-0199';
+    const phoneNumber = '555-555-0199';
     
     // ========================================================================
     // STEP 1: REGISTER NEW CUSTOMER
@@ -243,7 +243,7 @@ describe('Authentication E2E (Real API)', () => {
       business_registration_number: `TEST-${Date.now()}`,
       business_type: 'LLC',
       contact_person_name: 'Test Supplier',
-      phone_number: '+1-555-0299',
+      phone_number: '555-555-0299',
       business_address: '123 Test St, Test City, TX 78701',
       business_description: 'Test supplier for E2E tests',
     });
