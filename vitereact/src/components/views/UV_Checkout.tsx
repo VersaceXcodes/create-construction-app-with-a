@@ -225,8 +225,8 @@ const UV_Checkout: React.FC = () => {
   });
 
   // Ensure addresses and paymentMethods are always arrays
-  const addresses = Array.isArray(addressesData) ? addressesData : [];
-  const paymentMethods = Array.isArray(paymentMethodsData) ? paymentMethodsData : [];
+  const addresses = useMemo(() => Array.isArray(addressesData) ? addressesData : [], [addressesData]);
+  const paymentMethods = useMemo(() => Array.isArray(paymentMethodsData) ? paymentMethodsData : [], [paymentMethodsData]);
 
   // ============================================================================
   // MUTATIONS
